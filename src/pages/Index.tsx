@@ -1,13 +1,29 @@
 import { useState } from "react";
-import { QUESTIONS, calculateResults } from "@/lib/scoring";
+import { QUESTIONS, calculateStage1Results, calculateStage2Results, getSkillQuestionsForCareers, CareerMatch } from "@/lib/scoring";
+import type { CareerSkillAssessment, DomainScore } from "@/lib/scoring";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
+import { SkillAssessment } from "@/components/SkillAssessment";
+import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
-import { Compass, RotateCcw } from "lucide-react";
+import { Compass, RotateCcw, ArrowRight } from "lucide-react";
+
+type Stage = "stage1" | "stage1-results" | "stage2" | "final";
 
 const Index = () => {
+  const [stage, setStage] = useState<Stage>("stage1");
+
+  // Stage 1
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [results, setResults] = useState<ReturnType<typeof calculateResults> | null>(null);
+  const [stage1Results, setStage1Results] = useState<{
+    domains: DomainScore[];
+    topDomain: string;
+    topCareers: CareerMatch[];
+  } | null>(null);
+
+  // Stage 2
+  const [skillAnswers, setSkillAnswers] = useState<Record<string, number>>({});
+  const [stage2Results, setStage2Results] = useState<CareerSkillAssessment[] | null>(null);
 
   const answered = Object.keys(answers).length;
   const total = QUESTIONS.length;
@@ -17,16 +33,42 @@ const Index = () => {
     setAnswers((prev) => ({ ...prev, [qId]: value }));
   };
 
-  const handleSubmit = () => {
-    setResults(calculateResults(answers));
+  const handleStage1Submit = () => {
+    const results = calculateStage1Results(answers);
+    setStage1Results(results);
+    setStage("stage1-results");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleProceedToStage2 = () => {
+    setStage("stage2");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSkillAnswer = (id: string, value: number) => {
+    setSkillAnswers((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleStage2Submit = () => {
+    if (!stage1Results) return;
+    const careerTitles = stage1Results.topCareers.map((c) => c.career.title);
+    const results = calculateStage2Results(skillAnswers, careerTitles);
+    setStage2Results(results);
+    setStage("final");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleReset = () => {
     setAnswers({});
-    setResults(null);
+    setSkillAnswers({});
+    setStage1Results(null);
+    setStage2Results(null);
+    setStage("stage1");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const topCareerTitles = stage1Results?.topCareers.map((c) => c.career.title) ?? [];
+  const skillQuestions = getSkillQuestionsForCareers(topCareerTitles);
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,13 +82,35 @@ const Index = () => {
             AI Career Guide
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Answer 10 questions (1–4) to find your best-fit career domain
+            {stage === "stage1" && "Stage 1: Answer 10 preference questions (1–4)"}
+            {stage === "stage1-results" && "Stage 1 Results: Your career preference match"}
+            {stage === "stage2" && "Stage 2: Rate your current skill levels (0–5)"}
+            {stage === "final" && "Final Results: Combined analysis & skill gaps"}
           </p>
         </div>
 
-        {!results ? (
+        {/* Stage indicator */}
+        <div className="mb-6 flex items-center justify-center gap-2 text-xs font-medium">
+          <span className={`rounded-full px-3 py-1 ${stage === "stage1" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+            1. Preferences
+          </span>
+          <ArrowRight className="h-3 w-3 text-muted-foreground" />
+          <span className={`rounded-full px-3 py-1 ${stage === "stage1-results" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+            Results
+          </span>
+          <ArrowRight className="h-3 w-3 text-muted-foreground" />
+          <span className={`rounded-full px-3 py-1 ${stage === "stage2" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"}`}>
+            2. Skills
+          </span>
+          <ArrowRight className="h-3 w-3 text-muted-foreground" />
+          <span className={`rounded-full px-3 py-1 ${stage === "final" ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
+            Final
+          </span>
+        </div>
+
+        {/* Stage 1: Questions */}
+        {stage === "stage1" && (
           <>
-            {/* Progress */}
             <div className="mb-6">
               <div className="mb-1 flex justify-between text-xs font-medium text-muted-foreground">
                 <span>{answered}/{total} answered</span>
@@ -60,7 +124,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Questions */}
             <div className="space-y-4">
               {QUESTIONS.map((q, i) => (
                 <QuestionCard
@@ -75,23 +138,51 @@ const Index = () => {
             </div>
 
             <div className="mt-8 text-center">
-              <Button
-                onClick={handleSubmit}
-                size="lg"
-                className="px-8"
-                disabled={!allAnswered}
-              >
-                {allAnswered ? "Get My Results" : `Answer all ${total} questions`}
+              <Button onClick={handleStage1Submit} size="lg" className="px-8" disabled={!allAnswered}>
+                {allAnswered ? "See My Preference Match" : `Answer all ${total} questions`}
               </Button>
             </div>
           </>
-        ) : (
+        )}
+
+        {/* Stage 1 Results */}
+        {stage === "stage1-results" && stage1Results && (
           <>
             <ResultsDisplay
-              domains={results.domains}
-              topDomain={results.topDomain}
-              topCareer={results.topCareer}
+              domains={stage1Results.domains}
+              topDomain={stage1Results.topDomain}
+              topCareer={stage1Results.topCareers[0]}
             />
+            <div className="mt-8 text-center space-y-3">
+              <Button onClick={handleProceedToStage2} size="lg" className="gap-2 px-8">
+                Continue to Skill Assessment
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <div>
+                <Button onClick={handleReset} variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                  <RotateCcw className="h-3 w-3" />
+                  Start Over
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Stage 2: Skill Assessment */}
+        {stage === "stage2" && (
+          <SkillAssessment
+            questions={skillQuestions}
+            answers={skillAnswers}
+            onAnswer={handleSkillAnswer}
+            onSubmit={handleStage2Submit}
+            topCareers={topCareerTitles}
+          />
+        )}
+
+        {/* Final Results */}
+        {stage === "final" && stage1Results && stage2Results && (
+          <>
+            <FinalResults stage1={stage1Results} stage2={stage2Results} />
             <div className="mt-8 text-center">
               <Button onClick={handleReset} variant="outline" size="lg" className="gap-2">
                 <RotateCcw className="h-4 w-4" />
