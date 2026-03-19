@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { QUESTIONS, calculateStage1Results, calculateStage2Results, getSkillQuestionsForCareers, CareerMatch } from "@/lib/scoring";
-import type { CareerSkillAssessment, DomainScore } from "@/lib/scoring";
+import { QUESTIONS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";
+import type { CareerQuizResult, DomainScore } from "@/lib/scoring";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { SkillAssessment } from "@/components/SkillAssessment";
@@ -22,8 +22,8 @@ const Index = () => {
   } | null>(null);
 
   // Stage 2
-  const [skillAnswers, setSkillAnswers] = useState<Record<string, number>>({});
-  const [stage2Results, setStage2Results] = useState<CareerSkillAssessment[] | null>(null);
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
+  const [stage2Results, setStage2Results] = useState<CareerQuizResult[] | null>(null);
 
   const answered = Object.keys(answers).length;
   const total = QUESTIONS.length;
@@ -45,14 +45,14 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSkillAnswer = (id: string, value: number) => {
-    setSkillAnswers((prev) => ({ ...prev, [id]: value }));
+  const handleQuizAnswer = (id: string, value: string) => {
+    setQuizAnswers((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleStage2Submit = () => {
     if (!stage1Results) return;
     const careerTitles = stage1Results.topCareers.map((c) => c.career.title);
-    const results = calculateStage2Results(skillAnswers, careerTitles);
+    const results = calculateStage2Results(quizAnswers, careerTitles);
     setStage2Results(results);
     setStage("final");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -60,7 +60,7 @@ const Index = () => {
 
   const handleReset = () => {
     setAnswers({});
-    setSkillAnswers({});
+    setQuizAnswers({});
     setStage1Results(null);
     setStage2Results(null);
     setStage("stage1");
@@ -68,7 +68,7 @@ const Index = () => {
   };
 
   const topCareerTitles = stage1Results?.topCareers.map((c) => c.career.title) ?? [];
-  const skillQuestions = getSkillQuestionsForCareers(topCareerTitles);
+  const quizQuestions = getQuizQuestionsForCareers(topCareerTitles);
 
   return (
     <div className="min-h-screen bg-background">
@@ -171,9 +171,9 @@ const Index = () => {
         {/* Stage 2: Skill Assessment */}
         {stage === "stage2" && (
           <SkillAssessment
-            questions={skillQuestions}
-            answers={skillAnswers}
-            onAnswer={handleSkillAnswer}
+            questions={quizQuestions}
+            answers={quizAnswers}
+            onAnswer={handleQuizAnswer}
             onSubmit={handleStage2Submit}
             topCareers={topCareerTitles}
           />
