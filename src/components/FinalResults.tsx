@@ -3,7 +3,7 @@ import { ResultsDisplay } from "./ResultsDisplay";
 import { AlertTriangle, CheckCircle, ArrowRight } from "lucide-react";
 
 interface FinalResultsProps {
-  stage1: {
+  stage1?: {
     domains: DomainScore[];
     topDomain: string;
     topCareers: CareerMatch[];
@@ -14,22 +14,24 @@ interface FinalResultsProps {
 export function FinalResults({ stage1, stage2 }: FinalResultsProps) {
   return (
     <div className="space-y-8">
-      {/* Stage 1 recap */}
-      <div>
-        <h2 className="mb-3 font-display text-lg font-bold text-foreground">
-          Stage 1 — Preference Match
-        </h2>
-        <ResultsDisplay
-          domains={stage1.domains}
-          topDomain={stage1.topDomain}
-          topCareer={stage1.topCareers[0]}
-        />
-      </div>
+      {/* Stage 1 recap (only shown in discover flow) */}
+      {stage1 && (
+        <div>
+          <h2 className="mb-3 font-display text-lg font-bold text-foreground">
+            Preference Match
+          </h2>
+          <ResultsDisplay
+            domains={stage1.domains}
+            topDomain={stage1.topDomain}
+            topCareer={stage1.topCareers[0]}
+          />
+        </div>
+      )}
 
       {/* Stage 2 quiz results */}
       <div>
         <h2 className="mb-3 font-display text-lg font-bold text-foreground">
-          Stage 2 — Knowledge Assessment
+          Knowledge Assessment
         </h2>
         <div className="space-y-4">
           {stage2.map((result) => {

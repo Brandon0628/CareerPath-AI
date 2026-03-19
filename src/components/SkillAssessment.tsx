@@ -1,6 +1,6 @@
 import { QuizQuestion } from "@/lib/scoring";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, CheckCircle } from "lucide-react";
+import { ClipboardCheck, CheckCircle, Code } from "lucide-react";
 
 interface SkillAssessmentProps {
   questions: QuizQuestion[];
@@ -22,21 +22,20 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
     grouped[q.careerTitle].push(q);
   });
 
-  // Track question index across careers
   let globalIndex = 0;
 
   return (
     <div className="space-y-6">
       <div className="rounded-xl border-2 border-secondary/30 bg-secondary/5 p-6 text-center">
         <ClipboardCheck className="mx-auto mb-2 h-8 w-8 text-secondary" />
-        <h3 className="text-xl font-bold text-foreground">Stage 2: Knowledge Quiz</h3>
+        <h3 className="text-xl font-bold text-foreground">Knowledge Quiz</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Test your knowledge for your top career match{topCareers.length > 1 ? "es" : ""}:{" "}
+          Test your knowledge for:{" "}
           <strong>{topCareers.join(", ")}</strong>
         </p>
       </div>
 
-      {/* Progress bar matching Stage 1 */}
+      {/* Progress bar */}
       <div>
         <div className="mb-1 flex justify-between text-xs font-medium text-muted-foreground">
           <span>{answered}/{total} answered</span>
@@ -55,19 +54,47 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
           <h4 className="font-display text-lg font-bold text-foreground">{career}</h4>
           {qs.map((q) => {
             const idx = globalIndex++;
+            const isFillBlank = q.type === "fill-blank";
             return (
               <div key={q.id} className="rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:shadow-md">
                 <div className="mb-1 flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">
                     Q{idx + 1} of {total}
                   </span>
-                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                    {q.skill}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {isFillBlank && (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary flex items-center gap-1">
+                        <Code className="h-3 w-3" />
+                        Fill in the Blank
+                      </span>
+                    )}
+                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                      {q.skill}
+                    </span>
+                  </div>
                 </div>
-                <p className="mb-4 font-display text-base font-semibold leading-snug text-card-foreground">
+
+                <p className="mb-3 font-display text-base font-semibold leading-snug text-card-foreground">
                   {q.text}
                 </p>
+
+                {/* Code snippet for fill-in-the-blank */}
+                {isFillBlank && q.codeSnippet && (
+                  <div className="mb-4 overflow-x-auto rounded-lg bg-foreground/5 border border-border p-4">
+                    <pre className="text-sm font-mono text-foreground">
+                      {q.codeSnippet.split("______").map((part, i, arr) => (
+                        <span key={i}>
+                          {part}
+                          {i < arr.length - 1 && (
+                            <span className="inline-block rounded bg-primary/20 px-2 py-0.5 text-primary font-bold border border-primary/30">
+                              {answers[q.id] || "______"}
+                            </span>
+                          )}
+                        </span>
+                      ))}
+                    </pre>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {q.options.map((opt) => (
@@ -81,7 +108,7 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
                       }`}
                     >
                       {answers[q.id] === opt.label && <CheckCircle className="h-4 w-4 shrink-0" />}
-                      <span>{opt.label}</span>
+                      <span className={isFillBlank ? "font-mono" : ""}>{opt.label}</span>
                     </button>
                   ))}
                 </div>
@@ -93,7 +120,7 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
 
       <div className="text-center">
         <Button onClick={onSubmit} size="lg" className="px-8" disabled={!allAnswered}>
-          {allAnswered ? "See Final Results" : `Answer all ${total} questions to continue`}
+          {allAnswered ? "See Results" : `Answer all ${total} questions to continue`}
         </Button>
       </div>
     </div>
