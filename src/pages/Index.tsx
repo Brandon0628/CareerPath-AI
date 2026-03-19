@@ -171,9 +171,9 @@ const Index = () => {
         {/* Stage 2: Skill Assessment */}
         {stage === "stage2" && (
           <SkillAssessment
-            questions={skillQuestions}
-            answers={skillAnswers}
-            onAnswer={handleSkillAnswer}
+            questions={quizQuestions}
+            answers={quizAnswers}
+            onAnswer={handleQuizAnswer}
             onSubmit={handleStage2Submit}
             topCareers={topCareerTitles}
           />
