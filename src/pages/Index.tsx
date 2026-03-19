@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { QUESTIONS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";
 import type { CareerQuizResult, DomainScore } from "@/lib/scoring";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
+import { LearningResources } from "@/components/LearningResources";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
-import { Compass, RotateCcw, ArrowRight } from "lucide-react";
+import { Compass, RotateCcw, ArrowRight, ArrowLeft, Map } from "lucide-react";
 
 type Stage = "stage1" | "stage1-results" | "stage2" | "final";
 
@@ -74,19 +76,27 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-4 py-10">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-            <Compass className="h-6 w-6" />
+        <div className="mb-6">
+          <Link to="/">
+            <Button variant="ghost" size="sm" className="mb-4 gap-2 text-muted-foreground">
+              <ArrowLeft className="h-3 w-3" />
+              Back to Home
+            </Button>
+          </Link>
+          <div className="text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <Compass className="h-6 w-6" />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Discover Your Strengths
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {stage === "stage1" && "Stage 1: Answer 10 preference questions (1–4)"}
+              {stage === "stage1-results" && "Your career preference match & learning resources"}
+              {stage === "stage2" && "Stage 2: Test your knowledge with real problems"}
+              {stage === "final" && "Final Results: Combined analysis & skill gaps"}
+            </p>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            AI Career Guide
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {stage === "stage1" && "Stage 1: Answer 10 preference questions (1–4)"}
-            {stage === "stage1-results" && "Stage 1 Results: Your career preference match"}
-            {stage === "stage2" && "Stage 2: Rate your current skill levels (0–5)"}
-            {stage === "final" && "Final Results: Combined analysis & skill gaps"}
-          </p>
         </div>
 
         {/* Stage indicator */}
@@ -145,7 +155,7 @@ const Index = () => {
           </>
         )}
 
-        {/* Stage 1 Results */}
+        {/* Stage 1 Results + Resources */}
         {stage === "stage1-results" && stage1Results && (
           <>
             <ResultsDisplay
@@ -153,7 +163,23 @@ const Index = () => {
               topDomain={stage1Results.topDomain}
               topCareer={stage1Results.topCareers[0]}
             />
-            <div className="mt-8 text-center space-y-3">
+
+            {/* Learning Resources */}
+            <div className="mt-6">
+              <LearningResources careerTitles={topCareerTitles} />
+            </div>
+
+            {/* Roadmap link */}
+            <div className="mt-4 text-center">
+              <Link to="/roadmap">
+                <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                  <Map className="h-3 w-3" />
+                  View Career Roadmaps
+                </Button>
+              </Link>
+            </div>
+
+            <div className="mt-6 text-center space-y-3">
               <Button onClick={handleProceedToStage2} size="lg" className="gap-2 px-8">
                 Continue to Skill Assessment
                 <ArrowRight className="h-4 w-4" />
@@ -183,11 +209,25 @@ const Index = () => {
         {stage === "final" && stage1Results && stage2Results && (
           <>
             <FinalResults stage1={stage1Results} stage2={stage2Results} />
-            <div className="mt-8 text-center">
+
+            {/* Resources again */}
+            <div className="mt-6">
+              <LearningResources careerTitles={topCareerTitles} />
+            </div>
+
+            <div className="mt-8 text-center space-y-3">
               <Button onClick={handleReset} variant="outline" size="lg" className="gap-2">
                 <RotateCcw className="h-4 w-4" />
                 Start Over
               </Button>
+              <div>
+                <Link to="/roadmap">
+                  <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                    <Map className="h-3 w-3" />
+                    View Career Roadmaps
+                  </Button>
+                </Link>
+              </div>
             </div>
           </>
         )}

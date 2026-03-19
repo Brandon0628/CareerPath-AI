@@ -20,6 +20,122 @@ export const ALL_SKILLS = [
 
 export type SkillName = (typeof ALL_SKILLS)[number];
 
+// ===== LEARNING RESOURCES =====
+
+export interface LearningResource {
+  title: string;
+  type: "course" | "tutorial" | "tool" | "roadmap";
+  url: string;
+  description: string;
+}
+
+export interface CareerResources {
+  careerTitle: string;
+  resources: LearningResource[];
+}
+
+export const CAREER_RESOURCES: CareerResources[] = [
+  {
+    careerTitle: "Software Developer",
+    resources: [
+      { title: "freeCodeCamp", type: "course", url: "https://freecodecamp.org", description: "Full-stack web development curriculum" },
+      { title: "The Odin Project", type: "course", url: "https://theodinproject.com", description: "Open-source full-stack curriculum" },
+      { title: "LeetCode", type: "tool", url: "https://leetcode.com", description: "Practice coding interview problems" },
+      { title: "JavaScript.info", type: "tutorial", url: "https://javascript.info", description: "Modern JavaScript tutorial" },
+      { title: "roadmap.sh/frontend", type: "roadmap", url: "https://roadmap.sh/frontend", description: "Frontend developer roadmap" },
+    ],
+  },
+  {
+    careerTitle: "Data Analyst",
+    resources: [
+      { title: "Kaggle Learn", type: "course", url: "https://kaggle.com/learn", description: "Free data science micro-courses" },
+      { title: "Mode SQL Tutorial", type: "tutorial", url: "https://mode.com/sql-tutorial", description: "Interactive SQL tutorial" },
+      { title: "Google Data Analytics", type: "course", url: "https://grow.google/certificates/data-analytics", description: "Professional certificate program" },
+      { title: "Excel Easy", type: "tutorial", url: "https://www.excel-easy.com", description: "Step-by-step Excel tutorials" },
+      { title: "Statistics by Khan Academy", type: "course", url: "https://khanacademy.org/math/statistics-probability", description: "Statistics fundamentals" },
+    ],
+  },
+  {
+    careerTitle: "Cybersecurity Analyst",
+    resources: [
+      { title: "TryHackMe", type: "tool", url: "https://tryhackme.com", description: "Hands-on cybersecurity training" },
+      { title: "Hack The Box", type: "tool", url: "https://hackthebox.com", description: "Penetration testing labs" },
+      { title: "CompTIA Security+", type: "course", url: "https://comptia.org/certifications/security", description: "Entry-level security certification" },
+      { title: "OWASP Top 10", type: "tutorial", url: "https://owasp.org/www-project-top-ten", description: "Web application security risks" },
+      { title: "Cybrary", type: "course", url: "https://cybrary.it", description: "Free cybersecurity courses" },
+    ],
+  },
+  {
+    careerTitle: "Accountant",
+    resources: [
+      { title: "Khan Academy Accounting", type: "course", url: "https://khanacademy.org/economics-finance-domain", description: "Free accounting and finance courses" },
+      { title: "AccountingCoach", type: "tutorial", url: "https://accountingcoach.com", description: "Free accounting tutorials & explanations" },
+      { title: "QuickBooks Training", type: "tool", url: "https://quickbooks.intuit.com/tutorials", description: "Learn QuickBooks accounting software" },
+      { title: "Coursera Financial Accounting", type: "course", url: "https://coursera.org/learn/wharton-accounting", description: "Wharton financial accounting course" },
+      { title: "IRS Free File", type: "tool", url: "https://irs.gov/filing/free-file-do-your-federal-taxes-for-free", description: "Practice with real tax filing tools" },
+    ],
+  },
+];
+
+// ===== CAREER PROGRESSION PATHS =====
+
+export interface RoadmapNode {
+  id: string;
+  title: string;
+  description: string;
+  skills: string[];
+  level: "entry" | "mid" | "senior" | "lead";
+}
+
+export interface CareerRoadmap {
+  careerTitle: string;
+  domain: "Tech" | "Accounting";
+  nodes: RoadmapNode[];
+}
+
+export const CAREER_ROADMAPS: CareerRoadmap[] = [
+  {
+    careerTitle: "Software Developer",
+    domain: "Tech",
+    nodes: [
+      { id: "sd-1", title: "Junior Developer", description: "Learn fundamentals, write basic code, fix bugs", skills: ["HTML/CSS", "JavaScript Basics", "Git"], level: "entry" },
+      { id: "sd-2", title: "Mid-Level Developer", description: "Build features independently, design APIs, mentor juniors", skills: ["React/Vue/Angular", "REST APIs", "Testing", "SQL"], level: "mid" },
+      { id: "sd-3", title: "Senior Developer", description: "Architect systems, lead code reviews, drive technical decisions", skills: ["System Design", "CI/CD", "Cloud (AWS/GCP)", "Performance Optimization"], level: "senior" },
+      { id: "sd-4", title: "Tech Lead / Architect", description: "Define technical strategy, lead teams, own system reliability", skills: ["Architecture Patterns", "Team Leadership", "Stakeholder Communication", "DevOps"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Data Analyst",
+    domain: "Tech",
+    nodes: [
+      { id: "da-r1", title: "Junior Analyst", description: "Clean data, create reports, learn SQL & Excel", skills: ["Excel", "SQL Basics", "Data Cleaning"], level: "entry" },
+      { id: "da-r2", title: "Data Analyst", description: "Build dashboards, run analyses, present insights", skills: ["Tableau/Power BI", "Advanced SQL", "Statistics", "Python/R"], level: "mid" },
+      { id: "da-r3", title: "Senior Analyst", description: "Design metrics frameworks, lead analytics projects", skills: ["A/B Testing", "Predictive Modeling", "Stakeholder Management"], level: "senior" },
+      { id: "da-r4", title: "Analytics Manager / Data Scientist", description: "Lead analytics teams, build ML models, drive data strategy", skills: ["Machine Learning", "Team Leadership", "Data Strategy", "Big Data Tools"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Cybersecurity Analyst",
+    domain: "Tech",
+    nodes: [
+      { id: "cs-r1", title: "SOC Analyst (Tier 1)", description: "Monitor alerts, triage incidents, document findings", skills: ["SIEM Tools", "Log Analysis", "Network Basics"], level: "entry" },
+      { id: "cs-r2", title: "Security Analyst", description: "Investigate incidents, perform vulnerability assessments", skills: ["Pen Testing Basics", "Threat Intelligence", "Firewall Management"], level: "mid" },
+      { id: "cs-r3", title: "Senior Security Engineer", description: "Design security architecture, lead incident response", skills: ["Cloud Security", "Incident Response", "Security Automation", "Compliance"], level: "senior" },
+      { id: "cs-r4", title: "CISO / Security Architect", description: "Define org security strategy, manage risk at executive level", skills: ["Risk Management", "Policy & Governance", "Executive Communication", "Team Leadership"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Accountant",
+    domain: "Accounting",
+    nodes: [
+      { id: "ac-r1", title: "Junior Accountant / Bookkeeper", description: "Record transactions, reconcile accounts, file reports", skills: ["Bookkeeping", "Excel", "Accounting Software"], level: "entry" },
+      { id: "ac-r2", title: "Staff Accountant", description: "Prepare financial statements, assist with audits", skills: ["Financial Reporting", "Tax Preparation", "GAAP/IFRS Basics"], level: "mid" },
+      { id: "ac-r3", title: "Senior Accountant / CPA", description: "Lead audits, manage complex tax situations, advise clients", skills: ["Advanced Tax", "Audit Management", "Financial Analysis", "CPA Certification"], level: "senior" },
+      { id: "ac-r4", title: "Controller / CFO", description: "Oversee all financial operations, strategic financial planning", skills: ["Strategic Planning", "Team Leadership", "Regulatory Compliance", "Financial Strategy"], level: "lead" },
+    ],
+  },
+];
+
 // ===== STAGE 1: MBTI-STYLE QUESTIONS =====
 
 export interface Question {
@@ -105,12 +221,15 @@ export interface QuizQuestion {
   skill: string;
   text: string;
   options: QuizOption[];
+  type?: "mcq" | "fill-blank";
+  codeSnippet?: string;
+  blankAnswer?: string;
 }
 
 export const QUIZ_QUESTIONS: QuizQuestion[] = [
-  // Software Developer
+  // Software Developer - MCQ
   {
-    id: "sd-1", careerTitle: "Software Developer", skill: "JavaScript",
+    id: "sd-1", careerTitle: "Software Developer", skill: "JavaScript", type: "mcq",
     text: "What is the output of: console.log(typeof null)?",
     options: [
       { label: '"null"', isCorrect: false },
@@ -120,7 +239,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "sd-2", careerTitle: "Software Developer", skill: "JavaScript",
+    id: "sd-2", careerTitle: "Software Developer", skill: "JavaScript", type: "mcq",
     text: "Which keyword declares a block-scoped variable in JavaScript?",
     options: [
       { label: "var", isCorrect: false },
@@ -130,7 +249,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "sd-3", careerTitle: "Software Developer", skill: "Data Structures",
+    id: "sd-3", careerTitle: "Software Developer", skill: "Data Structures", type: "mcq",
     text: "Which data structure operates on a Last-In, First-Out (LIFO) principle?",
     options: [
       { label: "Queue", isCorrect: false },
@@ -140,7 +259,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "sd-4", careerTitle: "Software Developer", skill: "Data Structures",
+    id: "sd-4", careerTitle: "Software Developer", skill: "Data Structures", type: "mcq",
     text: "What is the time complexity of searching in a balanced binary search tree?",
     options: [
       { label: "O(n)", isCorrect: false },
@@ -149,18 +268,33 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       { label: "O(n²)", isCorrect: false },
     ],
   },
+  // Software Developer - Fill in the Blank
   {
-    id: "sd-5", careerTitle: "Software Developer", skill: "Version Control",
-    text: "Which Git command creates a new branch?",
+    id: "sd-5", careerTitle: "Software Developer", skill: "Coding", type: "fill-blank",
+    text: "Complete the function that reverses a string:",
+    codeSnippet: `function reverseString(str) {\n  return str.split('').______().join('');\n}`,
+    blankAnswer: "reverse",
     options: [
-      { label: "git branch new-branch", isCorrect: true },
-      { label: "git new new-branch", isCorrect: false },
-      { label: "git create new-branch", isCorrect: false },
-      { label: "git fork new-branch", isCorrect: false },
+      { label: "reverse", isCorrect: true },
+      { label: "sort", isCorrect: false },
+      { label: "flip", isCorrect: false },
+      { label: "invert", isCorrect: false },
     ],
   },
   {
-    id: "sd-6", careerTitle: "Software Developer", skill: "Debugging",
+    id: "sd-6", careerTitle: "Software Developer", skill: "Coding", type: "fill-blank",
+    text: "Complete the loop that sums all elements in an array:",
+    codeSnippet: `let total = 0;\nfor (let i = 0; i < arr.______; i++) {\n  total += arr[i];\n}`,
+    blankAnswer: "length",
+    options: [
+      { label: "length", isCorrect: true },
+      { label: "size", isCorrect: false },
+      { label: "count", isCorrect: false },
+      { label: "max", isCorrect: false },
+    ],
+  },
+  {
+    id: "sd-7", careerTitle: "Software Developer", skill: "Debugging", type: "mcq",
     text: "What does a '404' HTTP status code mean?",
     options: [
       { label: "Server Error", isCorrect: false },
@@ -169,10 +303,20 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       { label: "Bad Request", isCorrect: false },
     ],
   },
+  {
+    id: "sd-8", careerTitle: "Software Developer", skill: "Version Control", type: "mcq",
+    text: "Which Git command creates a new branch?",
+    options: [
+      { label: "git branch new-branch", isCorrect: true },
+      { label: "git new new-branch", isCorrect: false },
+      { label: "git create new-branch", isCorrect: false },
+      { label: "git fork new-branch", isCorrect: false },
+    ],
+  },
 
   // Data Analyst
   {
-    id: "da-1", careerTitle: "Data Analyst", skill: "Spreadsheets",
+    id: "da-1", careerTitle: "Data Analyst", skill: "Spreadsheets", type: "mcq",
     text: "In Excel, which function counts cells that meet a condition?",
     options: [
       { label: "COUNT", isCorrect: false },
@@ -182,7 +326,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "da-2", careerTitle: "Data Analyst", skill: "Spreadsheets",
+    id: "da-2", careerTitle: "Data Analyst", skill: "Spreadsheets", type: "mcq",
     text: "What does a pivot table do?",
     options: [
       { label: "Formats cells automatically", isCorrect: false },
@@ -192,7 +336,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "da-3", careerTitle: "Data Analyst", skill: "SQL",
+    id: "da-3", careerTitle: "Data Analyst", skill: "SQL", type: "mcq",
     text: "Which SQL clause filters rows after grouping?",
     options: [
       { label: "WHERE", isCorrect: false },
@@ -202,17 +346,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "da-4", careerTitle: "Data Analyst", skill: "SQL",
-    text: "What does SELECT DISTINCT do?",
+    id: "da-4", careerTitle: "Data Analyst", skill: "SQL", type: "fill-blank",
+    text: "Complete the SQL query to get unique department names:",
+    codeSnippet: `SELECT ______ department\nFROM employees;`,
+    blankAnswer: "DISTINCT",
     options: [
-      { label: "Selects the first row only", isCorrect: false },
-      { label: "Removes duplicate rows from results", isCorrect: true },
-      { label: "Orders results alphabetically", isCorrect: false },
-      { label: "Joins two tables", isCorrect: false },
+      { label: "DISTINCT", isCorrect: true },
+      { label: "UNIQUE", isCorrect: false },
+      { label: "DIFFERENT", isCorrect: false },
+      { label: "SINGLE", isCorrect: false },
     ],
   },
   {
-    id: "da-5", careerTitle: "Data Analyst", skill: "Statistics",
+    id: "da-5", careerTitle: "Data Analyst", skill: "Statistics", type: "mcq",
     text: "What is the median of: 3, 7, 9, 15, 21?",
     options: [
       { label: "7", isCorrect: false },
@@ -222,7 +368,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "da-6", careerTitle: "Data Analyst", skill: "Data Visualization",
+    id: "da-6", careerTitle: "Data Analyst", skill: "Data Visualization", type: "mcq",
     text: "Which chart type is best for showing proportions of a whole?",
     options: [
       { label: "Line chart", isCorrect: false },
@@ -234,7 +380,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // Cybersecurity Analyst
   {
-    id: "cs-1", careerTitle: "Cybersecurity Analyst", skill: "Network Protocols",
+    id: "cs-1", careerTitle: "Cybersecurity Analyst", skill: "Network Protocols", type: "mcq",
     text: "Which protocol provides secure, encrypted web browsing?",
     options: [
       { label: "HTTP", isCorrect: false },
@@ -244,7 +390,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "cs-2", careerTitle: "Cybersecurity Analyst", skill: "Network Protocols",
+    id: "cs-2", careerTitle: "Cybersecurity Analyst", skill: "Network Protocols", type: "mcq",
     text: "What does DNS stand for?",
     options: [
       { label: "Data Network System", isCorrect: false },
@@ -254,7 +400,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "cs-3", careerTitle: "Cybersecurity Analyst", skill: "Threat Analysis",
+    id: "cs-3", careerTitle: "Cybersecurity Analyst", skill: "Threat Analysis", type: "mcq",
     text: "What type of attack tricks users into revealing sensitive information via fake emails?",
     options: [
       { label: "DDoS", isCorrect: false },
@@ -264,7 +410,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "cs-4", careerTitle: "Cybersecurity Analyst", skill: "Threat Analysis",
+    id: "cs-4", careerTitle: "Cybersecurity Analyst", skill: "Threat Analysis", type: "mcq",
     text: "What is ransomware?",
     options: [
       { label: "Software that speeds up your computer", isCorrect: false },
@@ -274,7 +420,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "cs-5", careerTitle: "Cybersecurity Analyst", skill: "Security Tools",
+    id: "cs-5", careerTitle: "Cybersecurity Analyst", skill: "Security Tools", type: "mcq",
     text: "What is the primary purpose of a firewall?",
     options: [
       { label: "Speed up internet", isCorrect: false },
@@ -284,7 +430,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "cs-6", careerTitle: "Cybersecurity Analyst", skill: "Risk Assessment",
+    id: "cs-6", careerTitle: "Cybersecurity Analyst", skill: "Risk Assessment", type: "mcq",
     text: "In risk management, what does 'vulnerability' mean?",
     options: [
       { label: "A type of malware", isCorrect: false },
@@ -296,7 +442,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // Accountant
   {
-    id: "ac-1", careerTitle: "Accountant", skill: "Bookkeeping",
+    id: "ac-1", careerTitle: "Accountant", skill: "Bookkeeping", type: "mcq",
     text: "In double-entry bookkeeping, every transaction affects at least how many accounts?",
     options: [
       { label: "1", isCorrect: false },
@@ -306,7 +452,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "ac-2", careerTitle: "Accountant", skill: "Bookkeeping",
+    id: "ac-2", careerTitle: "Accountant", skill: "Bookkeeping", type: "mcq",
     text: "Which journal entry records a cash sale?",
     options: [
       { label: "Debit Sales, Credit Cash", isCorrect: false },
@@ -316,7 +462,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "ac-3", careerTitle: "Accountant", skill: "Financial Statements",
+    id: "ac-3", careerTitle: "Accountant", skill: "Financial Statements", type: "mcq",
     text: "If expenses increase and revenue stays the same, net income will:",
     options: [
       { label: "Increase", isCorrect: false },
@@ -326,7 +472,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "ac-4", careerTitle: "Accountant", skill: "Financial Statements",
+    id: "ac-4", careerTitle: "Accountant", skill: "Financial Statements", type: "mcq",
     text: "Which financial statement shows a company's assets, liabilities, and equity?",
     options: [
       { label: "Income Statement", isCorrect: false },
@@ -336,7 +482,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "ac-5", careerTitle: "Accountant", skill: "Tax Knowledge",
+    id: "ac-5", careerTitle: "Accountant", skill: "Tax Knowledge", type: "mcq",
     text: "What is a tax deduction?",
     options: [
       { label: "Money added to your tax bill", isCorrect: false },
@@ -346,19 +492,26 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: "ac-6", careerTitle: "Accountant", skill: "Accounting Software",
-    text: "Which of the following is a popular accounting software?",
+    id: "ac-6", careerTitle: "Accountant", skill: "Accounting Software", type: "fill-blank",
+    text: "Complete the Excel formula to sum cells A1 through A10:",
+    codeSnippet: `=______(A1:A10)`,
+    blankAnswer: "SUM",
     options: [
-      { label: "Photoshop", isCorrect: false },
-      { label: "QuickBooks", isCorrect: true },
-      { label: "AutoCAD", isCorrect: false },
-      { label: "Blender", isCorrect: false },
+      { label: "SUM", isCorrect: true },
+      { label: "ADD", isCorrect: false },
+      { label: "TOTAL", isCorrect: false },
+      { label: "PLUS", isCorrect: false },
     ],
   },
 ];
 
 export function getQuizQuestionsForCareers(careerTitles: string[]): QuizQuestion[] {
   return QUIZ_QUESTIONS.filter((q) => careerTitles.includes(q.careerTitle));
+}
+
+export function getQuizQuestionsForDomain(domain: "Tech" | "Accounting"): QuizQuestion[] {
+  const domainCareers = CAREERS.filter((c) => c.domain === domain).map((c) => c.title);
+  return QUIZ_QUESTIONS.filter((q) => domainCareers.includes(q.careerTitle));
 }
 
 // ===== SCORING ENGINE =====
@@ -386,11 +539,10 @@ export interface DomainScore {
   careers: CareerMatch[];
 }
 
-// Stage 1 results
 export function calculateStage1Results(answers: Record<number, number>): {
   domains: DomainScore[];
   topDomain: string;
-  topCareers: CareerMatch[]; // top 1-2 careers for Stage 2
+  topCareers: CareerMatch[];
 } {
   const skillScores: Record<string, { score: number; maxScore: number }> = {};
   ALL_SKILLS.forEach((s) => (skillScores[s] = { score: 0, maxScore: 0 }));
@@ -440,7 +592,6 @@ export function calculateStage1Results(answers: Record<number, number>): {
 
   domains.sort((a, b) => b.percentage - a.percentage);
 
-  // Pick top 1-2 careers (top career + any within 10% of it)
   const allCareers = [...careerMatches].sort((a, b) => b.percentage - a.percentage);
   const topPercentage = allCareers[0].percentage;
   const topCareers = allCareers.filter((c) => c.percentage >= topPercentage - 10);
@@ -460,18 +611,17 @@ export interface SkillResult {
 export interface CareerQuizResult {
   careerTitle: string;
   skillResults: SkillResult[];
-  overallScore: number; // percentage
+  overallScore: number;
   weakSkills: SkillResult[];
 }
 
 export function calculateStage2Results(
-  quizAnswers: Record<string, string>, // questionId → selected answer label
+  quizAnswers: Record<string, string>,
   careerTitles: string[]
 ): CareerQuizResult[] {
   return careerTitles.map((title) => {
     const questions = QUIZ_QUESTIONS.filter((q) => q.careerTitle === title);
 
-    // Group by skill
     const skillMap: Record<string, { correct: number; total: number }> = {};
     questions.forEach((q) => {
       if (!skillMap[q.skill]) skillMap[q.skill] = { correct: 0, total: 0 };
@@ -487,15 +637,23 @@ export function calculateStage2Results(
       skill,
       correct: data.correct,
       total: data.total,
-      percentage: Math.round((data.correct / data.total) * 100),
+      percentage: data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0,
     }));
 
     const totalCorrect = skillResults.reduce((s, r) => s + r.correct, 0);
-    const totalQuestions = skillResults.reduce((s, r) => s + r.total, 0);
-    const overallScore = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const totalQ = skillResults.reduce((s, r) => s + r.total, 0);
+    const overallScore = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0;
 
     const weakSkills = skillResults.filter((r) => r.percentage < 100);
 
     return { careerTitle: title, skillResults, overallScore, weakSkills };
   });
+}
+
+export function calculateDomainQuizResults(
+  quizAnswers: Record<string, string>,
+  domain: "Tech" | "Accounting"
+): CareerQuizResult[] {
+  const domainCareers = CAREERS.filter((c) => c.domain === domain).map((c) => c.title);
+  return calculateStage2Results(quizAnswers, domainCareers);
 }
