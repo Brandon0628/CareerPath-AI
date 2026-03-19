@@ -449,45 +449,53 @@ export function calculateStage1Results(answers: Record<number, number>): {
 }
 
 // Stage 2 results
-export interface SkillGapItem {
+
+export interface SkillResult {
   skill: string;
-  currentLevel: number;
-  requiredLevel: number;
-  gap: number;
+  correct: number;
+  total: number;
+  percentage: number;
 }
 
-export interface CareerSkillAssessment {
+export interface CareerQuizResult {
   careerTitle: string;
-  skills: {
-    skill: string;
-    rating: number;
-    requiredLevel: number;
-    gap: number;
-  }[];
-  overallReadiness: number; // percentage
-  gaps: SkillGapItem[];
+  skillResults: SkillResult[];
+  overallScore: number; // percentage
+  weakSkills: SkillResult[];
 }
 
 export function calculateStage2Results(
-  skillAnswers: Record<string, number>,
+  quizAnswers: Record<string, string>, // questionId → selected answer label
   careerTitles: string[]
-): CareerSkillAssessment[] {
+): CareerQuizResult[] {
   return careerTitles.map((title) => {
-    const questions = SKILL_QUESTIONS.filter((q) => q.careerTitle === title);
-    const skills = questions.map((q) => {
-      const rating = skillAnswers[q.id] ?? 0;
-      const gap = Math.max(0, q.requiredLevel - rating);
-      return { skill: q.skill, rating, requiredLevel: q.requiredLevel, gap };
+    const questions = QUIZ_QUESTIONS.filter((q) => q.careerTitle === title);
+
+    // Group by skill
+    const skillMap: Record<string, { correct: number; total: number }> = {};
+    questions.forEach((q) => {
+      if (!skillMap[q.skill]) skillMap[q.skill] = { correct: 0, total: 0 };
+      skillMap[q.skill].total++;
+      const selected = quizAnswers[q.id];
+      const correctOption = q.options.find((o) => o.isCorrect);
+      if (selected && correctOption && selected === correctOption.label) {
+        skillMap[q.skill].correct++;
+      }
     });
 
-    const totalRating = skills.reduce((s, sk) => s + sk.rating, 0);
-    const totalRequired = skills.reduce((s, sk) => s + sk.requiredLevel, 0);
-    const overallReadiness = totalRequired > 0 ? Math.round((totalRating / totalRequired) * 100) : 0;
+    const skillResults: SkillResult[] = Object.entries(skillMap).map(([skill, data]) => ({
+      skill,
+      correct: data.correct,
+      total: data.total,
+      percentage: Math.round((data.correct / data.total) * 100),
+    }));
 
-    const gaps = skills
-      .filter((s) => s.gap > 0)
-      .map((s) => ({ skill: s.skill, currentLevel: s.rating, requiredLevel: s.requiredLevel, gap: s.gap }));
+    const totalCorrect = skillResults.reduce((s, r) => s + r.correct, 0);
+    const totalQuestions = skillResults.reduce((s, r) => s + r.total, 0);
+    const overallScore = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
 
-    return { careerTitle: title, skills, overallReadiness, gaps };
+    const weakSkills = skillResults.filter((r) => r.percentage < 100);
+
+    return { careerTitle: title, skillResults, overallScore, weakSkills };
   });
 }
