@@ -7,6 +7,7 @@ import Home from "./pages/Home.tsx";
 import Index from "./pages/Index.tsx";
 import TestSkills from "./pages/TestSkills.tsx";
 import Roadmap from "./pages/Roadmap.tsx";
+import FindCareers from "./pages/FindCareers.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
