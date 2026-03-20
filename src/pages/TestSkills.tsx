@@ -52,7 +52,7 @@ Include exactly 4 options per question with exactly 1 correct answer.`;
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${(window as Record<string, unknown>).__OPENAI_API_KEY || ""}`,
+          Authorization: `Bearer ${(window as unknown as Record<string, unknown>).__OPENAI_API_KEY || ""}`,
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
