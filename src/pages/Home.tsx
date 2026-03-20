@@ -91,8 +91,28 @@ const Home = () => {
           </Link>
         </div>
 
+        {/* Find Careers by Skills */}
+        <Link to="/find-careers" className="group mt-6 block">
+          <div className="rounded-2xl border-2 border-accent/20 bg-card p-6 shadow-sm transition-all hover:border-accent/50 hover:shadow-lg">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/10">
+                <Search className="h-6 w-6 text-accent" />
+              </div>
+              <div className="flex-1">
+                <h2 className="font-display text-lg font-bold text-card-foreground">
+                  Find Careers by Skills
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Select the skills you already have and discover matching career paths instantly.
+                </p>
+              </div>
+              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+            </div>
+          </div>
+        </Link>
+
         {/* Career paths preview */}
-        <div className="mt-12 text-center">
+        <div className="mt-6 text-center">
           <Link to="/roadmap">
             <Button variant="outline" className="gap-2">
               <Map className="h-4 w-4" />
