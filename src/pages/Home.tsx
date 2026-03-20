@@ -1,4 +1,4 @@
-import { Compass, Brain, Map, ArrowRight } from "lucide-react";
+import { Compass, Brain, Map, ArrowRight, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
