@@ -30,23 +30,44 @@ const TestSkills = () => {
     ? [...new Set(questions.map((q) => q.careerTitle))]
     : [];
 
+  // Track previously generated question texts to ensure uniqueness across regenerations
+  const [pastQuestionTexts, setPastQuestionTexts] = useState<Set<string>>(new Set());
+
   const fetchAIQuestions = useCallback(async (domain: "Tech" | "Accounting") => {
     setIsLoadingAI(true);
     try {
       const domainCareers = CAREERS.filter((c) => c.domain === domain).map((c) => c.title);
-      const prompt = `Generate ${domainCareers.length * 6} multiple-choice quiz questions for these careers: ${domainCareers.join(", ")}. 
-Each question should test knowledge relevant to that career.
-Return valid JSON array where each element has:
+      const avoidList = [...pastQuestionTexts].slice(-30).map((t, i) => `${i + 1}. ${t}`).join("\n");
+      const avoidBlock = avoidList
+        ? `\n\nDo NOT repeat or rephrase any of these previously asked questions:\n${avoidList}`
+        : "";
+
+      const prompt = `Generate exactly 5 unique fill-in-the-blank quiz questions for the "${domain}" domain covering these careers: ${domainCareers.join(", ")}.
+
+Each question must test practical knowledge with a code snippet or formula containing a blank (______) the user must fill in.
+
+Return ONLY a valid JSON array. Each element must have exactly these fields:
 {
-  "id": "unique-string",
-  "careerTitle": "exact career title",
-  "text": "question text",
-  "skill": "skill area being tested",
-  "options": [{"label": "option text", "isCorrect": true/false}],
-  "type": "mcq",
-  "scoringNote": "brief note"
+  "id": "unique-string-id",
+  "careerTitle": "one of: ${domainCareers.join(", ")}",
+  "text": "question text describing what to complete",
+  "skill": "single skill being tested",
+  "type": "fill-blank",
+  "codeSnippet": "code or formula with ______ as the blank",
+  "blankAnswer": "the correct answer that fills the blank",
+  "options": [
+    {"label": "correct answer", "isCorrect": true},
+    {"label": "wrong1", "isCorrect": false},
+    {"label": "wrong2", "isCorrect": false},
+    {"label": "wrong3", "isCorrect": false}
+  ],
+  "scoringNote": "brief explanation of why the correct answer is right"
 }
-Include exactly 4 options per question with exactly 1 correct answer.`;
+
+Rules:
+- Exactly 5 questions, exactly 4 options each, exactly 1 correct.
+- Each question must be completely unique and creative.
+- Spread questions across different careers and skills.${avoidBlock}`;
 
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
@@ -57,7 +78,7 @@ Include exactly 4 options per question with exactly 1 correct answer.`;
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
           messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
+          temperature: 0.9,
         }),
       });
 
@@ -68,8 +89,33 @@ Include exactly 4 options per question with exactly 1 correct answer.`;
       const jsonMatch = content.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("No JSON found in response");
 
-      const parsed: QuizQuestion[] = JSON.parse(jsonMatch[0]);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      const raw = JSON.parse(jsonMatch[0]) as Array<Record<string, unknown>>;
+
+      // Safely parse into QuizQuestion[]
+      const parsed: QuizQuestion[] = raw
+        .filter((q) => q.id && q.text && Array.isArray(q.options) && (q.options as unknown[]).length === 4)
+        .map((q) => ({
+          id: String(q.id),
+          careerTitle: String(q.careerTitle || domainCareers[0]),
+          text: String(q.text),
+          skill: String(q.skill || "General"),
+          type: (q.type === "fill-blank" ? "fill-blank" : "mcq") as "mcq" | "fill-blank",
+          codeSnippet: q.codeSnippet ? String(q.codeSnippet) : undefined,
+          blankAnswer: q.blankAnswer ? String(q.blankAnswer) : undefined,
+          scoringNote: String(q.scoringNote || ""),
+          options: (q.options as Array<Record<string, unknown>>).map((o) => ({
+            label: String(o.label),
+            isCorrect: Boolean(o.isCorrect),
+          })),
+        }));
+
+      if (parsed.length > 0) {
+        // Track these questions to avoid repeats on next regeneration
+        setPastQuestionTexts((prev) => {
+          const next = new Set(prev);
+          parsed.forEach((q) => next.add(q.text));
+          return next;
+        });
         setAiQuestions(parsed);
         setAnswers({});
       }
@@ -79,7 +125,7 @@ Include exactly 4 options per question with exactly 1 correct answer.`;
     } finally {
       setIsLoadingAI(false);
     }
-  }, []);
+  }, [pastQuestionTexts]);
 
   const handleSelectDomain = (domain: "Tech" | "Accounting") => {
     setSelectedDomain(domain);
