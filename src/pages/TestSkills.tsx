@@ -29,7 +29,7 @@ const TestSkills = () => {
     : [];
 
   const generateQuestions = useCallback((domain: "Tech" | "Accounting") => {
-    const newQuestions = generateMockQuestions(domain, 5, pastQuestionTexts);
+    const newQuestions = generateMockQuestions(domain, 15, pastQuestionTexts);
     setPastQuestionTexts((prev) => {
       const next = new Set(prev);
       newQuestions.forEach((q) => next.add(q.text));
