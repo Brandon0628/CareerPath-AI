@@ -97,14 +97,13 @@ const TestSkills = () => {
     setSelectedDomain(null);
     setAnswers({});
     setResults(null);
-    setAiQuestions([]);
+    setGeneratedQuestions([]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRegenerate = () => {
     if (!selectedDomain) return;
-    setAnswers({});
-    fetchAIQuestions(selectedDomain);
+    generateQuestions(selectedDomain);
   };
 
   return (
