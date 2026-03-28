@@ -18,112 +18,25 @@ const TestSkills = () => {
   const [selectedDomain, setSelectedDomain] = useState<"Tech" | "Accounting" | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [results, setResults] = useState<CareerQuizResult[] | null>(null);
-  const [aiQuestions, setAiQuestions] = useState<QuizQuestion[]>([]);
-  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>([]);
+  const [pastQuestionTexts, setPastQuestionTexts] = useState<Set<string>>(new Set());
 
-  // Use AI questions if available, otherwise fall back to hardcoded
   const fallbackQuestions = selectedDomain ? getQuizQuestionsForDomain(selectedDomain) : [];
-  const questions = aiQuestions.length > 0 ? aiQuestions : fallbackQuestions;
+  const questions = generatedQuestions.length > 0 ? generatedQuestions : fallbackQuestions;
 
   const topCareers = selectedDomain
     ? [...new Set(questions.map((q) => q.careerTitle))]
     : [];
 
-  // Track previously generated question texts to ensure uniqueness across regenerations
-  const [pastQuestionTexts, setPastQuestionTexts] = useState<Set<string>>(new Set());
-
-  const fetchAIQuestions = useCallback(async (domain: "Tech" | "Accounting") => {
-    setIsLoadingAI(true);
-    try {
-      const domainCareers = CAREERS.filter((c) => c.domain === domain).map((c) => c.title);
-      const avoidList = [...pastQuestionTexts].slice(-30).map((t, i) => `${i + 1}. ${t}`).join("\n");
-      const avoidBlock = avoidList
-        ? `\n\nDo NOT repeat or rephrase any of these previously asked questions:\n${avoidList}`
-        : "";
-
-      const prompt = `Generate exactly 5 unique fill-in-the-blank quiz questions for the "${domain}" domain covering these careers: ${domainCareers.join(", ")}.
-
-Each question must test practical knowledge with a code snippet or formula containing a blank (______) the user must fill in.
-
-Return ONLY a valid JSON array. Each element must have exactly these fields:
-{
-  "id": "unique-string-id",
-  "careerTitle": "one of: ${domainCareers.join(", ")}",
-  "text": "question text describing what to complete",
-  "skill": "single skill being tested",
-  "type": "fill-blank",
-  "codeSnippet": "code or formula with ______ as the blank",
-  "blankAnswer": "the correct answer that fills the blank",
-  "options": [
-    {"label": "correct answer", "isCorrect": true},
-    {"label": "wrong1", "isCorrect": false},
-    {"label": "wrong2", "isCorrect": false},
-    {"label": "wrong3", "isCorrect": false}
-  ],
-  "scoringNote": "brief explanation of why the correct answer is right"
-}
-
-Rules:
-- Exactly 5 questions, exactly 4 options each, exactly 1 correct.
-- Each question must be completely unique and creative.
-- Spread questions across different careers and skills.${avoidBlock}`;
-
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${(window as unknown as Record<string, unknown>).__OPENAI_API_KEY || ""}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.9,
-        }),
-      });
-
-      if (!response.ok) throw new Error("API request failed");
-
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content ?? "";
-      const jsonMatch = content.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) throw new Error("No JSON found in response");
-
-      const raw = JSON.parse(jsonMatch[0]) as Array<Record<string, unknown>>;
-
-      // Safely parse into QuizQuestion[]
-      const parsed: QuizQuestion[] = raw
-        .filter((q) => q.id && q.text && Array.isArray(q.options) && (q.options as unknown[]).length === 4)
-        .map((q) => ({
-          id: String(q.id),
-          careerTitle: String(q.careerTitle || domainCareers[0]),
-          text: String(q.text),
-          skill: String(q.skill || "General"),
-          type: (q.type === "fill-blank" ? "fill-blank" : "mcq") as "mcq" | "fill-blank",
-          codeSnippet: q.codeSnippet ? String(q.codeSnippet) : undefined,
-          blankAnswer: q.blankAnswer ? String(q.blankAnswer) : undefined,
-          scoringNote: String(q.scoringNote || ""),
-          options: (q.options as Array<Record<string, unknown>>).map((o) => ({
-            label: String(o.label),
-            isCorrect: Boolean(o.isCorrect),
-          })),
-        }));
-
-      if (parsed.length > 0) {
-        // Track these questions to avoid repeats on next regeneration
-        setPastQuestionTexts((prev) => {
-          const next = new Set(prev);
-          parsed.forEach((q) => next.add(q.text));
-          return next;
-        });
-        setAiQuestions(parsed);
-        setAnswers({});
-      }
-    } catch (err) {
-      console.warn("AI question generation failed, using fallback questions:", err);
-      setAiQuestions([]);
-    } finally {
-      setIsLoadingAI(false);
-    }
+  const generateQuestions = useCallback((domain: "Tech" | "Accounting") => {
+    const newQuestions = generateMockQuestions(domain, 5, pastQuestionTexts);
+    setPastQuestionTexts((prev) => {
+      const next = new Set(prev);
+      newQuestions.forEach((q) => next.add(q.text));
+      return next;
+    });
+    setGeneratedQuestions(newQuestions);
+    setAnswers({});
   }, [pastQuestionTexts]);
 
   const handleSelectDomain = (domain: "Tech" | "Accounting") => {
