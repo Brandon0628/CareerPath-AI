@@ -2,15 +2,14 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   getQuizQuestionsForDomain,
-  calculateDomainQuizResults,
   type CareerQuizResult,
   type QuizQuestion,
-  CAREERS,
 } from "@/lib/scoring";
+import { generateMockQuestions } from "@/lib/questionGenerator";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Code, Calculator, RotateCcw, RefreshCw, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Code, Calculator, RotateCcw, RefreshCw } from "lucide-react";
 
 type Stage = "select" | "quiz" | "results";
 
