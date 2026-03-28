@@ -43,7 +43,7 @@ const TestSkills = () => {
     setSelectedDomain(domain);
     setAnswers({});
     setResults(null);
-    setAiQuestions([]);
+    setGeneratedQuestions([]);
     setStage("quiz");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
