@@ -196,8 +196,7 @@ const TestSkills = () => {
               onAnswer={handleAnswer}
               onSubmit={handleSubmit}
               topCareers={topCareers}
-              />
-            )}
+            />
           </div>
         )}
 
