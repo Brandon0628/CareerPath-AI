@@ -184,29 +184,18 @@ const TestSkills = () => {
                 size="sm"
                 className="gap-2"
                 onClick={handleRegenerate}
-                disabled={isLoadingAI}
               >
-                {isLoadingAI ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <RefreshCw className="h-3 w-3" />
-                )}
-                {isLoadingAI ? "Generating…" : "Regenerate Questions"}
+                <RefreshCw className="h-3 w-3" />
+                Regenerate Questions
               </Button>
             </div>
 
-            {isLoadingAI ? (
-              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm font-medium">Generating AI questions…</p>
-              </div>
-            ) : (
-              <SkillAssessment
-                questions={questions}
-                answers={answers}
-                onAnswer={handleAnswer}
-                onSubmit={handleSubmit}
-                topCareers={topCareers}
+            <SkillAssessment
+              questions={questions}
+              answers={answers}
+              onAnswer={handleAnswer}
+              onSubmit={handleSubmit}
+              topCareers={topCareers}
               />
             )}
           </div>
