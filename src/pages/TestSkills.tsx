@@ -6,6 +6,8 @@ import {
   type QuizQuestion,
 } from "@/lib/scoring";
 import { generateMockQuestions } from "@/lib/questionGenerator";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,7 @@ const TestSkills = () => {
   const [results, setResults] = useState<CareerQuizResult[] | null>(null);
   const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>([]);
   const [pastQuestionTexts, setPastQuestionTexts] = useState<Set<string>>(new Set());
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const fallbackQuestions = selectedDomain ? getQuizQuestionsForDomain(selectedDomain) : [];
   const questions = generatedQuestions.length > 0 ? generatedQuestions : fallbackQuestions;
@@ -28,24 +31,61 @@ const TestSkills = () => {
     ? [...new Set(questions.map((q) => q.careerTitle))]
     : [];
 
-  const generateQuestions = useCallback((domain: "Tech" | "Accounting") => {
-    const newQuestions = generateMockQuestions(domain, 15, pastQuestionTexts);
-    setPastQuestionTexts((prev) => {
-      const next = new Set(prev);
-      newQuestions.forEach((q) => next.add(q.text));
-      return next;
-    });
-    setGeneratedQuestions(newQuestions);
-    setAnswers({});
-  }, [pastQuestionTexts]);
+  const generateQuestions = useCallback(
+    async (domain: "Tech" | "Accounting") => {
+      setIsGenerating(true);
+      let newQuestions: QuizQuestion[] = [];
+      let usedFallback = false;
 
-  const handleSelectDomain = (domain: "Tech" | "Accounting") => {
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-questions", {
+          body: {
+            domain,
+            count: 20,
+            pastQuestions: Array.from(pastQuestionTexts),
+          },
+        });
+
+        if (error) throw error;
+
+        const aiQs = (data as { questions?: QuizQuestion[] })?.questions;
+        if (!Array.isArray(aiQs) || aiQs.length === 0) {
+          throw new Error("AI returned no questions");
+        }
+        newQuestions = aiQs;
+      } catch (err) {
+        console.error("AI generation failed, falling back to local generator", err);
+        usedFallback = true;
+        newQuestions = generateMockQuestions(domain, 20, pastQuestionTexts);
+      }
+
+      setPastQuestionTexts((prev) => {
+        const next = new Set(prev);
+        newQuestions.forEach((q) => next.add(q.text));
+        return next;
+      });
+      setGeneratedQuestions(newQuestions);
+      setAnswers({});
+      setIsGenerating(false);
+
+      toast({
+        title: usedFallback ? "Using offline questions" : "Fresh AI questions ready",
+        description: usedFallback
+          ? "Couldn't reach the AI service — generated locally instead."
+          : `${newQuestions.length} new AI-generated questions loaded.`,
+      });
+    },
+    [pastQuestionTexts],
+  );
+
+  const handleSelectDomain = async (domain: "Tech" | "Accounting") => {
     setSelectedDomain(domain);
     setAnswers({});
     setResults(null);
     setGeneratedQuestions([]);
     setStage("quiz");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    await generateQuestions(domain);
   };
 
   const handleAnswer = (id: string, value: string) => {
@@ -101,9 +141,9 @@ const TestSkills = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleRegenerate = () => {
+  const handleRegenerate = async () => {
     if (!selectedDomain) return;
-    generateQuestions(selectedDomain);
+    await generateQuestions(selectedDomain);
   };
 
   return (
@@ -184,19 +224,32 @@ const TestSkills = () => {
                 size="sm"
                 className="gap-2"
                 onClick={handleRegenerate}
+                disabled={isGenerating}
               >
-                <RefreshCw className="h-3 w-3" />
-                Regenerate Questions
+                <RefreshCw className={`h-3 w-3 ${isGenerating ? "animate-spin" : ""}`} />
+                {isGenerating ? "Generating…" : "Regenerate Questions"}
               </Button>
             </div>
 
-            <SkillAssessment
-              questions={questions}
-              answers={answers}
-              onAnswer={handleAnswer}
-              onSubmit={handleSubmit}
-              topCareers={topCareers}
-            />
+            {isGenerating && questions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-12 text-center">
+                <RefreshCw className="mb-3 h-6 w-6 animate-spin text-primary" />
+                <p className="text-sm font-medium text-card-foreground">
+                  Generating fresh AI questions…
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  This usually takes a few seconds.
+                </p>
+              </div>
+            ) : (
+              <SkillAssessment
+                questions={questions}
+                answers={answers}
+                onAnswer={handleAnswer}
+                onSubmit={handleSubmit}
+                topCareers={topCareers}
+              />
+            )}
           </div>
         )}
 
