@@ -5,7 +5,7 @@ const corsHeaders = {
 };
 
 interface RequestBody {
-  domain: "Tech" | "Accounting";
+  domain: "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business";
   count?: number;
   pastQuestions?: string[];
 }
@@ -13,6 +13,9 @@ interface RequestBody {
 const CAREERS_BY_DOMAIN: Record<string, string[]> = {
   Tech: ["Software Developer", "Data Analyst", "Cybersecurity Analyst"],
   Accounting: ["Accountant"],
+  Healthcare: ["Nurse", "Medical Lab Technologist", "Psychologist"],
+  Creative: ["UI/UX Designer", "Graphic Designer", "Content Creator"],
+  Business: ["Digital Marketer", "Business Analyst", "Entrepreneur"],
 };
 
 const SKILLS_BY_CAREER: Record<string, string[]> = {
@@ -20,6 +23,15 @@ const SKILLS_BY_CAREER: Record<string, string[]> = {
   "Data Analyst": ["Excel", "SQL", "Problem-solving"],
   "Cybersecurity Analyst": ["Networking", "Risk Analysis", "Problem-solving"],
   Accountant: ["Numbers", "Analytical Thinking", "Attention to Detail"],
+  Nurse: ["Patient Care", "Medical Knowledge", "Critical Thinking", "Communication"],
+  "Medical Lab Technologist": ["Lab Techniques", "Analytical Thinking", "Attention to Detail", "Biology"],
+  Psychologist: ["Empathy", "Communication", "Research", "Critical Thinking"],
+  "UI/UX Designer": ["Design Thinking", "Figma", "User Research", "Prototyping"],
+  "Graphic Designer": ["Visual Design", "Typography", "Color Theory", "Adobe Tools"],
+  "Content Creator": ["Writing", "Social Media", "Storytelling", "SEO"],
+  "Digital Marketer": ["SEO", "Social Media", "Analytics", "Copywriting"],
+  "Business Analyst": ["Data Analysis", "Problem-solving", "Communication", "Excel"],
+  Entrepreneur: ["Leadership", "Risk-taking", "Financial Literacy", "Communication"],
 };
 
 Deno.serve(async (req) => {
@@ -41,9 +53,10 @@ Deno.serve(async (req) => {
     const count = Math.min(Math.max(body.count ?? 20, 1), 30);
     const pastQuestions = (body.pastQuestions ?? []).slice(-50);
 
-    if (domain !== "Tech" && domain !== "Accounting") {
+    const validDomains = ["Tech", "Accounting", "Healthcare", "Creative", "Business"];
+    if (!validDomains.includes(domain)) {
       return new Response(
-        JSON.stringify({ error: "Invalid domain. Must be 'Tech' or 'Accounting'." }),
+        JSON.stringify({ error: `Invalid domain. Must be one of: ${validDomains.join(", ")}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
