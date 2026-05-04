@@ -1,4 +1,4 @@
-import { Home, ClipboardCheck, Map, Brain, Search } from "lucide-react";
+import { Home, ClipboardCheck, Map, Brain, Search, Heart } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -19,6 +19,7 @@ const navItems = [
   { title: "Test Skills", url: "/test-skills", icon: ClipboardCheck },
   { title: "Find Careers", url: "/find-careers", icon: Search },
   { title: "Career Roadmap", url: "/roadmap", icon: Map },
+  { title: "Our Mission", url: "/mission", icon: Heart },
 ];
 
 export function AppSidebar() {
