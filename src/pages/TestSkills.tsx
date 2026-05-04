@@ -11,13 +11,22 @@ import { toast } from "@/hooks/use-toast";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Code, Calculator, RotateCcw, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Code, Calculator, Heart, Palette, TrendingUp, RotateCcw, RefreshCw } from "lucide-react";
 
+type Domain = "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business";
 type Stage = "select" | "quiz" | "results";
+
+const DOMAIN_CARDS: { domain: Domain; icon: React.ElementType; label: string; desc: string; colorClass: string }[] = [
+  { domain: "Tech", icon: Code, label: "Tech", desc: "Software Development, Data Analysis, Cybersecurity", colorClass: "border-primary/20 hover:border-primary/50 text-primary" },
+  { domain: "Accounting", icon: Calculator, label: "Accounting", desc: "Bookkeeping, Financial Statements, Tax, Accounting Software", colorClass: "border-secondary/20 hover:border-secondary/50 text-secondary" },
+  { domain: "Healthcare", icon: Heart, label: "Healthcare", desc: "Nursing, Medical Lab Technology, Psychology", colorClass: "border-red-400/20 hover:border-red-400/50 text-red-500" },
+  { domain: "Creative", icon: Palette, label: "Creative", desc: "UI/UX Design, Graphic Design, Content Creation", colorClass: "border-purple-400/20 hover:border-purple-400/50 text-purple-500" },
+  { domain: "Business", icon: TrendingUp, label: "Business", desc: "Digital Marketing, Business Analysis, Entrepreneurship", colorClass: "border-amber-400/20 hover:border-amber-400/50 text-amber-500" },
+];
 
 const TestSkills = () => {
   const [stage, setStage] = useState<Stage>("select");
-  const [selectedDomain, setSelectedDomain] = useState<"Tech" | "Accounting" | null>(null);
+  const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [results, setResults] = useState<CareerQuizResult[] | null>(null);
   const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>([]);
@@ -32,7 +41,7 @@ const TestSkills = () => {
     : [];
 
   const generateQuestions = useCallback(
-    async (domain: "Tech" | "Accounting") => {
+    async (domain: Domain) => {
       setIsGenerating(true);
       let newQuestions: QuizQuestion[] = [];
       let usedFallback = false;
@@ -78,7 +87,7 @@ const TestSkills = () => {
     [pastQuestionTexts],
   );
 
-  const handleSelectDomain = async (domain: "Tech" | "Accounting") => {
+  const handleSelectDomain = async (domain: Domain) => {
     setSelectedDomain(domain);
     setAnswers({});
     setResults(null);
@@ -169,39 +178,26 @@ const TestSkills = () => {
 
         {/* Domain Selection */}
         {stage === "select" && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <button
-              onClick={() => handleSelectDomain("Tech")}
-              className="group rounded-2xl border-2 border-primary/20 bg-card p-8 text-left shadow-sm transition-all hover:border-primary/50 hover:shadow-lg active:scale-[0.98]"
-            >
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Code className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">Tech Domain</h3>
-              <p className="mb-4 text-sm text-muted-foreground">
-                Test your knowledge in Software Development, Data Analysis, and Cybersecurity.
-                Includes coding fill-in-the-blank challenges.
-              </p>
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
-                Start Quiz <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-              </span>
-            </button>
-
-            <button
-              onClick={() => handleSelectDomain("Accounting")}
-              className="group rounded-2xl border-2 border-secondary/20 bg-card p-8 text-left shadow-sm transition-all hover:border-secondary/50 hover:shadow-lg active:scale-[0.98]"
-            >
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10">
-                <Calculator className="h-6 w-6 text-secondary" />
-              </div>
-              <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">Accounting Domain</h3>
-              <p className="mb-4 text-sm text-muted-foreground">
-                Test your knowledge in Bookkeeping, Financial Statements, Tax, and Accounting Software.
-              </p>
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-secondary">
-                Start Quiz <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-              </span>
-            </button>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {DOMAIN_CARDS.map((card) => {
+              const Icon = card.icon;
+              return (
+                <button
+                  key={card.domain}
+                  onClick={() => handleSelectDomain(card.domain)}
+                  className={`group rounded-2xl border-2 bg-card p-6 text-left shadow-sm transition-all hover:shadow-lg active:scale-[0.98] ${card.colorClass}`}
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">{card.label} Domain</h3>
+                  <p className="mb-4 text-sm text-muted-foreground">{card.desc}</p>
+                  <span className="inline-flex items-center gap-1 text-sm font-medium">
+                    Start Quiz <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </button>
+              );
+            })}
           </div>
         )}
 
