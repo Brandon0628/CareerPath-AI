@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 interface CareerResult {
   title: string;
-  domain: "Tech" | "Accounting";
+  domain: "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business";
   skills: string[];
   matchedSkills: string[];
   percentage: number;
@@ -103,11 +103,13 @@ const FindCareers = () => {
 
             {results.map((r) => {
               const domainColor =
-                r.domain === "Tech"
-                  ? "bg-[hsl(var(--tech-light))] text-[hsl(var(--tech))]"
-                  : "bg-[hsl(var(--accounting-light))] text-[hsl(var(--accounting))]";
+                r.domain === "Tech" ? "bg-[hsl(var(--tech-light))] text-[hsl(var(--tech))]"
+                  : r.domain === "Accounting" ? "bg-[hsl(var(--accounting-light))] text-[hsl(var(--accounting))]"
+                  : "bg-muted text-muted-foreground";
               const barColor =
-                r.domain === "Tech" ? "bg-[hsl(var(--tech))]" : "bg-[hsl(var(--accounting))]";
+                r.domain === "Tech" ? "bg-[hsl(var(--tech))]"
+                  : r.domain === "Accounting" ? "bg-[hsl(var(--accounting))]"
+                  : "bg-primary";
 
               return (
                 <div
