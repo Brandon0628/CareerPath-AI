@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import TestSkills from "./pages/TestSkills.tsx";
 import Roadmap from "./pages/Roadmap.tsx";
 import FindCareers from "./pages/FindCareers.tsx";
+import Mission from "./pages/Mission.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/test-skills" element={<TestSkills />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/find-careers" element={<FindCareers />} />
+            <Route path="/mission" element={<Mission />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
