@@ -2,7 +2,7 @@
 
 export interface Career {
   title: string;
-  domain: "Tech" | "Accounting";
+  domain: "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business";
   skills: string[];
 }
 
@@ -11,11 +11,30 @@ export const CAREERS: Career[] = [
   { title: "Data Analyst", domain: "Tech", skills: ["Excel", "SQL", "Problem-solving"] },
   { title: "Cybersecurity Analyst", domain: "Tech", skills: ["Networking", "Risk Analysis", "Problem-solving"] },
   { title: "Accountant", domain: "Accounting", skills: ["Numbers", "Analytical Thinking", "Attention to Detail"] },
+  // Healthcare
+  { title: "Nurse", domain: "Healthcare", skills: ["Patient Care", "Medical Knowledge", "Critical Thinking", "Communication"] },
+  { title: "Medical Lab Technologist", domain: "Healthcare", skills: ["Lab Techniques", "Analytical Thinking", "Attention to Detail", "Biology"] },
+  { title: "Psychologist", domain: "Healthcare", skills: ["Empathy", "Communication", "Research", "Critical Thinking"] },
+  // Creative
+  { title: "UI/UX Designer", domain: "Creative", skills: ["Design Thinking", "Figma", "User Research", "Prototyping"] },
+  { title: "Graphic Designer", domain: "Creative", skills: ["Visual Design", "Typography", "Color Theory", "Adobe Tools"] },
+  { title: "Content Creator", domain: "Creative", skills: ["Writing", "Social Media", "Storytelling", "SEO"] },
+  // Business
+  { title: "Digital Marketer", domain: "Business", skills: ["SEO", "Social Media", "Analytics", "Copywriting"] },
+  { title: "Business Analyst", domain: "Business", skills: ["Data Analysis", "Problem-solving", "Communication", "Excel"] },
+  { title: "Entrepreneur", domain: "Business", skills: ["Leadership", "Risk-taking", "Financial Literacy", "Communication"] },
 ];
 
 export const ALL_SKILLS = [
   "Coding", "Problem-solving", "Debugging", "Excel", "SQL",
   "Networking", "Risk Analysis", "Numbers", "Analytical Thinking", "Attention to Detail",
+  "Patient Care", "Medical Knowledge", "Critical Thinking", "Communication",
+  "Lab Techniques", "Biology", "Empathy", "Research",
+  "Design Thinking", "Figma", "User Research", "Prototyping",
+  "Visual Design", "Typography", "Color Theory", "Adobe Tools",
+  "Writing", "Social Media", "Storytelling", "SEO",
+  "Analytics", "Copywriting", "Data Analysis", "Leadership",
+  "Risk-taking", "Financial Literacy",
 ] as const;
 
 export type SkillName = (typeof ALL_SKILLS)[number];
@@ -75,6 +94,85 @@ export const CAREER_RESOURCES: CareerResources[] = [
       { title: "IRS Free File", type: "tool", url: "https://irs.gov/filing/free-file-do-your-federal-taxes-for-free", description: "Practice with real tax filing tools" },
     ],
   },
+  {
+    careerTitle: "Nurse",
+    resources: [
+      { title: "Khan Academy Health & Medicine", type: "course", url: "https://khanacademy.org/science/health-and-medicine", description: "Free health and medicine courses" },
+      { title: "Coursera Patient Safety", type: "course", url: "https://coursera.org/learn/patient-safety", description: "Patient safety and quality improvement" },
+      { title: "Nurse.org Resources", type: "tutorial", url: "https://nurse.org/resources", description: "Nursing career guides and study materials" },
+      { title: "Medscape Nursing", type: "tool", url: "https://medscape.com/nurses", description: "Clinical reference and drug information" },
+    ],
+  },
+  {
+    careerTitle: "Medical Lab Technologist",
+    resources: [
+      { title: "Coursera Clinical Lab Science", type: "course", url: "https://coursera.org/search?query=clinical+laboratory", description: "Lab science fundamentals" },
+      { title: "Lab Tests Online", type: "tutorial", url: "https://labtestsonline.org", description: "Understanding lab tests and procedures" },
+      { title: "Khan Academy Biology", type: "course", url: "https://khanacademy.org/science/biology", description: "Biology fundamentals" },
+    ],
+  },
+  {
+    careerTitle: "Psychologist",
+    resources: [
+      { title: "Coursera Psychology", type: "course", url: "https://coursera.org/browse/social-sciences/psychology", description: "Psychology courses from top universities" },
+      { title: "Khan Academy Psychology", type: "course", url: "https://khanacademy.org/test-prep/mcat/society-and-culture", description: "Psychology and sociology fundamentals" },
+      { title: "Simply Psychology", type: "tutorial", url: "https://simplypsychology.org", description: "Psychology study guides and explanations" },
+      { title: "APA Resources", type: "tutorial", url: "https://apa.org/education-career", description: "American Psychological Association career resources" },
+    ],
+  },
+  {
+    careerTitle: "UI/UX Designer",
+    resources: [
+      { title: "Google UX Design Certificate", type: "course", url: "https://grow.google/certificates/ux-design", description: "Professional UX design certificate" },
+      { title: "Figma Learn", type: "tutorial", url: "https://figma.com/resources/learn-design", description: "Official Figma tutorials" },
+      { title: "Interaction Design Foundation", type: "course", url: "https://interaction-design.org", description: "UX design courses and literature" },
+      { title: "Laws of UX", type: "tutorial", url: "https://lawsofux.com", description: "Key UX principles every designer should know" },
+    ],
+  },
+  {
+    careerTitle: "Graphic Designer",
+    resources: [
+      { title: "Canva Design School", type: "course", url: "https://canva.com/learn/design", description: "Free graphic design tutorials" },
+      { title: "Coursera Graphic Design", type: "course", url: "https://coursera.org/specializations/graphic-design", description: "CalArts graphic design specialization" },
+      { title: "Adobe Learn", type: "tutorial", url: "https://helpx.adobe.com/creative-cloud/tutorials-explore.html", description: "Official Adobe tool tutorials" },
+      { title: "Typewolf", type: "tutorial", url: "https://typewolf.com", description: "Typography inspiration and resources" },
+    ],
+  },
+  {
+    careerTitle: "Content Creator",
+    resources: [
+      { title: "HubSpot Content Marketing", type: "course", url: "https://academy.hubspot.com/courses/content-marketing", description: "Free content marketing certification" },
+      { title: "Google Digital Garage", type: "course", url: "https://learndigital.withgoogle.com/digitalgarage", description: "Free digital marketing courses" },
+      { title: "Canva for Social Media", type: "tool", url: "https://canva.com/learn/social-media", description: "Social media design templates and guides" },
+    ],
+  },
+  {
+    careerTitle: "Digital Marketer",
+    resources: [
+      { title: "HubSpot Academy", type: "course", url: "https://academy.hubspot.com", description: "Free inbound marketing and SEO certifications" },
+      { title: "Google Analytics Academy", type: "course", url: "https://analytics.google.com/analytics/academy", description: "Learn Google Analytics for free" },
+      { title: "Moz SEO Learning Center", type: "tutorial", url: "https://moz.com/learn/seo", description: "Beginner to advanced SEO guides" },
+      { title: "Meta Blueprint", type: "course", url: "https://facebook.com/business/learn", description: "Social media advertising training" },
+    ],
+  },
+  {
+    careerTitle: "Business Analyst",
+    resources: [
+      { title: "Coursera Business Analytics", type: "course", url: "https://coursera.org/specializations/business-analytics", description: "Business analytics specialization" },
+      { title: "Khan Academy Economics", type: "course", url: "https://khanacademy.org/economics-finance-domain", description: "Economics and business fundamentals" },
+      { title: "Excel Easy", type: "tutorial", url: "https://www.excel-easy.com", description: "Step-by-step Excel tutorials" },
+      { title: "Kaggle Learn", type: "course", url: "https://kaggle.com/learn", description: "Free data analysis micro-courses" },
+    ],
+  },
+  {
+    careerTitle: "Entrepreneur",
+    resources: [
+      { title: "Coursera Entrepreneurship", type: "course", url: "https://coursera.org/specializations/wharton-entrepreneurship", description: "Wharton entrepreneurship specialization" },
+      { title: "Khan Academy Finance", type: "course", url: "https://khanacademy.org/economics-finance-domain/core-finance", description: "Core finance and capital markets" },
+      { title: "Y Combinator Startup School", type: "course", url: "https://startupschool.org", description: "Free startup curriculum from YC" },
+      { title: "HubSpot Sales Training", type: "course", url: "https://academy.hubspot.com/courses/inbound-sales", description: "Free inbound sales certification" },
+    ],
+  },
 ];
 
 // ===== CAREER PROGRESSION PATHS =====
@@ -89,7 +187,7 @@ export interface RoadmapNode {
 
 export interface CareerRoadmap {
   careerTitle: string;
-  domain: "Tech" | "Accounting";
+  domain: "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business";
   nodes: RoadmapNode[];
 }
 
@@ -132,6 +230,99 @@ export const CAREER_ROADMAPS: CareerRoadmap[] = [
       { id: "ac-r2", title: "Staff Accountant", description: "Prepare financial statements, assist with audits", skills: ["Financial Reporting", "Tax Preparation", "GAAP/IFRS Basics"], level: "mid" },
       { id: "ac-r3", title: "Senior Accountant / CPA", description: "Lead audits, manage complex tax situations, advise clients", skills: ["Advanced Tax", "Audit Management", "Financial Analysis", "CPA Certification"], level: "senior" },
       { id: "ac-r4", title: "Controller / CFO", description: "Oversee all financial operations, strategic financial planning", skills: ["Strategic Planning", "Team Leadership", "Regulatory Compliance", "Financial Strategy"], level: "lead" },
+    ],
+  },
+  // Healthcare
+  {
+    careerTitle: "Nurse",
+    domain: "Healthcare",
+    nodes: [
+      { id: "nu-r1", title: "Student Nurse", description: "Complete nursing program, clinical rotations", skills: ["Basic Patient Care", "Anatomy", "Clinical Skills"], level: "entry" },
+      { id: "nu-r2", title: "Registered Nurse", description: "Provide direct patient care, administer medications", skills: ["Patient Assessment", "Medication Administration", "Care Planning"], level: "mid" },
+      { id: "nu-r3", title: "Specialist / Charge Nurse", description: "Specialize in area (ICU, ER, Pediatrics), lead shifts", skills: ["Advanced Clinical Skills", "Team Coordination", "Specialization"], level: "senior" },
+      { id: "nu-r4", title: "Nurse Practitioner / Director", description: "Prescribe treatments, lead nursing departments", skills: ["Advanced Practice", "Leadership", "Policy & Research"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Medical Lab Technologist",
+    domain: "Healthcare",
+    nodes: [
+      { id: "ml-r1", title: "Lab Assistant", description: "Prepare samples, maintain equipment, basic tests", skills: ["Sample Handling", "Lab Safety", "Basic Biology"], level: "entry" },
+      { id: "ml-r2", title: "Medical Lab Technologist", description: "Run diagnostic tests, analyze results, quality control", skills: ["Diagnostic Testing", "QC Procedures", "Hematology/Chemistry"], level: "mid" },
+      { id: "ml-r3", title: "Senior Lab Technologist", description: "Lead specialized testing, train staff, validate methods", skills: ["Method Validation", "Specialization", "Mentoring"], level: "senior" },
+      { id: "ml-r4", title: "Lab Manager / Director", description: "Manage lab operations, accreditation, budgets", skills: ["Lab Management", "Regulatory Compliance", "Strategic Planning"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Psychologist",
+    domain: "Healthcare",
+    nodes: [
+      { id: "ps-r1", title: "Psychology Student / Intern", description: "Complete coursework, assist in research, supervised practice", skills: ["Research Methods", "Counseling Basics", "Ethics"], level: "entry" },
+      { id: "ps-r2", title: "Licensed Psychologist", description: "Conduct therapy, psychological assessments, diagnose", skills: ["Therapeutic Techniques", "Psychological Testing", "Case Management"], level: "mid" },
+      { id: "ps-r3", title: "Senior Psychologist / Specialist", description: "Specialize (clinical, forensic, neuro), publish research", skills: ["Specialization", "Research Publication", "Supervision"], level: "senior" },
+      { id: "ps-r4", title: "Department Head / Private Practice Owner", description: "Lead practice or department, shape policy", skills: ["Practice Management", "Leadership", "Program Development"], level: "lead" },
+    ],
+  },
+  // Creative
+  {
+    careerTitle: "UI/UX Designer",
+    domain: "Creative",
+    nodes: [
+      { id: "ux-r1", title: "Junior UI/UX Designer", description: "Create wireframes, assist with user research", skills: ["Figma Basics", "Wireframing", "User Flows"], level: "entry" },
+      { id: "ux-r2", title: "UI/UX Designer", description: "Design full interfaces, conduct usability testing", skills: ["Prototyping", "Usability Testing", "Design Systems"], level: "mid" },
+      { id: "ux-r3", title: "Senior UX Designer", description: "Lead design strategy, mentor juniors, stakeholder presentations", skills: ["Design Strategy", "User Research", "Accessibility"], level: "senior" },
+      { id: "ux-r4", title: "Design Lead / Head of Design", description: "Define product design vision, build design teams", skills: ["Design Leadership", "Cross-functional Collaboration", "Design Ops"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Graphic Designer",
+    domain: "Creative",
+    nodes: [
+      { id: "gd-r1", title: "Junior Graphic Designer", description: "Create basic layouts, assist with brand materials", skills: ["Adobe Illustrator", "Layout Design", "Color Theory"], level: "entry" },
+      { id: "gd-r2", title: "Graphic Designer", description: "Design campaigns, branding, marketing collateral", skills: ["Brand Identity", "Print & Digital Design", "Typography"], level: "mid" },
+      { id: "gd-r3", title: "Senior Graphic Designer", description: "Lead creative projects, develop brand guidelines", skills: ["Art Direction", "Brand Strategy", "Motion Graphics"], level: "senior" },
+      { id: "gd-r4", title: "Creative Director", description: "Oversee all visual output, lead creative teams", skills: ["Creative Leadership", "Campaign Strategy", "Team Management"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Content Creator",
+    domain: "Creative",
+    nodes: [
+      { id: "cc-r1", title: "Junior Content Creator", description: "Write blog posts, manage social accounts, basic SEO", skills: ["Copywriting", "Social Media Basics", "Content Planning"], level: "entry" },
+      { id: "cc-r2", title: "Content Creator", description: "Produce multi-platform content, grow audiences", skills: ["Video Production", "Audience Growth", "Brand Partnerships"], level: "mid" },
+      { id: "cc-r3", title: "Senior Content Strategist", description: "Define content strategy, lead editorial calendar", skills: ["Content Strategy", "Analytics", "SEO Optimization"], level: "senior" },
+      { id: "cc-r4", title: "Head of Content / Media Director", description: "Oversee content teams, drive media strategy", skills: ["Media Strategy", "Team Leadership", "Revenue Models"], level: "lead" },
+    ],
+  },
+  // Business
+  {
+    careerTitle: "Digital Marketer",
+    domain: "Business",
+    nodes: [
+      { id: "dm-r1", title: "Marketing Intern / Assistant", description: "Assist campaigns, learn tools, create basic content", skills: ["Social Media Management", "Basic SEO", "Email Marketing"], level: "entry" },
+      { id: "dm-r2", title: "Digital Marketer", description: "Run campaigns, analyze metrics, manage ad budgets", skills: ["Google Ads", "Analytics", "A/B Testing"], level: "mid" },
+      { id: "dm-r3", title: "Senior Digital Marketer", description: "Develop marketing strategy, lead cross-channel campaigns", skills: ["Marketing Strategy", "CRO", "Attribution Modeling"], level: "senior" },
+      { id: "dm-r4", title: "Marketing Director / CMO", description: "Define brand strategy, lead marketing department", skills: ["Brand Strategy", "Leadership", "Budget Management"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Business Analyst",
+    domain: "Business",
+    nodes: [
+      { id: "ba-r1", title: "Junior Business Analyst", description: "Gather requirements, document processes, learn tools", skills: ["Requirements Gathering", "Excel", "Process Mapping"], level: "entry" },
+      { id: "ba-r2", title: "Business Analyst", description: "Analyze workflows, recommend improvements, stakeholder communication", skills: ["Data Analysis", "SQL", "Stakeholder Management"], level: "mid" },
+      { id: "ba-r3", title: "Senior Business Analyst", description: "Lead analysis projects, define metrics, mentor team", skills: ["Strategic Analysis", "KPI Frameworks", "Change Management"], level: "senior" },
+      { id: "ba-r4", title: "Director of Business Analysis", description: "Shape org strategy, lead analytics teams", skills: ["Enterprise Strategy", "Leadership", "Digital Transformation"], level: "lead" },
+    ],
+  },
+  {
+    careerTitle: "Entrepreneur",
+    domain: "Business",
+    nodes: [
+      { id: "en-r1", title: "Aspiring Entrepreneur", description: "Learn fundamentals, validate ideas, build MVP", skills: ["Lean Startup", "Market Research", "Basic Finance"], level: "entry" },
+      { id: "en-r2", title: "Startup Founder", description: "Launch business, acquire customers, manage operations", skills: ["Sales", "Product Management", "Fundraising"], level: "mid" },
+      { id: "en-r3", title: "Scaling Founder", description: "Grow team, optimize operations, expand markets", skills: ["Team Building", "Growth Strategy", "Financial Management"], level: "senior" },
+      { id: "en-r4", title: "Serial Entrepreneur / CEO", description: "Lead multiple ventures, invest, mentor others", skills: ["Vision & Strategy", "Board Management", "M&A"], level: "lead" },
     ],
   },
 ];
@@ -509,7 +700,7 @@ export function getQuizQuestionsForCareers(careerTitles: string[]): QuizQuestion
   return QUIZ_QUESTIONS.filter((q) => careerTitles.includes(q.careerTitle));
 }
 
-export function getQuizQuestionsForDomain(domain: "Tech" | "Accounting"): QuizQuestion[] {
+export function getQuizQuestionsForDomain(domain: "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business"): QuizQuestion[] {
   const domainCareers = CAREERS.filter((c) => c.domain === domain).map((c) => c.title);
   return QUIZ_QUESTIONS.filter((q) => domainCareers.includes(q.careerTitle));
 }
@@ -652,7 +843,7 @@ export function calculateStage2Results(
 
 export function calculateDomainQuizResults(
   quizAnswers: Record<string, string>,
-  domain: "Tech" | "Accounting"
+  domain: "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business"
 ): CareerQuizResult[] {
   const domainCareers = CAREERS.filter((c) => c.domain === domain).map((c) => c.title);
   return calculateStage2Results(quizAnswers, domainCareers);
