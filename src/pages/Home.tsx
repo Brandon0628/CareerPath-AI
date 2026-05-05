@@ -1,23 +1,61 @@
-import { Compass, Brain, Map, ArrowRight, Search } from "lucide-react";
+import { Compass, Brain, Map, ArrowRight, Search, GraduationCap, Bot, Route } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-12">
+        {/* SDG Pill Banner */}
+        <div className="mb-8 flex justify-center">
+          <span className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-500/15 to-teal-500/15 px-4 py-1.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-500/20">
+            🌍 Supporting UN SDG 4: Quality Education & SDG 8: Decent Work and Economic Growth
+          </span>
+        </div>
+
         {/* Hero */}
-        <div className="mb-12 text-center">
+        <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
             <Compass className="h-7 w-7" />
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            AI Career Guide
+            Find Your Career Path with AI
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-            Discover your ideal career path through preference assessment and hands-on skill testing.
-            Get personalized recommendations, learning resources, and a clear roadmap to success.
+            73 million young people are unemployed globally. GuidePost Genius uses AI to help students like you discover the right career — before committing to the wrong one.
           </p>
+        </div>
+
+        {/* Stats Row */}
+        <div className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+              <GraduationCap className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">5 Career Domains</p>
+              <p className="text-xs text-muted-foreground">Tech, Healthcare, Business & more</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary/10">
+              <Bot className="h-5 w-5 text-secondary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">AI-Powered</p>
+              <p className="text-xs text-muted-foreground">Questions generated fresh every session</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+              <Route className="h-5 w-5 text-accent" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">Step-by-step Roadmaps</p>
+              <p className="text-xs text-muted-foreground">From beginner to hired</p>
+            </div>
+          </div>
         </div>
 
         {/* Two main options */}
@@ -119,6 +157,35 @@ const Home = () => {
               Explore Career Roadmaps
             </Button>
           </Link>
+        </div>
+
+        {/* SDG Section */}
+        <div className="mt-16">
+          <h2 className="mb-6 text-center font-display text-2xl font-bold text-foreground">
+            Built for the UN Sustainable Development Goals
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Card className="border-l-4 border-l-emerald-500">
+              <CardContent className="p-6 space-y-2">
+                <h3 className="text-lg font-display font-semibold text-foreground">
+                  📚 SDG 4: Quality Education
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Ensuring inclusive access to career knowledge and learning pathways for every student.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="border-l-4 border-l-blue-500">
+              <CardContent className="p-6 space-y-2">
+                <h3 className="text-lg font-display font-semibold text-foreground">
+                  💼 SDG 8: Decent Work & Economic Growth
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Tackling youth unemployment by empowering informed career decisions from the start.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
