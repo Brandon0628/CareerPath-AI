@@ -1,570 +1,949 @@
-import { useMemo, useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Check,
-  Lock,
-  Sparkles,
-  Zap,
-  Clock,
-  TrendingUp,
+  ChevronDown,
+  ChevronRight,
   ExternalLink,
+  Layers,
   BookOpen,
-  GitBranch,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
-type NodeStatus = "completed" | "current" | "recommended" | "locked";
-type Difficulty = "Beginner" | "Intermediate" | "Advanced";
-type NodeKind = "milestone" | "decision";
+/* ================================================================
+   DATA MODEL — 3-level hierarchy: L1 (Phase) → L2 (Topic) → L3 (Micro)
+   ================================================================ */
 
-interface RoadmapNode {
-  id: string;
+interface L3Node {
   title: string;
   description: string;
-  why: string;
-  difficulty: Difficulty;
-  duration: string;
-  resources: { label: string; url: string }[];
-  status: NodeStatus;
-  kind?: NodeKind; // defaults to "milestone"
-  next?: string[]; // ids of children — supports branching
+  link?: string;
 }
 
-interface RoadmapGraph {
+interface L2Node {
+  title: string;
+  description: string;
+  children: L3Node[];
+}
+
+interface L1Node {
+  title: string;
+  label: string; // e.g. "Phase 1"
+  color: string; // tailwind border/accent class token
+  children: L2Node[];
+}
+
+interface CareerMap {
   key: string;
   title: string;
-  domain: "Tech" | "Accounting";
+  domain: string;
   tagline: string;
-  rootId: string;
-  nodes: RoadmapNode[];
+  phases: L1Node[];
 }
 
-// ============================================================
-// CAREER GRAPHS — true DAGs with branching + decision points
-// ============================================================
-const CAREER_GRAPHS: RoadmapGraph[] = [
+/* ================================================================
+   CAREER DATA — deep curriculum for every career
+   ================================================================ */
+
+const CAREER_MAPS: CareerMap[] = [
+  // ── SOFTWARE DEVELOPER ──
   {
     key: "software-developer",
     title: "Software Developer",
     domain: "Tech",
-    tagline: "From first line of code to senior engineer — pick your specialization",
-    rootId: "sd-html",
-    nodes: [
-      { id: "sd-html", title: "HTML & CSS", status: "completed", description: "Master the building blocks of every webpage.", why: "Every web product starts here.", difficulty: "Beginner", duration: "2–3 weeks", resources: [{ label: "MDN Web Docs", url: "https://developer.mozilla.org/" }], next: ["sd-js"] },
-      { id: "sd-js", title: "JavaScript", status: "completed", description: "Variables, functions, async, the DOM, and modern ES syntax.", why: "JavaScript powers interactivity on the web.", difficulty: "Beginner", duration: "1–2 months", resources: [{ label: "JavaScript.info", url: "https://javascript.info/" }], next: ["sd-git"] },
-      { id: "sd-git", title: "Git + GitHub", status: "current", description: "Version control your projects and collaborate.", why: "Every professional team uses Git.", difficulty: "Beginner", duration: "1 week", resources: [{ label: "GitHub Skills", url: "https://skills.github.com/" }], next: ["sd-choice"] },
-      // DECISION POINT
-      { id: "sd-choice", title: "Choose Your Track", status: "recommended", kind: "decision", description: "Pick the developer track that excites you. You can always come back and explore others.", why: "Specialization helps you go deep and land a first role faster.", difficulty: "Beginner", duration: "—", resources: [], next: ["sd-frontend", "sd-backend", "sd-mobile"] },
-      // BRANCH 1: FRONTEND
-      { id: "sd-frontend", title: "Frontend (React)", status: "recommended", description: "Components, state, hooks, and modern UI patterns.", why: "React is the most in-demand frontend framework.", difficulty: "Intermediate", duration: "1–2 months", resources: [{ label: "React Docs", url: "https://react.dev/" }], next: ["sd-portfolio"] },
-      // BRANCH 2: BACKEND
-      { id: "sd-backend", title: "Backend (Node + DB)", status: "locked", description: "REST APIs, databases, auth, and deployment.", why: "Backend skills round out your full-stack capability.", difficulty: "Intermediate", duration: "2 months", resources: [{ label: "Node Docs", url: "https://nodejs.org/en/docs" }], next: ["sd-portfolio"] },
-      // BRANCH 3: MOBILE
-      { id: "sd-mobile", title: "Mobile (React Native)", status: "locked", description: "Build cross-platform iOS + Android apps.", why: "Mobile is a fast-growing niche with great pay.", difficulty: "Intermediate", duration: "2 months", resources: [{ label: "React Native", url: "https://reactnative.dev/" }], next: ["sd-portfolio"] },
-      // CONVERGE
-      { id: "sd-portfolio", title: "Portfolio Projects", status: "locked", description: "Ship 3–5 polished projects that prove your skill.", why: "Projects beat certificates with recruiters.", difficulty: "Intermediate", duration: "1–2 months", resources: [{ label: "Frontend Mentor", url: "https://www.frontendmentor.io/" }], next: ["sd-job"] },
-      { id: "sd-job", title: "Junior Developer Role", status: "locked", description: "Land your first full-time engineering role.", why: "The first role unlocks mentorship and the senior track.", difficulty: "Advanced", duration: "Ongoing", resources: [{ label: "Tech Interview Handbook", url: "https://www.techinterviewhandbook.org/" }] },
+    tagline: "From first line of code to production-ready engineer",
+    phases: [
+      {
+        title: "Foundations",
+        label: "Phase 1",
+        color: "border-primary/60 bg-primary/5",
+        children: [
+          {
+            title: "HTML & CSS",
+            description: "Structure and style of the web",
+            children: [
+              { title: "Semantic Tags", description: "header, nav, main, article, section — meaningful markup" },
+              { title: "Box Model", description: "margin, padding, border, content — how elements size" },
+              { title: "Flexbox", description: "One-axis layouts with justify & align" },
+              { title: "CSS Grid", description: "Two-dimensional grid layouts" },
+              { title: "Responsive Design", description: "Media queries & mobile-first approach" },
+            ],
+          },
+          {
+            title: "JavaScript Basics",
+            description: "The language of the web",
+            children: [
+              { title: "Variables & Types", description: "let, const, string, number, boolean, null, undefined" },
+              { title: "Functions", description: "Declaration, expression, arrow functions, closures" },
+              { title: "Control Flow", description: "if/else, switch, ternary operator" },
+              { title: "Loops", description: "for, while, for...of, forEach" },
+              { title: "Arrays & Objects", description: "map, filter, reduce, destructuring, spread" },
+            ],
+          },
+          {
+            title: "Developer Tooling",
+            description: "Essential tools every dev needs",
+            children: [
+              { title: "Git Basics", description: "init, add, commit, branch, merge" },
+              { title: "GitHub", description: "Pull requests, issues, collaboration workflows" },
+              { title: "VS Code", description: "Extensions, shortcuts, debugging panel" },
+              { title: "Terminal / CLI", description: "Navigate files, run scripts, pipe commands" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Core Skills",
+        label: "Phase 2",
+        color: "border-accent/60 bg-accent/5",
+        children: [
+          {
+            title: "Advanced JavaScript",
+            description: "Deep language mastery",
+            children: [
+              { title: "Promises & Async/Await", description: "Asynchronous programming patterns" },
+              { title: "ES Modules", description: "import/export, dynamic imports, tree-shaking" },
+              { title: "Error Handling", description: "try/catch, custom errors, error boundaries" },
+              { title: "DOM Manipulation", description: "querySelector, events, event delegation" },
+              { title: "Fetch & APIs", description: "HTTP requests, JSON parsing, REST consumption" },
+            ],
+          },
+          {
+            title: "React Fundamentals",
+            description: "Component-based UI development",
+            children: [
+              { title: "JSX & Components", description: "Declarative UI with functional components" },
+              { title: "Props & State", description: "Data flow, useState, lifting state" },
+              { title: "useEffect", description: "Side effects, cleanup, dependency arrays" },
+              { title: "Conditional Rendering", description: "Ternaries, && guards, early returns" },
+              { title: "Lists & Keys", description: "Rendering arrays, key prop for reconciliation" },
+            ],
+          },
+          {
+            title: "CSS Frameworks",
+            description: "Rapid UI styling at scale",
+            children: [
+              { title: "Tailwind CSS", description: "Utility-first classes, responsive prefixes" },
+              { title: "Component Libraries", description: "shadcn/ui, Radix, Headless UI" },
+              { title: "Design Tokens", description: "CSS variables, theme customization" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Advanced",
+        label: "Phase 3",
+        color: "border-secondary/60 bg-secondary/5",
+        children: [
+          {
+            title: "State Management",
+            description: "Managing complex application state",
+            children: [
+              { title: "Context API", description: "Share state across component tree" },
+              { title: "React Query", description: "Server state, caching, background refetch" },
+              { title: "Zustand / Redux", description: "Global stores, actions, selectors" },
+              { title: "URL State", description: "Search params as state, deep linking" },
+            ],
+          },
+          {
+            title: "Backend Basics",
+            description: "Server-side fundamentals",
+            children: [
+              { title: "Node.js & Express", description: "HTTP servers, middleware, routing" },
+              { title: "REST API Design", description: "Resources, verbs, status codes, pagination" },
+              { title: "SQL & Databases", description: "SELECT, JOIN, migrations, ORMs" },
+              { title: "Authentication", description: "JWT, sessions, OAuth, password hashing" },
+            ],
+          },
+          {
+            title: "Testing",
+            description: "Quality assurance and confidence",
+            children: [
+              { title: "Unit Tests", description: "Vitest, Jest — testing pure functions" },
+              { title: "Component Tests", description: "React Testing Library, user-event" },
+              { title: "E2E Tests", description: "Playwright, Cypress — full browser tests" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Professional",
+        label: "Phase 4",
+        color: "border-destructive/40 bg-destructive/5",
+        children: [
+          {
+            title: "DevOps & Deployment",
+            description: "Ship and maintain production apps",
+            children: [
+              { title: "CI/CD Pipelines", description: "GitHub Actions, automated tests on push" },
+              { title: "Docker Basics", description: "Containers, images, docker-compose" },
+              { title: "Cloud Hosting", description: "Vercel, Netlify, AWS basics" },
+              { title: "Monitoring", description: "Error tracking, logging, uptime checks" },
+            ],
+          },
+          {
+            title: "Portfolio & Career",
+            description: "Land and succeed in your first role",
+            children: [
+              { title: "Portfolio Projects", description: "3–5 polished, deployed projects" },
+              { title: "Resume & LinkedIn", description: "Tech resume format, keywords, networking" },
+              { title: "Technical Interviews", description: "Data structures, system design, behavioral" },
+              { title: "Open Source", description: "Contributing to repos, building reputation" },
+            ],
+          },
+          {
+            title: "Soft Skills",
+            description: "Thrive on a team",
+            children: [
+              { title: "Code Reviews", description: "Giving and receiving constructive feedback" },
+              { title: "Agile / Scrum", description: "Sprints, standups, retrospectives" },
+              { title: "Documentation", description: "READMEs, ADRs, inline comments" },
+            ],
+          },
+        ],
+      },
     ],
   },
+
+  // ── DATA ANALYST ──
   {
     key: "data-analyst",
     title: "Data Analyst",
     domain: "Tech",
-    tagline: "From spreadsheets to specialized analyst — multiple paths forward",
-    rootId: "da-excel",
-    nodes: [
-      { id: "da-excel", title: "Excel Basics", status: "completed", description: "Formulas, pivot tables, VLOOKUP, and data cleaning.", why: "Excel is the most-used analytics tool in the world.", difficulty: "Beginner", duration: "1–2 weeks", resources: [{ label: "Excel Easy", url: "https://www.excel-easy.com/" }], next: ["da-sql"] },
-      { id: "da-sql", title: "SQL", status: "current", description: "SELECT, JOIN, GROUP BY, and window functions.", why: "SQL is the universal language of data.", difficulty: "Beginner", duration: "3–4 weeks", resources: [{ label: "Mode SQL Tutorial", url: "https://mode.com/sql-tutorial/" }], next: ["da-choice"] },
-      // DECISION
-      { id: "da-choice", title: "Pick a Specialization", status: "recommended", kind: "decision", description: "Three popular analyst tracks: BI, Product, or Data Science prep.", why: "Specializing helps you stand out in interviews.", difficulty: "Beginner", duration: "—", resources: [], next: ["da-bi", "da-product", "da-python"] },
-      { id: "da-bi", title: "BI Tools (Tableau / Power BI)", status: "recommended", description: "Build polished dashboards stakeholders love.", why: "BI roles are the most common analyst entry point.", difficulty: "Intermediate", duration: "1 month", resources: [{ label: "Tableau Public", url: "https://public.tableau.com/" }], next: ["da-portfolio"] },
-      { id: "da-product", title: "Product Analytics", status: "locked", description: "Funnels, cohort analysis, A/B tests, retention metrics.", why: "Tech companies hire heavily for product analysts.", difficulty: "Intermediate", duration: "1 month", resources: [{ label: "Amplitude Academy", url: "https://academy.amplitude.com/" }], next: ["da-portfolio"] },
-      { id: "da-python", title: "Python + Pandas", status: "locked", description: "Wrangling, automation, and stepping toward ML.", why: "Python opens the door to data science later.", difficulty: "Intermediate", duration: "1 month", resources: [{ label: "Kaggle Learn", url: "https://www.kaggle.com/learn" }], next: ["da-portfolio"] },
-      { id: "da-portfolio", title: "Portfolio + Case Studies", status: "locked", description: "Showcase projects with code, dashboards, and write-ups.", why: "A strong portfolio beats a résumé bullet.", difficulty: "Intermediate", duration: "Ongoing", resources: [{ label: "GitHub Pages", url: "https://pages.github.com/" }], next: ["da-job"] },
-      { id: "da-job", title: "Analyst Role", status: "locked", description: "Apply and crush case-study interviews.", why: "First analyst role launches you toward senior tracks.", difficulty: "Advanced", duration: "Ongoing", resources: [{ label: "StrataScratch", url: "https://www.stratascratch.com/" }] },
+    tagline: "From spreadsheets to actionable business insights",
+    phases: [
+      {
+        title: "Foundations",
+        label: "Phase 1",
+        color: "border-primary/60 bg-primary/5",
+        children: [
+          {
+            title: "Spreadsheets",
+            description: "Excel & Google Sheets mastery",
+            children: [
+              { title: "Formulas", description: "SUM, AVERAGE, COUNTIF, SUMIFS, INDEX/MATCH" },
+              { title: "Pivot Tables", description: "Summarize large datasets interactively" },
+              { title: "Charts", description: "Bar, line, scatter — choosing the right viz" },
+              { title: "Data Cleaning", description: "TRIM, SUBSTITUTE, removing duplicates" },
+            ],
+          },
+          {
+            title: "SQL Fundamentals",
+            description: "Query any relational database",
+            children: [
+              { title: "SELECT & WHERE", description: "Filtering rows and choosing columns" },
+              { title: "JOINs", description: "INNER, LEFT, RIGHT, FULL — combining tables" },
+              { title: "GROUP BY & Aggregates", description: "COUNT, SUM, AVG with grouping" },
+              { title: "Subqueries", description: "Nested queries for complex filtering" },
+              { title: "Window Functions", description: "ROW_NUMBER, RANK, LAG, LEAD" },
+            ],
+          },
+          {
+            title: "Statistics Basics",
+            description: "Foundational stats for data work",
+            children: [
+              { title: "Mean, Median, Mode", description: "Central tendency measures" },
+              { title: "Standard Deviation", description: "Spread and variability of data" },
+              { title: "Distributions", description: "Normal, skewed, binomial basics" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Core Skills",
+        label: "Phase 2",
+        color: "border-accent/60 bg-accent/5",
+        children: [
+          {
+            title: "Python for Data",
+            description: "Programming for analysis & automation",
+            children: [
+              { title: "Pandas Basics", description: "DataFrames, read_csv, filtering, groupby" },
+              { title: "NumPy", description: "Arrays, vectorized operations, broadcasting" },
+              { title: "Data Wrangling", description: "Merge, pivot, melt, handle missing values" },
+              { title: "Matplotlib / Seaborn", description: "Static charts, heatmaps, pair plots" },
+            ],
+          },
+          {
+            title: "Data Visualization",
+            description: "Tell stories with data",
+            children: [
+              { title: "Tableau Basics", description: "Drag-and-drop dashboards, calculated fields" },
+              { title: "Power BI", description: "DAX, relationships, published reports" },
+              { title: "Chart Selection", description: "When to use bar vs. line vs. scatter" },
+              { title: "Dashboard Design", description: "Layout, color, hierarchy, interactivity" },
+            ],
+          },
+          {
+            title: "Business Acumen",
+            description: "Translate data into decisions",
+            children: [
+              { title: "KPIs & Metrics", description: "Revenue, churn, LTV, CAC, NPS" },
+              { title: "Stakeholder Communication", description: "Executive summaries, data storytelling" },
+              { title: "Domain Knowledge", description: "Industry context for meaningful analysis" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Advanced",
+        label: "Phase 3",
+        color: "border-secondary/60 bg-secondary/5",
+        children: [
+          {
+            title: "Advanced SQL",
+            description: "Complex queries and optimization",
+            children: [
+              { title: "CTEs", description: "Common Table Expressions for readable queries" },
+              { title: "Query Optimization", description: "EXPLAIN, indexes, avoiding N+1" },
+              { title: "Stored Procedures", description: "Server-side logic in the database" },
+            ],
+          },
+          {
+            title: "Statistical Analysis",
+            description: "Rigorous quantitative methods",
+            children: [
+              { title: "Hypothesis Testing", description: "t-tests, chi-square, p-values" },
+              { title: "A/B Testing", description: "Experiment design, significance, sample size" },
+              { title: "Regression", description: "Linear, logistic, interpreting coefficients" },
+              { title: "Correlation vs Causation", description: "Confounders, Simpson's paradox" },
+            ],
+          },
+          {
+            title: "ETL & Pipelines",
+            description: "Move and transform data at scale",
+            children: [
+              { title: "Data Warehousing", description: "Star schema, fact & dimension tables" },
+              { title: "ETL Tools", description: "dbt, Airflow, Fivetran basics" },
+              { title: "Data Quality", description: "Validation, anomaly detection, lineage" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Professional",
+        label: "Phase 4",
+        color: "border-destructive/40 bg-destructive/5",
+        children: [
+          {
+            title: "Portfolio & Case Studies",
+            description: "Prove your analytical skills",
+            children: [
+              { title: "End-to-End Projects", description: "Question → data → analysis → insight → action" },
+              { title: "GitHub Portfolio", description: "Notebooks, READMEs, reproducible analysis" },
+              { title: "Blog / Writing", description: "Publish findings, build thought leadership" },
+            ],
+          },
+          {
+            title: "Interview Prep",
+            description: "Land the analyst role",
+            children: [
+              { title: "SQL Challenges", description: "StrataScratch, LeetCode SQL tracks" },
+              { title: "Case Study Practice", description: "Product sense, metric definition, trade-offs" },
+              { title: "Take-Home Assignments", description: "Clean data, analyze, present findings" },
+              { title: "Behavioral Questions", description: "STAR method, past project storytelling" },
+            ],
+          },
+          {
+            title: "Career Growth",
+            description: "From analyst to senior / lead",
+            children: [
+              { title: "Specialization Paths", description: "Product analytics, BI engineering, data science" },
+              { title: "Mentoring", description: "Teaching juniors, reviewing analyses" },
+              { title: "Certifications", description: "Google Data Analytics, Tableau Desktop Specialist" },
+            ],
+          },
+        ],
+      },
     ],
   },
+
+  // ── CYBERSECURITY ANALYST ──
   {
     key: "cybersecurity",
     title: "Cybersecurity Analyst",
     domain: "Tech",
-    tagline: "Defend, hunt, or break — choose your security path",
-    rootId: "cs-net",
-    nodes: [
-      { id: "cs-net", title: "Networking Basics", status: "completed", description: "TCP/IP, DNS, HTTP, ports, OSI model.", why: "You can't secure what you don't understand.", difficulty: "Beginner", duration: "3–4 weeks", resources: [{ label: "Professor Messer", url: "https://www.professormesser.com/" }], next: ["cs-linux"] },
-      { id: "cs-linux", title: "Linux Fundamentals", status: "current", description: "Command line, filesystem, basic shell scripting.", why: "Most servers and security tools run on Linux.", difficulty: "Beginner", duration: "1 month", resources: [{ label: "OverTheWire Bandit", url: "https://overthewire.org/wargames/bandit/" }], next: ["cs-fund"] },
-      { id: "cs-fund", title: "Security Fundamentals", status: "recommended", description: "CIA triad, threats, encryption, authentication.", why: "Core concepts appear in every interview.", difficulty: "Intermediate", duration: "1 month", resources: [{ label: "Cybrary", url: "https://www.cybrary.it/" }], next: ["cs-choice"] },
-      // DECISION
-      { id: "cs-choice", title: "Red Team or Blue Team?", status: "recommended", kind: "decision", description: "Offense (find weaknesses) or defense (stop attacks). Both are great careers.", why: "Each side hires differently and pays differently.", difficulty: "Intermediate", duration: "—", resources: [], next: ["cs-blue", "cs-red"] },
-      { id: "cs-blue", title: "Blue Team / SOC", status: "recommended", description: "Monitor alerts, hunt threats, respond to incidents.", why: "SOC analyst is the most common entry point in security.", difficulty: "Intermediate", duration: "Ongoing", resources: [{ label: "Blue Team Labs", url: "https://blueteamlabs.online/" }], next: ["cs-cert"] },
-      { id: "cs-red", title: "Red Team / Pentest", status: "locked", description: "CTFs, exploitation, web pentesting.", why: "Offensive skills command top salaries.", difficulty: "Advanced", duration: "Ongoing", resources: [{ label: "TryHackMe", url: "https://tryhackme.com/" }, { label: "HackTheBox", url: "https://www.hackthebox.com/" }], next: ["cs-cert"] },
-      { id: "cs-cert", title: "Certifications", status: "locked", description: "Security+, then CySA+, CEH, or OSCP.", why: "Certs are entry filters for many security roles.", difficulty: "Advanced", duration: "2–4 months", resources: [{ label: "CompTIA Security+", url: "https://www.comptia.org/certifications/security" }], next: ["cs-job"] },
-      { id: "cs-job", title: "Security Role", status: "locked", description: "Land your first SOC, pentest, or security engineer role.", why: "First role unlocks the rest of the security career path.", difficulty: "Advanced", duration: "Ongoing", resources: [] },
+    tagline: "Defend systems, hunt threats, and protect data",
+    phases: [
+      {
+        title: "Foundations",
+        label: "Phase 1",
+        color: "border-primary/60 bg-primary/5",
+        children: [
+          {
+            title: "Networking",
+            description: "How data moves across networks",
+            children: [
+              { title: "OSI Model", description: "7 layers — physical to application" },
+              { title: "TCP/IP", description: "Packets, handshakes, port numbers" },
+              { title: "DNS & HTTP", description: "Name resolution, request/response cycle" },
+              { title: "Subnetting", description: "CIDR notation, IP ranges, VLANs" },
+            ],
+          },
+          {
+            title: "Linux Fundamentals",
+            description: "The security analyst's OS",
+            children: [
+              { title: "File System", description: "/etc, /var, /home, permissions (chmod, chown)" },
+              { title: "Shell Commands", description: "grep, awk, sed, pipes, redirection" },
+              { title: "Process Management", description: "ps, top, kill, systemctl, cron" },
+              { title: "Shell Scripting", description: "Bash scripts for automation" },
+            ],
+          },
+          {
+            title: "Security Concepts",
+            description: "Core principles of infosec",
+            children: [
+              { title: "CIA Triad", description: "Confidentiality, Integrity, Availability" },
+              { title: "Encryption Basics", description: "Symmetric, asymmetric, hashing, TLS" },
+              { title: "Authentication", description: "Passwords, MFA, biometrics, SSO" },
+              { title: "Threat Landscape", description: "Malware types, APTs, social engineering" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Core Skills",
+        label: "Phase 2",
+        color: "border-accent/60 bg-accent/5",
+        children: [
+          {
+            title: "Security Operations",
+            description: "Day-to-day SOC work",
+            children: [
+              { title: "SIEM Tools", description: "Splunk, ELK, QRadar — log aggregation & alerts" },
+              { title: "Log Analysis", description: "Parsing firewall, web server, auth logs" },
+              { title: "Incident Triage", description: "Classify, prioritize, escalate alerts" },
+              { title: "Playbooks", description: "Standard operating procedures for incidents" },
+            ],
+          },
+          {
+            title: "Vulnerability Management",
+            description: "Find and fix weaknesses",
+            children: [
+              { title: "Nmap Scanning", description: "Port scanning, service detection, scripts" },
+              { title: "Vulnerability Scanners", description: "Nessus, OpenVAS, Qualys basics" },
+              { title: "CVSS Scoring", description: "Rating severity, prioritizing patches" },
+              { title: "Patch Management", description: "Lifecycle, testing, deployment" },
+            ],
+          },
+          {
+            title: "Web Security",
+            description: "Protect web applications",
+            children: [
+              { title: "OWASP Top 10", description: "Injection, XSS, CSRF, broken auth" },
+              { title: "Burp Suite", description: "Proxy, scanner, intruder — web pentesting" },
+              { title: "Secure Coding", description: "Input validation, parameterized queries" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Advanced",
+        label: "Phase 3",
+        color: "border-secondary/60 bg-secondary/5",
+        children: [
+          {
+            title: "Offensive Security",
+            description: "Think like an attacker",
+            children: [
+              { title: "CTF Challenges", description: "TryHackMe, HackTheBox — practice exploitation" },
+              { title: "Exploitation Frameworks", description: "Metasploit, payload crafting" },
+              { title: "Privilege Escalation", description: "Linux & Windows privesc techniques" },
+              { title: "Social Engineering", description: "Phishing simulations, pretexting" },
+            ],
+          },
+          {
+            title: "Defensive Security",
+            description: "Build and maintain defenses",
+            children: [
+              { title: "Threat Hunting", description: "Proactive search for hidden threats" },
+              { title: "Digital Forensics", description: "Disk imaging, memory analysis, chain of custody" },
+              { title: "Incident Response", description: "Containment, eradication, recovery, lessons learned" },
+              { title: "Threat Intelligence", description: "IOCs, MITRE ATT&CK, threat feeds" },
+            ],
+          },
+          {
+            title: "Cloud Security",
+            description: "Secure cloud infrastructure",
+            children: [
+              { title: "AWS Security", description: "IAM, Security Groups, CloudTrail, GuardDuty" },
+              { title: "Container Security", description: "Docker/K8s hardening, image scanning" },
+              { title: "Zero Trust", description: "Never trust, always verify — architecture patterns" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Professional",
+        label: "Phase 4",
+        color: "border-destructive/40 bg-destructive/5",
+        children: [
+          {
+            title: "Certifications",
+            description: "Industry-recognized credentials",
+            children: [
+              { title: "CompTIA Security+", description: "Foundational security certification" },
+              { title: "CySA+", description: "Cybersecurity analyst intermediate cert" },
+              { title: "CEH", description: "Certified Ethical Hacker — offensive focus" },
+              { title: "OSCP", description: "Offensive Security Certified Professional — advanced" },
+            ],
+          },
+          {
+            title: "Career Launch",
+            description: "Land your security role",
+            children: [
+              { title: "Home Lab", description: "Build a practice environment with VMs" },
+              { title: "Security Blog", description: "Write-ups, CTF solutions, research" },
+              { title: "Networking", description: "BSides, DEF CON, local meetups" },
+              { title: "Resume & Interview", description: "Highlight labs, certs, and CTF rankings" },
+            ],
+          },
+          {
+            title: "Specialization Paths",
+            description: "Choose your niche",
+            children: [
+              { title: "SOC Analyst", description: "Monitor, detect, respond — 24/7 operations" },
+              { title: "Penetration Tester", description: "Authorized hacking to find vulnerabilities" },
+              { title: "Security Engineer", description: "Build secure infrastructure and tooling" },
+            ],
+          },
+        ],
+      },
     ],
   },
+
+  // ── ACCOUNTANT ──
   {
     key: "accountant",
     title: "Accountant",
     domain: "Accounting",
-    tagline: "From bookkeeping to qualified accountant — multiple specializations",
-    rootId: "ac-book",
-    nodes: [
-      { id: "ac-book", title: "Bookkeeping Basics", status: "completed", description: "Double-entry, debits/credits, journals, the cycle.", why: "Bookkeeping is the foundation of all accounting.", difficulty: "Beginner", duration: "2–3 weeks", resources: [{ label: "AccountingCoach", url: "https://www.accountingcoach.com/" }], next: ["ac-excel"] },
-      { id: "ac-excel", title: "Excel for Accounting", status: "current", description: "Pivot tables, VLOOKUP, SUMIF, financial formulas.", why: "Accountants live in spreadsheets.", difficulty: "Beginner", duration: "2 weeks", resources: [{ label: "Corporate Finance Institute", url: "https://corporatefinanceinstitute.com/" }], next: ["ac-fs"] },
-      { id: "ac-fs", title: "Financial Statements", status: "recommended", description: "Income statement, balance sheet, cash flow.", why: "These three reports tell the story of any business.", difficulty: "Intermediate", duration: "1 month", resources: [{ label: "Investopedia", url: "https://www.investopedia.com/" }], next: ["ac-choice"] },
-      // DECISION
-      { id: "ac-choice", title: "Choose Your Niche", status: "recommended", kind: "decision", description: "Tax, audit, or corporate finance — three lucrative paths.", why: "Each niche has its own season, software, and skill set.", difficulty: "Intermediate", duration: "—", resources: [], next: ["ac-tax", "ac-audit", "ac-corp"] },
-      { id: "ac-tax", title: "Tax Specialization", status: "recommended", description: "Individual + corporate tax, deductions, filings.", why: "Tax season drives huge demand and pays well.", difficulty: "Intermediate", duration: "1–2 months", resources: [{ label: "IRS Resources", url: "https://www.irs.gov/" }], next: ["ac-software"] },
-      { id: "ac-audit", title: "Audit Track", status: "locked", description: "Internal controls, sampling, audit procedures.", why: "Big-4 audit roles open doors everywhere.", difficulty: "Intermediate", duration: "1–2 months", resources: [{ label: "AICPA", url: "https://www.aicpa-cima.com/" }], next: ["ac-software"] },
-      { id: "ac-corp", title: "Corporate Finance", status: "locked", description: "FP&A, budgeting, forecasting, modeling.", why: "Corporate finance roles command higher salaries.", difficulty: "Advanced", duration: "2 months", resources: [{ label: "Wall Street Prep", url: "https://www.wallstreetprep.com/" }], next: ["ac-software"] },
-      { id: "ac-software", title: "Accounting Software", status: "locked", description: "QuickBooks, Xero, SAP — tools firms use daily.", why: "Software fluency is tested on day one.", difficulty: "Intermediate", duration: "3–4 weeks", resources: [{ label: "QuickBooks Training", url: "https://quickbooks.intuit.com/learn-support/" }], next: ["ac-job"] },
-      { id: "ac-job", title: "Junior Accountant Role", status: "locked", description: "Reconciliations, journal entries, month-end close.", why: "Junior roles build the experience needed for CPA.", difficulty: "Advanced", duration: "Ongoing", resources: [{ label: "Becker CPA", url: "https://www.becker.com/" }] },
+    tagline: "From bookkeeping basics to qualified professional accountant",
+    phases: [
+      {
+        title: "Foundations",
+        label: "Phase 1",
+        color: "border-primary/60 bg-primary/5",
+        children: [
+          {
+            title: "Bookkeeping",
+            description: "The language of business",
+            children: [
+              { title: "Double-Entry", description: "Every transaction has equal debit and credit" },
+              { title: "Chart of Accounts", description: "Asset, liability, equity, revenue, expense categories" },
+              { title: "Journals & Ledgers", description: "Recording and posting transactions" },
+              { title: "Trial Balance", description: "Verify debits equal credits before statements" },
+            ],
+          },
+          {
+            title: "Excel for Accounting",
+            description: "Your daily work tool",
+            children: [
+              { title: "VLOOKUP & INDEX/MATCH", description: "Look up values across tables" },
+              { title: "Pivot Tables", description: "Summarize financial data quickly" },
+              { title: "SUMIFS & COUNTIFS", description: "Conditional aggregation formulas" },
+              { title: "Data Validation", description: "Drop-downs, input restrictions, error checking" },
+            ],
+          },
+          {
+            title: "Financial Concepts",
+            description: "Core accounting principles",
+            children: [
+              { title: "GAAP Basics", description: "Generally Accepted Accounting Principles" },
+              { title: "Accrual vs Cash", description: "When to recognize revenue and expenses" },
+              { title: "Time Value of Money", description: "Present value, future value, discounting" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Core Skills",
+        label: "Phase 2",
+        color: "border-accent/60 bg-accent/5",
+        children: [
+          {
+            title: "Financial Statements",
+            description: "The three core reports",
+            children: [
+              { title: "Income Statement", description: "Revenue - expenses = net income" },
+              { title: "Balance Sheet", description: "Assets = Liabilities + Equity" },
+              { title: "Cash Flow Statement", description: "Operating, investing, financing activities" },
+              { title: "Ratio Analysis", description: "Liquidity, profitability, leverage ratios" },
+            ],
+          },
+          {
+            title: "Tax Fundamentals",
+            description: "Understanding taxation",
+            children: [
+              { title: "Individual Tax", description: "Filing status, brackets, deductions, credits" },
+              { title: "Corporate Tax", description: "Entity types, estimated payments, depreciation" },
+              { title: "Sales Tax", description: "Nexus, exemptions, compliance" },
+              { title: "Payroll Tax", description: "FICA, withholding, quarterly filings" },
+            ],
+          },
+          {
+            title: "Accounting Software",
+            description: "Industry-standard tools",
+            children: [
+              { title: "QuickBooks", description: "Small business accounting, invoicing, reports" },
+              { title: "Xero", description: "Cloud accounting, bank reconciliation" },
+              { title: "SAP Basics", description: "Enterprise resource planning modules" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Advanced",
+        label: "Phase 3",
+        color: "border-secondary/60 bg-secondary/5",
+        children: [
+          {
+            title: "Auditing",
+            description: "Verify and assure financial accuracy",
+            children: [
+              { title: "Internal Controls", description: "Segregation of duties, authorization, reconciliation" },
+              { title: "Audit Procedures", description: "Planning, fieldwork, sampling, reporting" },
+              { title: "Risk Assessment", description: "Inherent, control, and detection risk" },
+              { title: "Compliance", description: "SOX, regulatory requirements, ethics" },
+            ],
+          },
+          {
+            title: "Management Accounting",
+            description: "Decision support for business leaders",
+            children: [
+              { title: "Budgeting", description: "Operating budgets, variance analysis" },
+              { title: "Cost Accounting", description: "Job costing, process costing, ABC" },
+              { title: "Forecasting", description: "Trend analysis, scenario planning" },
+              { title: "Break-Even Analysis", description: "Fixed costs, variable costs, contribution margin" },
+            ],
+          },
+          {
+            title: "Corporate Finance",
+            description: "FP&A and strategic finance",
+            children: [
+              { title: "Financial Modeling", description: "Three-statement models in Excel" },
+              { title: "Valuation", description: "DCF, comparables, precedent transactions" },
+              { title: "Capital Budgeting", description: "NPV, IRR, payback period" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Professional",
+        label: "Phase 4",
+        color: "border-destructive/40 bg-destructive/5",
+        children: [
+          {
+            title: "Certifications",
+            description: "Professional credentials",
+            children: [
+              { title: "CPA", description: "Certified Public Accountant — gold standard" },
+              { title: "CMA", description: "Certified Management Accountant — corporate focus" },
+              { title: "CIA", description: "Certified Internal Auditor" },
+              { title: "EA", description: "Enrolled Agent — IRS tax specialist" },
+            ],
+          },
+          {
+            title: "Career Launch",
+            description: "Start your accounting career",
+            children: [
+              { title: "Internships", description: "Big 4, mid-tier firms, corporate rotations" },
+              { title: "Networking", description: "AICPA, local CPA societies, LinkedIn" },
+              { title: "Interview Prep", description: "Technical questions, case studies, behavioral" },
+            ],
+          },
+          {
+            title: "Specialization",
+            description: "Choose your long-term path",
+            children: [
+              { title: "Public Accounting", description: "Audit, tax, advisory at firms" },
+              { title: "Corporate Accounting", description: "Controller, FP&A, treasury" },
+              { title: "Forensic Accounting", description: "Fraud investigation, litigation support" },
+            ],
+          },
+        ],
+      },
     ],
   },
 ];
 
-const STATUS_STYLES: Record<NodeStatus, { card: string; ring: string; badge: string; label: string; icon: typeof Check }> = {
-  completed: { card: "bg-primary/10 border-primary/50 text-foreground", ring: "ring-primary/30", badge: "bg-primary text-primary-foreground", label: "Completed", icon: Check },
-  current: { card: "bg-accent/15 border-accent text-foreground shadow-md", ring: "ring-accent/40", badge: "bg-accent text-accent-foreground", label: "In Progress", icon: Zap },
-  recommended: { card: "bg-secondary/10 border-secondary/50 border-dashed text-foreground", ring: "ring-secondary/30", badge: "bg-secondary text-secondary-foreground", label: "Recommended", icon: Sparkles },
-  locked: { card: "bg-muted/40 border-border text-muted-foreground", ring: "ring-muted", badge: "bg-muted text-muted-foreground", label: "Locked", icon: Lock },
+/* ================================================================
+   DOMAIN COLORS
+   ================================================================ */
+const DOMAIN_BADGE: Record<string, string> = {
+  Tech: "bg-primary/15 text-primary",
+  Accounting: "bg-secondary/15 text-secondary",
+  Healthcare: "bg-accent/15 text-accent-foreground",
+  Creative: "bg-primary/15 text-primary",
+  Business: "bg-secondary/15 text-secondary",
 };
 
-const DIFFICULTY_STYLES: Record<Difficulty, string> = {
-  Beginner: "bg-primary/10 text-primary",
-  Intermediate: "bg-accent/15 text-foreground",
-  Advanced: "bg-destructive/10 text-destructive",
-};
-
-// ============================================================
-// LAYOUT — assign each node a (depth, slot) position via BFS
-// ============================================================
-interface PositionedNode extends RoadmapNode {
-  depth: number;
-  slot: number; // 0..(slotsAtDepth-1)
-  x: number; // px
-  y: number; // px
+/* ================================================================
+   L3 PILL COMPONENT
+   ================================================================ */
+function L3Pill({ node }: { node: L3Node }) {
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="inline-flex cursor-help items-center gap-1 rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[11px] font-medium text-foreground transition-all hover:bg-muted hover:shadow-sm hover:scale-105">
+            {node.title}
+            {node.link && <ExternalLink className="h-2.5 w-2.5 text-muted-foreground" />}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[220px]">
+          <p className="text-xs font-semibold">{node.title}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">{node.description}</p>
+          {node.link && (
+            <a href={node.link} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-[11px] text-primary hover:underline">
+              Learn this <ExternalLink className="h-2.5 w-2.5" />
+            </a>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 }
 
-const NODE_W = 200;
-const NODE_H = 84;
-const COL_GAP = 56; // vertical gap between depths
-const ROW_GAP = 24; // horizontal gap between siblings
+/* ================================================================
+   L2 CARD COMPONENT
+   ================================================================ */
+function L2Card({ node, isActive, onToggle, dimmed }: {
+  node: L2Node;
+  isActive: boolean;
+  onToggle: () => void;
+  dimmed: boolean;
+}) {
+  return (
+    <div className={`transition-opacity duration-300 ${dimmed ? "opacity-40" : "opacity-100"}`}>
+      <button
+        onClick={onToggle}
+        className={`group flex w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-all hover:shadow-md ${
+          isActive
+            ? "border-accent/50 bg-accent/10 shadow-sm"
+            : "border-border bg-card hover:border-accent/30"
+        }`}
+      >
+        <span className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md transition-colors ${
+          isActive ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"
+        }`}>
+          {isActive ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        </span>
+        <div className="min-w-0 flex-1">
+          <span className="text-[13px] font-semibold text-foreground">{node.title}</span>
+          <span className="ml-2 text-[11px] text-muted-foreground">{node.description}</span>
+        </div>
+        <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          {node.children.length}
+        </span>
+      </button>
 
-function layoutGraph(graph: RoadmapGraph): {
-  positioned: PositionedNode[];
-  width: number;
-  height: number;
-  byId: Map<string, PositionedNode>;
-} {
-  const byId = new Map<string, RoadmapNode>(graph.nodes.map((n) => [n.id, n]));
-  const depth = new Map<string, number>();
-  const visited = new Set<string>();
-  const queue: string[] = [graph.rootId];
-  depth.set(graph.rootId, 0);
-
-  // BFS to compute the *maximum* depth (longest path from root) so converging
-  // nodes sit on the same row.
-  while (queue.length) {
-    const id = queue.shift()!;
-    if (visited.has(id)) continue;
-    visited.add(id);
-    const d = depth.get(id) ?? 0;
-    const node = byId.get(id);
-    if (!node?.next) continue;
-    for (const childId of node.next) {
-      const candidate = d + 1;
-      const existing = depth.get(childId);
-      if (existing === undefined || candidate > existing) {
-        depth.set(childId, candidate);
-      }
-      queue.push(childId);
-    }
-  }
-
-  // Group by depth, preserving declaration order for stable layout.
-  const byDepth = new Map<number, RoadmapNode[]>();
-  for (const node of graph.nodes) {
-    const d = depth.get(node.id);
-    if (d === undefined) continue; // unreachable, skip
-    if (!byDepth.has(d)) byDepth.set(d, []);
-    byDepth.get(d)!.push(node);
-  }
-
-  const maxDepth = Math.max(...byDepth.keys());
-  const maxSlots = Math.max(...Array.from(byDepth.values()).map((arr) => arr.length));
-  const width = maxSlots * NODE_W + (maxSlots - 1) * ROW_GAP;
-  const height = (maxDepth + 1) * NODE_H + maxDepth * COL_GAP;
-
-  const positioned: PositionedNode[] = [];
-  const posById = new Map<string, PositionedNode>();
-
-  for (let d = 0; d <= maxDepth; d++) {
-    const rowNodes = byDepth.get(d) ?? [];
-    const rowWidth = rowNodes.length * NODE_W + (rowNodes.length - 1) * ROW_GAP;
-    const offset = (width - rowWidth) / 2;
-    rowNodes.forEach((node, slot) => {
-      const x = offset + slot * (NODE_W + ROW_GAP);
-      const y = d * (NODE_H + COL_GAP);
-      const p: PositionedNode = { ...node, depth: d, slot, x, y };
-      positioned.push(p);
-      posById.set(node.id, p);
-    });
-  }
-
-  return { positioned, width, height, byId: posById };
+      {isActive && (
+        <div className="mt-2 ml-7 flex flex-wrap gap-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+          {node.children.map((l3) => (
+            <L3Pill key={l3.title} node={l3} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
-// ============================================================
-// DOWNSTREAM HIGHLIGHT — collect ids reachable from a node
-// ============================================================
-function collectDownstream(graph: RoadmapGraph, startId: string): Set<string> {
-  const result = new Set<string>([startId]);
-  const byId = new Map(graph.nodes.map((n) => [n.id, n]));
-  const stack = [startId];
-  while (stack.length) {
-    const id = stack.pop()!;
-    const node = byId.get(id);
-    if (!node?.next) continue;
-    for (const child of node.next) {
-      if (!result.has(child)) {
-        result.add(child);
-        stack.push(child);
-      }
-    }
-  }
-  return result;
+/* ================================================================
+   L1 PHASE CARD COMPONENT
+   ================================================================ */
+function L1PhaseCard({ node, phaseIndex, expandedL2, onToggleL2, activeL2Key, dimmed }: {
+  node: L1Node;
+  phaseIndex: number;
+  expandedL2: Set<string>;
+  onToggleL2: (key: string) => void;
+  activeL2Key: string | null;
+  dimmed: boolean;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <div className={`transition-opacity duration-300 ${dimmed ? "opacity-40" : "opacity-100"}`}>
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className={`group flex w-full items-center gap-3 rounded-2xl border-2 px-5 py-4 text-left transition-all hover:shadow-lg ${node.color} ${
+          collapsed ? "" : "shadow-sm"
+        }`}
+      >
+        <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-foreground/10 text-foreground">
+          <Layers className="h-4 w-4" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground">
+              {node.label}
+            </span>
+            <h3 className="font-display text-base font-bold text-foreground sm:text-lg">{node.title}</h3>
+          </div>
+          <p className="mt-0.5 text-[12px] text-muted-foreground">
+            {node.children.length} topics · {node.children.reduce((sum, c) => sum + c.children.length, 0)} concepts
+          </p>
+        </div>
+        <span className="text-muted-foreground transition-transform">
+          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+        </span>
+      </button>
+
+      {!collapsed && (
+        <div className="mt-3 ml-4 space-y-2 border-l-2 border-border pl-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          {node.children.map((l2, l2i) => {
+            const key = `${phaseIndex}-${l2i}`;
+            const isActive = expandedL2.has(key);
+            const l2Dimmed = activeL2Key !== null && activeL2Key !== key;
+            return (
+              <L2Card
+                key={key}
+                node={l2}
+                isActive={isActive}
+                onToggle={() => onToggleL2(key)}
+                dimmed={l2Dimmed}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
-// ============================================================
-// MAIN COMPONENT
-// ============================================================
+/* ================================================================
+   MAIN COMPONENT
+   ================================================================ */
 export function RoadmapMapView() {
-  const [activeKey, setActiveKey] = useState<string>(CAREER_GRAPHS[0].key);
-  const [selected, setSelected] = useState<RoadmapNode | null>(null);
-  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [activeKey, setActiveKey] = useState(CAREER_MAPS[0].key);
+  const [expandedL2, setExpandedL2] = useState<Set<string>>(new Set());
+  const [activeL2Key, setActiveL2Key] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const activeGraph = CAREER_GRAPHS.find((p) => p.key === activeKey)!;
+  const activeMap = CAREER_MAPS.find((c) => c.key === activeKey)!;
 
-  const { positioned, width, height, byId } = useMemo(
-    () => layoutGraph(activeGraph),
-    [activeGraph],
-  );
+  // Reset state when switching careers
+  useEffect(() => {
+    setExpandedL2(new Set());
+    setActiveL2Key(null);
+    setZoom(1);
+  }, [activeKey]);
 
-  const highlighted = useMemo(
-    () => (highlightId ? collectDownstream(activeGraph, highlightId) : null),
-    [activeGraph, highlightId],
-  );
-
-  // Build edges with computed pixel coordinates
-  const edges = useMemo(() => {
-    const list: { from: PositionedNode; to: PositionedNode }[] = [];
-    for (const node of positioned) {
-      if (!node.next) continue;
-      for (const childId of node.next) {
-        const child = byId.get(childId);
-        if (child) list.push({ from: node, to: child });
+  const handleToggleL2 = useCallback((key: string) => {
+    setExpandedL2((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+        if (activeL2Key === key) setActiveL2Key(null);
+      } else {
+        next.add(key);
+        setActiveL2Key(key);
       }
-    }
-    return list;
-  }, [positioned, byId]);
+      return next;
+    });
+  }, [activeL2Key]);
 
-  const isDimmed = (id: string) => highlighted !== null && !highlighted.has(id);
-  const isEdgeDimmed = (fromId: string, toId: string) =>
-    highlighted !== null && !(highlighted.has(fromId) && highlighted.has(toId));
-
-  const handleNodeClick = (node: RoadmapNode) => {
-    setHighlightId((prev) => (prev === node.id ? null : node.id));
-    setSelected(node);
-  };
+  const totalConcepts = activeMap.phases.reduce(
+    (sum, p) => sum + p.children.reduce((s, c) => s + c.children.length, 0),
+    0,
+  );
 
   return (
     <div className="space-y-6">
       {/* Career selector */}
       <div className="flex flex-wrap gap-2">
-        {CAREER_GRAPHS.map((path) => {
-          const isActive = path.key === activeKey;
-          const isTech = path.domain === "Tech";
+        {CAREER_MAPS.map((career) => {
+          const isActive = career.key === activeKey;
           return (
             <button
-              key={path.key}
-              onClick={() => {
-                setActiveKey(path.key);
-                setHighlightId(null);
-              }}
+              key={career.key}
+              onClick={() => setActiveKey(career.key)}
               className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-all ${
                 isActive
-                  ? isTech
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                    : "bg-secondary text-secondary-foreground border-secondary shadow-sm"
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
                   : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
               }`}
             >
-              {path.title}
+              {career.title}
             </button>
           );
         })}
       </div>
 
-      {/* Path header */}
+      {/* Header */}
       <div className="rounded-2xl border border-border bg-card/60 p-5 backdrop-blur-sm">
         <div className="flex items-center gap-2">
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-              activeGraph.domain === "Tech" ? "bg-primary/15 text-primary" : "bg-secondary/15 text-secondary"
-            }`}
-          >
-            {activeGraph.domain}
+          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${DOMAIN_BADGE[activeMap.domain] || "bg-muted text-muted-foreground"}`}>
+            {activeMap.domain}
           </span>
-          <h3 className="font-display text-lg font-bold text-foreground">{activeGraph.title}</h3>
+          <h3 className="font-display text-lg font-bold text-foreground">{activeMap.title}</h3>
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">{activeGraph.tagline}</p>
-
-        <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-          {(Object.keys(STATUS_STYLES) as NodeStatus[]).map((s) => {
-            const Icon = STATUS_STYLES[s].icon;
-            return (
-              <span key={s} className="inline-flex items-center gap-1.5">
-                <span className={`inline-flex h-4 w-4 items-center justify-center rounded-full ${STATUS_STYLES[s].badge}`}>
-                  <Icon className="h-2.5 w-2.5" />
-                </span>
-                {STATUS_STYLES[s].label}
-              </span>
-            );
-          })}
-          <span className="inline-flex items-center gap-1.5">
-            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-foreground/80 text-background">
-              <GitBranch className="h-2.5 w-2.5" />
-            </span>
-            Decision
+        <p className="mt-1 text-sm text-muted-foreground">{activeMap.tagline}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <Layers className="h-3 w-3" />
+            {activeMap.phases.length} phases
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <BookOpen className="h-3 w-3" />
+            {activeMap.phases.reduce((s, p) => s + p.children.length, 0)} topics
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="font-mono font-bold text-foreground">{totalConcepts}</span> micro-concepts
           </span>
         </div>
-
-        {highlightId && (
-          <button
-            onClick={() => setHighlightId(null)}
-            className="mt-3 inline-flex items-center gap-1 rounded-full bg-foreground/5 px-2.5 py-1 text-[11px] font-medium text-foreground hover:bg-foreground/10"
-          >
-            Clear path highlight
-          </button>
-        )}
       </div>
 
-      {/* Graph canvas — horizontally scrollable on small screens */}
+      {/* Zoom controls */}
+      <div className="flex items-center gap-1">
+        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom((z) => Math.max(0.5, z - 0.1))}>
+          <ZoomOut className="h-3.5 w-3.5" />
+        </Button>
+        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom((z) => Math.min(1.5, z + 0.1))}>
+          <ZoomIn className="h-3.5 w-3.5" />
+        </Button>
+        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom(1)}>
+          <RotateCcw className="h-3.5 w-3.5" />
+        </Button>
+        <span className="ml-1 text-[11px] text-muted-foreground">{Math.round(zoom * 100)}%</span>
+      </div>
+
+      {/* Map canvas — scrollable + zoomable */}
       <div
-        key={activeKey}
-        className="relative overflow-x-auto rounded-2xl border border-border bg-gradient-to-b from-card/40 to-background p-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
+        ref={containerRef}
+        className="overflow-auto rounded-2xl border border-border bg-gradient-to-b from-card/40 to-background"
+        style={{ maxHeight: "70vh" }}
       >
-        <div className="relative mx-auto" style={{ width, height }}>
-          {/* SVG edges */}
-          <svg
-            className="absolute inset-0 pointer-events-none"
-            width={width}
-            height={height}
-            aria-hidden
-          >
-            {edges.map(({ from, to }) => {
-              const x1 = from.x + NODE_W / 2;
-              const y1 = from.y + NODE_H;
-              const x2 = to.x + NODE_W / 2;
-              const y2 = to.y;
-              const midY = (y1 + y2) / 2;
-              // Cubic curve for nicer branching look
-              const path = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
-              const dimmed = isEdgeDimmed(from.id, to.id);
-              const fromIsDecision = from.kind === "decision";
-              return (
-                <path
-                  key={`${from.id}->${to.id}`}
-                  d={path}
-                  stroke="currentColor"
-                  strokeWidth={dimmed ? 1.5 : 2}
-                  fill="none"
-                  strokeDasharray={fromIsDecision ? "5 4" : undefined}
-                  className={`transition-opacity duration-300 ${
-                    dimmed ? "text-border opacity-40" : "text-primary/60"
-                  }`}
-                />
-              );
-            })}
-          </svg>
-
-          {/* Nodes */}
-          {positioned.map((node) => {
-            const styles = STATUS_STYLES[node.status];
-            const Icon = styles.icon;
-            const isDecision = node.kind === "decision";
-            const dimmed = isDimmed(node.id);
-            const isHighlightRoot = highlightId === node.id;
-
-            return (
-              <button
-                key={node.id}
-                onClick={() => handleNodeClick(node)}
-                style={{
-                  left: node.x,
-                  top: node.y,
-                  width: NODE_W,
-                  height: NODE_H,
-                }}
-                className={`group absolute rounded-2xl border-2 px-3 py-2 text-left transition-all hover:scale-[1.03] hover:shadow-lg hover:ring-4 ${
-                  styles.card
-                } ${styles.ring} ${
-                  isDecision ? "border-dashed bg-foreground/[0.04]" : ""
-                } ${dimmed ? "opacity-40" : "opacity-100"} ${
-                  isHighlightRoot ? "ring-4 ring-primary/40 shadow-xl scale-[1.02]" : ""
-                }`}
-              >
-                <div className="flex items-start gap-2">
-                  <span
-                    className={`mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                      isDecision ? "bg-foreground text-background" : styles.badge
-                    }`}
-                  >
-                    {isDecision ? <GitBranch className="h-3.5 w-3.5" /> : <Icon className="h-3.5 w-3.5" />}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="font-display text-[13px] font-bold leading-tight line-clamp-2">
-                      {node.title}
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px]">
-                      {!isDecision && (
-                        <span className={`rounded-full px-1.5 py-0.5 font-medium ${DIFFICULTY_STYLES[node.difficulty]}`}>
-                          {node.difficulty}
-                        </span>
-                      )}
-                      {!isDecision && (
-                        <span className="inline-flex items-center gap-1 text-muted-foreground">
-                          <Clock className="h-2.5 w-2.5" />
-                          {node.duration}
-                        </span>
-                      )}
-                      {isDecision && (
-                        <span className="rounded-full bg-foreground/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-foreground">
-                          Choose
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+        <div
+          key={activeKey}
+          className="origin-top-left p-6 space-y-4 transition-transform duration-200 animate-in fade-in slide-in-from-bottom-2 duration-300"
+          style={{ transform: `scale(${zoom})`, transformOrigin: "top left", width: `${100 / zoom}%` }}
+        >
+          {activeMap.phases.map((phase, pi) => (
+            <L1PhaseCard
+              key={pi}
+              node={phase}
+              phaseIndex={pi}
+              expandedL2={expandedL2}
+              onToggleL2={handleToggleL2}
+              activeL2Key={activeL2Key}
+              dimmed={false}
+            />
+          ))}
         </div>
-
-        <p className="mt-4 text-center text-[11px] text-muted-foreground">
-          Tap any node to see details and highlight its downstream path. Tap again to clear.
-        </p>
       </div>
 
-      {/* Detail dialog */}
-      <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="max-w-md">
-          {selected && (
-            <>
-              <DialogHeader>
-                <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_STYLES[selected.status].badge}`}>
-                    {(() => {
-                      const I = STATUS_STYLES[selected.status].icon;
-                      return <I className="h-2.5 w-2.5" />;
-                    })()}
-                    {STATUS_STYLES[selected.status].label}
-                  </span>
-                  {selected.kind === "decision" ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-foreground text-background px-2 py-0.5 text-[10px] font-semibold">
-                      <GitBranch className="h-2.5 w-2.5" />
-                      Decision Point
-                    </span>
-                  ) : (
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${DIFFICULTY_STYLES[selected.difficulty]}`}>
-                      {selected.difficulty}
-                    </span>
-                  )}
-                </div>
-                <DialogTitle className="font-display text-xl">{selected.title}</DialogTitle>
-                <DialogDescription className="text-sm text-muted-foreground">
-                  {selected.description}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-4 pt-2">
-                <div className="rounded-xl border border-border bg-muted/30 p-3">
-                  <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                    <TrendingUp className="h-3.5 w-3.5" />
-                    Why it matters
-                  </div>
-                  <p className="text-xs text-muted-foreground">{selected.why}</p>
-                </div>
-
-                {selected.kind !== "decision" && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-xl border border-border p-3">
-                      <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                        Time to learn
-                      </div>
-                      <div className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-foreground">
-                        <Clock className="h-3.5 w-3.5" />
-                        {selected.duration}
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-border p-3">
-                      <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                        Difficulty
-                      </div>
-                      <div className="mt-1 text-sm font-bold text-foreground">{selected.difficulty}</div>
-                    </div>
-                  </div>
-                )}
-
-                {selected.resources.length > 0 && (
-                  <div>
-                    <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                      <BookOpen className="h-3.5 w-3.5" />
-                      Suggested resources
-                    </div>
-                    <div className="space-y-1.5">
-                      {selected.resources.map((r) => (
-                        <a
-                          key={r.url}
-                          href={r.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground transition-colors hover:bg-muted"
-                        >
-                          <span className="font-medium">{r.label}</span>
-                          <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {selected.next && selected.next.length > 1 && (
-                  <div className="rounded-xl border border-dashed border-foreground/20 bg-foreground/[0.03] p-3">
-                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-foreground">
-                      Branches from here
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      This node opens {selected.next.length} different paths. Tap each branch in the map to compare.
-                    </p>
-                  </div>
-                )}
-
-                <Button onClick={() => setSelected(null)} className="w-full" size="sm">
-                  Got it
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <p className="text-center text-[11px] text-muted-foreground">
+        Click phases to expand topics, then click topics to reveal micro-concepts. Hover a concept for details.
+      </p>
     </div>
   );
 }
