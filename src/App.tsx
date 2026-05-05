@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/AppLayout";
 import Home from "./pages/Home.tsx";
 import Index from "./pages/Index.tsx";
+import CareerAdvisor from "./pages/CareerAdvisor.tsx";
 import TestSkills from "./pages/TestSkills.tsx";
 import Roadmap from "./pages/Roadmap.tsx";
 import FindCareers from "./pages/FindCareers.tsx";
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/advisor" element={<CareerAdvisor />} />
             <Route path="/discover" element={<Index />} />
             <Route path="/test-skills" element={<TestSkills />} />
             <Route path="/roadmap" element={<Roadmap />} />
