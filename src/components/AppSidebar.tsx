@@ -1,4 +1,4 @@
-import { Chrome as Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle } from "lucide-react";
+import { Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -18,6 +18,7 @@ const navItems = [
   { title: "Discover Strengths", url: "/discover", icon: Brain },
   { title: "Test Skills", url: "/test-skills", icon: ClipboardCheck },
   { title: "Find Careers", url: "/find-careers", icon: Search },
+  { title: "Career Insights", url: "/insights", icon: BookOpen },
   { title: "Career Roadmap", url: "/roadmap", icon: Map },
   { title: "Our Mission", url: "/mission", icon: Heart },
 ];
