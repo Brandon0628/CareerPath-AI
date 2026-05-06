@@ -1,13 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import {
-  ChevronDown,
-  ChevronRight,
   ExternalLink,
   Layers,
   BookOpen,
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  Maximize,
 } from "lucide-react";
 import {
   Tooltip,
@@ -35,8 +34,8 @@ interface L2Node {
 
 interface L1Node {
   title: string;
-  label: string; // e.g. "Phase 1"
-  color: string; // tailwind border/accent class token
+  label: string;
+  color: string;
   children: L2Node[];
 }
 
@@ -686,135 +685,145 @@ const DOMAIN_BADGE: Record<string, string> = {
 };
 
 /* ================================================================
-   L3 PILL COMPONENT
+   LAYOUT CONSTANTS
    ================================================================ */
-function L3Pill({ node }: { node: L3Node }) {
+const L1_W = 160;
+const L1_H = 60;
+const L2_W = 140;
+const L2_H = 48;
+const L3_W = 120;
+const L3_H = 36;
+const COL_GAP = 80;
+const ROW_GAP_L1 = 40;
+const ROW_GAP_L2 = 16;
+const ROW_GAP_L3 = 8;
+const PADDING = 60;
+
+/* ================================================================
+   LAYOUT CALCULATION
+   ================================================================ */
+interface NodePosition {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+interface LayoutResult {
+  l1Positions: NodePosition[];
+  l2Positions: NodePosition[][]; // l2Positions[phaseIdx][l2Idx]
+  l3Positions: NodePosition[][][]; // l3Positions[phaseIdx][l2Idx][l3Idx]
+  svgWidth: number;
+  svgHeight: number;
+}
+
+function computeLayout(map: CareerMap): LayoutResult {
+  const l1Positions: NodePosition[] = [];
+  const l2Positions: NodePosition[][] = [];
+  const l3Positions: NodePosition[][][] = [];
+
+  let currentY = PADDING;
+
+  for (let pi = 0; pi < map.phases.length; pi++) {
+    const phase = map.phases[pi];
+    const l1X = PADDING;
+    const l1Y = currentY;
+    l1Positions.push({ x: l1X, y: l1Y, w: L1_W, h: L1_H });
+
+    const l2X = l1X + L1_W + COL_GAP;
+    const l2List: NodePosition[] = [];
+    const l3ListForPhase: NodePosition[][] = [];
+
+    let l2CurrentY = l1Y;
+
+    for (let l2i = 0; l2i < phase.children.length; l2i++) {
+      const l2 = phase.children[l2i];
+      const l2Y = l2CurrentY;
+      l2List.push({ x: l2X, y: l2Y, w: L2_W, h: L2_H });
+
+      const l3X = l2X + L2_W + COL_GAP;
+      const l3List: NodePosition[] = [];
+
+      let l3CurrentY = l2Y;
+
+      for (let l3i = 0; l3i < l2.children.length; l3i++) {
+        l3List.push({ x: l3X, y: l3CurrentY, w: L3_W, h: L3_H });
+        l3CurrentY += L3_H + ROW_GAP_L3;
+      }
+
+      l3ListForPhase.push(l3List);
+
+      const l2BlockHeight = Math.max(
+        L2_H,
+        l2.children.length * L3_H + (l2.children.length - 1) * ROW_GAP_L3
+      );
+      l2CurrentY += l2BlockHeight + ROW_GAP_L2;
+    }
+
+    l2Positions.push(l2List);
+    l3Positions.push(l3ListForPhase);
+
+    const phaseHeight = Math.max(
+      L1_H,
+      l2CurrentY - l1Y - ROW_GAP_L2
+    );
+    currentY += phaseHeight + ROW_GAP_L1;
+  }
+
+  const svgWidth = PADDING * 2 + L1_W + COL_GAP + L2_W + COL_GAP + L3_W;
+  const svgHeight = currentY;
+
+  return { l1Positions, l2Positions, l3Positions, svgWidth, svgHeight };
+}
+
+/* ================================================================
+   SVG ARROWHEAD MARKER
+   ================================================================ */
+function ArrowMarker() {
   return (
-    <TooltipProvider delayDuration={200}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="inline-flex cursor-help items-center gap-1 rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[11px] font-medium text-foreground transition-all hover:bg-muted hover:shadow-sm hover:scale-105">
-            {node.title}
-            {node.link && <ExternalLink className="h-2.5 w-2.5 text-muted-foreground" />}
-          </span>
-        </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[220px]">
-          <p className="text-xs font-semibold">{node.title}</p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{node.description}</p>
-          {node.link && (
-            <a href={node.link} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-[11px] text-primary hover:underline">
-              Learn this <ExternalLink className="h-2.5 w-2.5" />
-            </a>
-          )}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <defs>
+      <marker
+        id="arrowhead"
+        markerWidth="8"
+        markerHeight="6"
+        refX="8"
+        refY="3"
+        orient="auto"
+      >
+        <polygon points="0 0, 8 3, 0 6" fill="hsl(220, 15%, 65%)" />
+      </marker>
+    </defs>
   );
 }
 
 /* ================================================================
-   L2 CARD COMPONENT
+   SVG CONNECTION LINE
    ================================================================ */
-function L2Card({ node, isActive, onToggle, dimmed }: {
-  node: L2Node;
-  isActive: boolean;
-  onToggle: () => void;
+function ConnectionLine({
+  fromX,
+  fromY,
+  toX,
+  toY,
+  dimmed,
+}: {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
   dimmed: boolean;
 }) {
+  const midX = fromX + (toX - fromX) * 0.5;
   return (
-    <div className={`transition-opacity duration-300 ${dimmed ? "opacity-40" : "opacity-100"}`}>
-      <button
-        onClick={onToggle}
-        className={`group flex w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-all hover:shadow-md ${
-          isActive
-            ? "border-accent/50 bg-accent/10 shadow-sm"
-            : "border-border bg-card hover:border-accent/30"
-        }`}
-      >
-        <span className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md transition-colors ${
-          isActive ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"
-        }`}>
-          {isActive ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-        </span>
-        <div className="min-w-0 flex-1">
-          <span className="text-[13px] font-semibold text-foreground">{node.title}</span>
-          <span className="ml-2 text-[11px] text-muted-foreground">{node.description}</span>
-        </div>
-        <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-          {node.children.length}
-        </span>
-      </button>
-
-      {isActive && (
-        <div className="mt-2 ml-7 flex flex-wrap gap-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
-          {node.children.map((l3) => (
-            <L3Pill key={l3.title} node={l3} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ================================================================
-   L1 PHASE CARD COMPONENT
-   ================================================================ */
-function L1PhaseCard({ node, phaseIndex, expandedL2, onToggleL2, activeL2Key, dimmed }: {
-  node: L1Node;
-  phaseIndex: number;
-  expandedL2: Set<string>;
-  onToggleL2: (key: string) => void;
-  activeL2Key: string | null;
-  dimmed: boolean;
-}) {
-  const [collapsed, setCollapsed] = useState(false);
-
-  return (
-    <div className={`transition-opacity duration-300 ${dimmed ? "opacity-40" : "opacity-100"}`}>
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className={`group flex w-full items-center gap-3 rounded-2xl border-2 px-5 py-4 text-left transition-all hover:shadow-lg ${node.color} ${
-          collapsed ? "" : "shadow-sm"
-        }`}
-      >
-        <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-foreground/10 text-foreground">
-          <Layers className="h-4 w-4" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground">
-              {node.label}
-            </span>
-            <h3 className="font-display text-base font-bold text-foreground sm:text-lg">{node.title}</h3>
-          </div>
-          <p className="mt-0.5 text-[12px] text-muted-foreground">
-            {node.children.length} topics · {node.children.reduce((sum, c) => sum + c.children.length, 0)} concepts
-          </p>
-        </div>
-        <span className="text-muted-foreground transition-transform">
-          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-        </span>
-      </button>
-
-      {!collapsed && (
-        <div className="mt-3 ml-4 space-y-2 border-l-2 border-border pl-4 animate-in fade-in slide-in-from-top-2 duration-300">
-          {node.children.map((l2, l2i) => {
-            const key = `${phaseIndex}-${l2i}`;
-            const isActive = expandedL2.has(key);
-            const l2Dimmed = activeL2Key !== null && activeL2Key !== key;
-            return (
-              <L2Card
-                key={key}
-                node={l2}
-                isActive={isActive}
-                onToggle={() => onToggleL2(key)}
-                dimmed={l2Dimmed}
-              />
-            );
-          })}
-        </div>
-      )}
-    </div>
+    <line
+      x1={fromX}
+      y1={fromY}
+      x2={toX}
+      y2={toY}
+      stroke={dimmed ? "hsl(220, 15%, 90%)" : "hsl(220, 15%, 65%)"}
+      strokeWidth={dimmed ? 1 : 1.5}
+      markerEnd={dimmed ? undefined : "url(#arrowhead)"}
+      className="transition-all duration-300"
+    />
   );
 }
 
@@ -823,38 +832,68 @@ function L1PhaseCard({ node, phaseIndex, expandedL2, onToggleL2, activeL2Key, di
    ================================================================ */
 export function RoadmapMapView() {
   const [activeKey, setActiveKey] = useState(CAREER_MAPS[0].key);
-  const [expandedL2, setExpandedL2] = useState<Set<string>>(new Set());
-  const [activeL2Key, setActiveL2Key] = useState<string | null>(null);
+  const [highlightedPhase, setHighlightedPhase] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   const activeMap = CAREER_MAPS.find((c) => c.key === activeKey)!;
+  const layout = computeLayout(activeMap);
 
-  // Reset state when switching careers
   useEffect(() => {
-    setExpandedL2(new Set());
-    setActiveL2Key(null);
+    setHighlightedPhase(null);
     setZoom(1);
+    setPan({ x: 0, y: 0 });
   }, [activeKey]);
-
-  const handleToggleL2 = useCallback((key: string) => {
-    setExpandedL2((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-        if (activeL2Key === key) setActiveL2Key(null);
-      } else {
-        next.add(key);
-        setActiveL2Key(key);
-      }
-      return next;
-    });
-  }, [activeL2Key]);
 
   const totalConcepts = activeMap.phases.reduce(
     (sum, p) => sum + p.children.reduce((s, c) => s + c.children.length, 0),
     0,
   );
+
+  // Pan handlers
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.button !== 0) return;
+      setIsDragging(true);
+      setDragStart({ x: e.clientX, y: e.clientY });
+      setPanStart({ x: pan.x, y: pan.y });
+    },
+    [pan],
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+      setPan({ x: panStart.x + dx, y: panStart.y + dy });
+    },
+    [isDragging, dragStart, panStart],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const handleBackgroundClick = useCallback(() => {
+    setHighlightedPhase(null);
+  }, []);
+
+  const handleL1Click = useCallback((phaseIdx: number) => {
+    setHighlightedPhase((prev) => (prev === phaseIdx ? null : phaseIdx));
+  }, []);
+
+  const resetView = useCallback(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, []);
+
+  const isDimmed = (phaseIdx: number) =>
+    highlightedPhase !== null && highlightedPhase !== phaseIdx;
 
   return (
     <div className="space-y-6">
@@ -879,7 +918,7 @@ export function RoadmapMapView() {
       </div>
 
       {/* Header */}
-      <div className="rounded-2xl border border-border bg-card/60 p-5 backdrop-blur-sm">
+      <div className="rounded-2xl border border-border/50 bg-card/60 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${DOMAIN_BADGE[activeMap.domain] || "bg-muted text-muted-foreground"}`}>
             {activeMap.domain}
@@ -904,45 +943,254 @@ export function RoadmapMapView() {
 
       {/* Zoom controls */}
       <div className="flex items-center gap-1">
-        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom((z) => Math.max(0.5, z - 0.1))}>
+        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom((z) => Math.max(0.3, z - 0.15))}>
           <ZoomOut className="h-3.5 w-3.5" />
         </Button>
-        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom((z) => Math.min(1.5, z + 0.1))}>
+        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom((z) => Math.min(2, z + 0.15))}>
           <ZoomIn className="h-3.5 w-3.5" />
         </Button>
-        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setZoom(1)}>
+        <Button variant="outline" size="icon" className="h-7 w-7" onClick={resetView}>
           <RotateCcw className="h-3.5 w-3.5" />
         </Button>
         <span className="ml-1 text-[11px] text-muted-foreground">{Math.round(zoom * 100)}%</span>
       </div>
 
-      {/* Map canvas — scrollable + zoomable */}
+      {/* Canvas */}
       <div
         ref={containerRef}
-        className="overflow-auto rounded-2xl border border-border bg-gradient-to-b from-card/40 to-background"
-        style={{ maxHeight: "70vh" }}
+        className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card/30 to-background select-none"
+        style={{ height: "80vh" }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onClick={(e) => {
+          if (e.target === e.currentTarget || (e.target as HTMLElement).tagName === "svg" || (e.target as HTMLElement).tagName === "rect") {
+            handleBackgroundClick();
+          }
+        }}
       >
         <div
-          key={activeKey}
-          className="origin-top-left p-6 space-y-4 transition-transform duration-200 animate-in fade-in slide-in-from-bottom-2 duration-300"
-          style={{ transform: `scale(${zoom})`, transformOrigin: "top left", width: `${100 / zoom}%` }}
+          className="origin-top-left transition-transform duration-100"
+          style={{
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+          }}
         >
-          {activeMap.phases.map((phase, pi) => (
-            <L1PhaseCard
-              key={pi}
-              node={phase}
-              phaseIndex={pi}
-              expandedL2={expandedL2}
-              onToggleL2={handleToggleL2}
-              activeL2Key={activeL2Key}
-              dimmed={false}
+          <svg
+            width={layout.svgWidth}
+            height={layout.svgHeight}
+            className="block"
+            style={{ minWidth: layout.svgWidth, minHeight: layout.svgHeight }}
+          >
+            <ArrowMarker />
+
+            {/* Background click target */}
+            <rect
+              x={0}
+              y={0}
+              width={layout.svgWidth}
+              height={layout.svgHeight}
+              fill="transparent"
+              className="cursor-grab"
             />
-          ))}
+
+            {/* Connection lines: L1 → L2 */}
+            {layout.l1Positions.map((l1, pi) => {
+              const dimmed = isDimmed(pi);
+              return layout.l2Positions[pi]?.map((l2, l2i) => (
+                <ConnectionLine
+                  key={`l1-l2-${pi}-${l2i}`}
+                  fromX={l1.x + l1.w}
+                  fromY={l1.y + l1.h / 2}
+                  toX={l2.x}
+                  toY={l2.y + l2.h / 2}
+                  dimmed={dimmed}
+                />
+              ));
+            })}
+
+            {/* Connection lines: L2 → L3 */}
+            {layout.l2Positions.map((l2List, pi) => {
+              const dimmed = isDimmed(pi);
+              return l2List.map((l2, l2i) =>
+                layout.l3Positions[pi]?.[l2i]?.map((l3, l3i) => (
+                  <ConnectionLine
+                    key={`l2-l3-${pi}-${l2i}-${l3i}`}
+                    fromX={l2.x + l2.w}
+                    fromY={l2.y + l2.h / 2}
+                    toX={l3.x}
+                    toY={l3.y + l3.h / 2}
+                    dimmed={dimmed}
+                  />
+                ))
+              );
+            })}
+
+            {/* L1 Nodes */}
+            {layout.l1Positions.map((pos, pi) => {
+              const phase = activeMap.phases[pi];
+              const dimmed = isDimmed(pi);
+              return (
+                <g
+                  key={`l1-${pi}`}
+                  className={`cursor-pointer transition-opacity duration-300 ${dimmed ? "opacity-30" : "opacity-100"}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleL1Click(pi);
+                  }}
+                >
+                  <rect
+                    x={pos.x}
+                    y={pos.y}
+                    width={pos.w}
+                    height={pos.h}
+                    rx={12}
+                    ry={12}
+                    fill="hsl(220, 70%, 50%)"
+                    stroke="hsl(220, 70%, 40%)"
+                    strokeWidth={1.5}
+                  />
+                  <text
+                    x={pos.x + pos.w / 2}
+                    y={pos.y + 20}
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize={10}
+                    fontWeight={700}
+                    fontFamily="inherit"
+                  >
+                    {phase.label}
+                  </text>
+                  <text
+                    x={pos.x + pos.w / 2}
+                    y={pos.y + 38}
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize={13}
+                    fontWeight={700}
+                    fontFamily="inherit"
+                  >
+                    {phase.title}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* L2 Nodes */}
+            {layout.l2Positions.map((l2List, pi) => {
+              const dimmed = isDimmed(pi);
+              return l2List.map((pos, l2i) => {
+                const l2 = activeMap.phases[pi].children[l2i];
+                return (
+                  <g
+                    key={`l2-${pi}-${l2i}`}
+                    className={`transition-opacity duration-300 ${dimmed ? "opacity-30" : "opacity-100"}`}
+                  >
+                    <rect
+                      x={pos.x}
+                      y={pos.y}
+                      width={pos.w}
+                      height={pos.h}
+                      rx={8}
+                      ry={8}
+                      fill="white"
+                      stroke="hsl(220, 70%, 50%)"
+                      strokeWidth={1.5}
+                    />
+                    <text
+                      x={pos.x + pos.w / 2}
+                      y={pos.y + 20}
+                      textAnchor="middle"
+                      fill="hsl(220, 25%, 14%)"
+                      fontSize={11}
+                      fontWeight={600}
+                      fontFamily="inherit"
+                    >
+                      {l2.title.length > 16 ? l2.title.slice(0, 15) + "..." : l2.title}
+                    </text>
+                    <text
+                      x={pos.x + pos.w / 2}
+                      y={pos.y + 35}
+                      textAnchor="middle"
+                      fill="hsl(220, 10%, 45%)"
+                      fontSize={8}
+                      fontFamily="inherit"
+                    >
+                      {l2.children.length} concepts
+                    </text>
+                  </g>
+                );
+              });
+            })}
+
+            {/* L3 Nodes */}
+            {layout.l3Positions.map((l2List, pi) => {
+              const dimmed = isDimmed(pi);
+              return l2List.map((l3List, l2i) =>
+                l3List.map((pos, l3i) => {
+                  const l3 = activeMap.phases[pi].children[l2i].children[l3i];
+                  return (
+                    <TooltipProvider key={`l3-${pi}-${l2i}-${l3i}`} delayDuration={200}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <g
+                            className={`cursor-help transition-opacity duration-300 ${dimmed ? "opacity-30" : "opacity-100"}`}
+                          >
+                            <rect
+                              x={pos.x}
+                              y={pos.y}
+                              width={pos.w}
+                              height={pos.h}
+                              rx={18}
+                              ry={18}
+                              fill="hsl(220, 15%, 95%)"
+                              stroke="hsl(220, 15%, 88%)"
+                              strokeWidth={1}
+                            />
+                            <text
+                              x={pos.x + pos.w / 2}
+                              y={pos.y + pos.h / 2 + 4}
+                              textAnchor="middle"
+                              fill="hsl(220, 25%, 14%)"
+                              fontSize={9}
+                              fontWeight={500}
+                              fontFamily="inherit"
+                            >
+                              {l3.title.length > 14 ? l3.title.slice(0, 13) + "..." : l3.title}
+                            </text>
+                          </g>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-[220px]">
+                          <p className="text-xs font-semibold">{l3.title}</p>
+                          <p className="mt-0.5 text-[11px] text-muted-foreground">{l3.description}</p>
+                          {l3.link && (
+                            <a href={l3.link} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-[11px] text-primary hover:underline">
+                              Learn this <ExternalLink className="h-2.5 w-2.5" />
+                            </a>
+                          )}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  );
+                })
+              );
+            })}
+          </svg>
         </div>
+
+        {/* Reset view button */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute bottom-3 right-3 h-8 w-8 rounded-full bg-background shadow-md"
+          onClick={resetView}
+        >
+          <Maximize className="h-3.5 w-3.5" />
+        </Button>
       </div>
 
       <p className="text-center text-[11px] text-muted-foreground">
-        Click phases to expand topics, then click topics to reveal micro-concepts. Hover a concept for details.
+        Click a phase to highlight its branch. Drag to pan. Use +/- to zoom. Hover concepts for details.
       </p>
     </div>
   );
