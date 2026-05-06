@@ -29,7 +29,7 @@ const Home = () => {
 
         {/* Stats Row */}
         <div className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+          <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-card p-4 shadow-sm">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
               <GraduationCap className="h-5 w-5 text-primary" />
             </div>
@@ -38,7 +38,7 @@ const Home = () => {
               <p className="text-xs text-muted-foreground">Tech, Healthcare, Business & more</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+          <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-card p-4 shadow-sm">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary/10">
               <Bot className="h-5 w-5 text-secondary" />
             </div>
@@ -47,7 +47,7 @@ const Home = () => {
               <p className="text-xs text-muted-foreground">Questions generated fresh every session</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+          <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-card p-4 shadow-sm">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10">
               <Route className="h-5 w-5 text-accent" />
             </div>
@@ -165,7 +165,7 @@ const Home = () => {
             Built for the UN Sustainable Development Goals
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Card className="border-l-4 border-l-emerald-500">
+            <Card className="border border-border/50 border-l-4 border-l-emerald-500 shadow-sm">
               <CardContent className="p-6 space-y-2">
                 <h3 className="text-lg font-display font-semibold text-foreground">
                   📚 SDG 4: Quality Education
@@ -175,7 +175,7 @@ const Home = () => {
                 </p>
               </CardContent>
             </Card>
-            <Card className="border-l-4 border-l-blue-500">
+            <Card className="border border-border/50 border-l-4 border-l-blue-500 shadow-sm">
               <CardContent className="p-6 space-y-2">
                 <h3 className="text-lg font-display font-semibold text-foreground">
                   💼 SDG 8: Decent Work & Economic Growth

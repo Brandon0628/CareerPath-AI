@@ -31,7 +31,13 @@ export function AppSidebar() {
     <Sidebar collapsible="offcanvas">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <div className="px-4 py-5 border-b border-sidebar-border">
+            <span className="text-sm font-bold text-white">GuidePost</span>
+            <span className="text-sm font-bold text-primary">Genius</span>
+          </div>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-white/50">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -40,8 +46,8 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end
-                      className="hover:bg-muted/50"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                      className="text-white/70 hover:text-white hover:bg-white/10"
+                      activeClassName="bg-primary text-primary-foreground font-medium hover:bg-primary/90 hover:text-primary-foreground"
                     >
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.title}</span>
