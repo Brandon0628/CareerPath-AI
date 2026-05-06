@@ -241,13 +241,15 @@ const TestSkills = () => {
             </div>
 
             {isGenerating && questions.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-12 text-center">
-                <RefreshCw className="mb-3 h-6 w-6 animate-spin text-primary" />
-                <p className="text-sm font-medium text-card-foreground">
-                  Generating fresh AI questions…
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-border/50 bg-card p-16 text-center shadow-sm animate-pulse">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                  <RefreshCw className="h-7 w-7 animate-spin text-primary" />
+                </div>
+                <p className="text-base font-bold text-card-foreground">
+                  Generating your questions...
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  This usually takes a few seconds.
+                <p className="mt-2 max-w-xs text-sm text-muted-foreground">
+                  Our AI is crafting personalised questions for you — this takes a few seconds.
                 </p>
               </div>
             ) : (

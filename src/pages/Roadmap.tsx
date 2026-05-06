@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CAREER_ROADMAPS } from "@/lib/scoring";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, List, MapIcon } from "lucide-react";
+import { ArrowRight, GraduationCap, List, Map as MapIcon } from "lucide-react";
 import { RoadmapMapView } from "@/components/RoadmapMapView";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const LEVEL_STYLES: Record<string, { bg: string; border: string; dot: string }> = {
   entry: { bg: "bg-primary/5", border: "border-primary/30", dot: "bg-primary" },
@@ -22,6 +23,37 @@ type ViewMode = "list" | "map";
 
 const Roadmap = () => {
   const [view, setView] = useState<ViewMode>("list");
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSkeleton(false), 800);
+    return () => clearTimeout(timer);
+  }, [view]);
+
+  if (showSkeleton) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <div className="mb-6 flex items-center gap-3">
+            <Skeleton className="h-10 w-10 rounded-xl" />
+            <div>
+              <Skeleton className="mb-2 h-7 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+          </div>
+          <div className="mb-6 flex gap-2">
+            <Skeleton className="h-8 w-24 rounded-md" />
+            <Skeleton className="h-8 w-24 rounded-md" />
+          </div>
+          <div className="space-y-6">
+            <Skeleton className="h-40 w-full rounded-2xl" />
+            <Skeleton className="h-40 w-full rounded-2xl" />
+            <Skeleton className="h-40 w-full rounded-2xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

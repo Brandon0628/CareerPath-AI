@@ -8,14 +8,14 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* SDG Pill Banner */}
-        <div className="mb-8 flex justify-center">
+        <div className="mb-8 flex justify-center opacity-0 animate-fade-in-up">
           <span className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-500/15 to-teal-500/15 px-4 py-1.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-500/20">
             🌍 Supporting UN SDG 4: Quality Education & SDG 8: Decent Work and Economic Growth
           </span>
         </div>
 
         {/* Hero */}
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
             <Compass className="h-7 w-7" />
           </div>
@@ -28,7 +28,7 @@ const Home = () => {
         </div>
 
         {/* Stats Row */}
-        <div className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "200ms" }}>
           <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-card p-4 shadow-sm">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
               <GraduationCap className="h-5 w-5 text-primary" />
@@ -59,7 +59,7 @@ const Home = () => {
         </div>
 
         {/* Two main options */}
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 opacity-0 animate-fade-in-up" style={{ animationDelay: "300ms" }}>
           {/* Discover Your Strengths */}
           <Link to="/discover" className="group">
             <div className="relative h-full overflow-hidden rounded-2xl border-2 border-primary/20 bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-lg">
@@ -130,7 +130,7 @@ const Home = () => {
         </div>
 
         {/* Find Careers by Skills */}
-        <Link to="/find-careers" className="group mt-6 block">
+        <Link to="/find-careers" className="group mt-6 block opacity-0 animate-fade-in-up" style={{ animationDelay: "400ms" }}>
           <div className="rounded-2xl border-2 border-accent/20 bg-card p-6 shadow-sm transition-all hover:border-accent/50 hover:shadow-lg">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/10">
@@ -150,7 +150,7 @@ const Home = () => {
         </Link>
 
         {/* Career paths preview */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: "500ms" }}>
           <Link to="/roadmap">
             <Button variant="outline" className="gap-2">
               <Map className="h-4 w-4" />
@@ -160,7 +160,7 @@ const Home = () => {
         </div>
 
         {/* SDG Section */}
-        <div className="mt-16">
+        <div className="mt-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "600ms" }}>
           <h2 className="mb-6 text-center font-display text-2xl font-bold text-foreground">
             Built for the UN Sustainable Development Goals
           </h2>
