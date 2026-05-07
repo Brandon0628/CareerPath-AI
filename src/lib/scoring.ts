@@ -418,72 +418,83 @@ export const CAREER_ROADMAPS: CareerRoadmap[] = [
 export interface Question {
   id: number;
   text: string;
+  dimension: "EI" | "SN" | "TF" | "JP";
+  pole: "E" | "I" | "S" | "N" | "T" | "F" | "J" | "P";
   skillMap: { skill: SkillName; weight: number }[];
-  scoringNote: string;
 }
 
 export const QUESTIONS: Question[] = [
-  {
-    id: 1,
-    text: "I enjoy writing code or building things with programming languages.",
-    skillMap: [{ skill: "Coding", weight: 3 }, { skill: "Debugging", weight: 1 }],
-    scoringNote: "High → boosts Coding (+3×) & Debugging (+1×) → Software Dev",
-  },
-  {
-    id: 2,
-    text: "When something breaks, I like figuring out exactly what went wrong.",
-    skillMap: [{ skill: "Debugging", weight: 3 }, { skill: "Problem-solving", weight: 2 }],
-    scoringNote: "High → boosts Debugging (+3×) & Problem-solving (+2×) → Software Dev, all Tech",
-  },
-  {
-    id: 3,
-    text: "I'm comfortable using spreadsheets to organize and analyze data.",
-    skillMap: [{ skill: "Excel", weight: 3 }, { skill: "Numbers", weight: 1 }],
-    scoringNote: "High → boosts Excel (+3×) → Data Analyst, Numbers (+1×) → Accountant",
-  },
-  {
-    id: 4,
-    text: "I like writing queries or commands to pull information from databases.",
-    skillMap: [{ skill: "SQL", weight: 3 }, { skill: "Problem-solving", weight: 1 }],
-    scoringNote: "High → boosts SQL (+3×) → Data Analyst",
-  },
-  {
-    id: 5,
-    text: "I'm interested in how computer networks and the internet work.",
-    skillMap: [{ skill: "Networking", weight: 3 }, { skill: "Risk Analysis", weight: 1 }],
-    scoringNote: "High → boosts Networking (+3×) & Risk Analysis (+1×) → Cybersecurity",
-  },
-  {
-    id: 6,
-    text: "I think about what could go wrong in a system and how to prevent it.",
-    skillMap: [{ skill: "Risk Analysis", weight: 3 }, { skill: "Problem-solving", weight: 1 }, { skill: "Attention to Detail", weight: 1 }],
-    scoringNote: "High → boosts Risk Analysis (+3×) → Cybersecurity, also Attention to Detail → Accountant",
-  },
-  {
-    id: 7,
-    text: "I enjoy working with numbers, calculations, and financial figures.",
-    skillMap: [{ skill: "Numbers", weight: 3 }, { skill: "Analytical Thinking", weight: 1 }],
-    scoringNote: "High → boosts Numbers (+3×) & Analytical Thinking (+1×) → Accountant",
-  },
-  {
-    id: 8,
-    text: "I'm very careful and precise — I double-check my work for errors.",
-    skillMap: [{ skill: "Attention to Detail", weight: 3 }, { skill: "Debugging", weight: 1 }],
-    scoringNote: "High → boosts Attention to Detail (+3×) → Accountant, Debugging (+1×) → Software Dev",
-  },
-  {
-    id: 9,
-    text: "I enjoy breaking down complex problems into smaller, logical steps.",
-    skillMap: [{ skill: "Problem-solving", weight: 3 }, { skill: "Analytical Thinking", weight: 2 }],
-    scoringNote: "High → boosts Problem-solving (+3×) → all Tech careers, Analytical Thinking (+2×) → Accountant",
-  },
-  {
-    id: 10,
-    text: "I like analyzing information to find trends, patterns, or insights.",
-    skillMap: [{ skill: "Analytical Thinking", weight: 3 }, { skill: "Excel", weight: 1 }, { skill: "Risk Analysis", weight: 1 }],
-    scoringNote: "High → boosts Analytical Thinking (+3×) → Accountant, Excel → Data Analyst, Risk Analysis → Cybersecurity",
-  },
+  // ── E/I: EXTRAVERSION vs INTROVERSION ──
+  { id:1, text:"I feel energized after spending time with a large group of people.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:2},{skill:"Leadership",weight:1}] },
+  { id:2, text:"I enjoy presenting my ideas to an audience.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:2},{skill:"Leadership",weight:2}] },
+  { id:3, text:"I prefer group projects over working alone.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:2},{skill:"Leadership",weight:1}] },
+  { id:4, text:"I find it easy to start conversations with people I don't know.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:3}] },
+  { id:5, text:"I like taking the lead in group discussions or activities.", dimension:"EI", pole:"E", skillMap:[{skill:"Leadership",weight:3},{skill:"Communication",weight:1}] },
+  { id:6, text:"I prefer working alone where I can fully concentrate.", dimension:"EI", pole:"I", skillMap:[{skill:"Coding",weight:2},{skill:"Research",weight:2}] },
+  { id:7, text:"I need quiet, uninterrupted time to do my best thinking.", dimension:"EI", pole:"I", skillMap:[{skill:"Analytical Thinking",weight:2},{skill:"Research",weight:1}] },
+  { id:8, text:"I feel drained after long periods of socializing.", dimension:"EI", pole:"I", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Research",weight:1}] },
+  { id:9, text:"I prefer to think things through carefully before speaking.", dimension:"EI", pole:"I", skillMap:[{skill:"Analytical Thinking",weight:2},{skill:"Risk Analysis",weight:1}] },
+  { id:10, text:"I prefer one-on-one conversations over large group discussions.", dimension:"EI", pole:"I", skillMap:[{skill:"Empathy",weight:2},{skill:"Communication",weight:1}] },
+
+  // ── S/N: SENSING vs INTUITION ──
+  { id:11, text:"I prefer dealing with concrete facts and real-world details.", dimension:"SN", pole:"S", skillMap:[{skill:"Attention to Detail",weight:3},{skill:"Excel",weight:1}] },
+  { id:12, text:"I like following established methods and proven procedures.", dimension:"SN", pole:"S", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Lab Techniques",weight:2}] },
+  { id:13, text:"I enjoy hands-on, practical tasks more than abstract theories.", dimension:"SN", pole:"S", skillMap:[{skill:"Patient Care",weight:2},{skill:"Lab Techniques",weight:2}] },
+  { id:14, text:"I trust direct experience and observation over gut instinct.", dimension:"SN", pole:"S", skillMap:[{skill:"Excel",weight:2},{skill:"Numbers",weight:1}] },
+  { id:15, text:"I prefer step-by-step instructions when learning something new.", dimension:"SN", pole:"S", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Debugging",weight:2}] },
+  { id:16, text:"I enjoy thinking about future possibilities and what could be.", dimension:"SN", pole:"N", skillMap:[{skill:"Design Thinking",weight:2},{skill:"Risk-taking",weight:1}] },
+  { id:17, text:"I love brainstorming creative or unconventional solutions.", dimension:"SN", pole:"N", skillMap:[{skill:"Design Thinking",weight:3},{skill:"SEO",weight:1}] },
+  { id:18, text:"I naturally think about the big picture rather than the fine details.", dimension:"SN", pole:"N", skillMap:[{skill:"Leadership",weight:2},{skill:"Financial Literacy",weight:1}] },
+  { id:19, text:"I enjoy exploring abstract ideas, patterns, and theories.", dimension:"SN", pole:"N", skillMap:[{skill:"Research",weight:2},{skill:"Analytical Thinking",weight:2}] },
+  { id:20, text:"I get bored quickly with repetitive, routine tasks.", dimension:"SN", pole:"N", skillMap:[{skill:"Storytelling",weight:2},{skill:"User Research",weight:1}] },
+
+  // ── T/F: THINKING vs FEELING ──
+  { id:21, text:"I make decisions based on logic rather than emotions.", dimension:"TF", pole:"T", skillMap:[{skill:"Analytical Thinking",weight:3},{skill:"Problem-solving",weight:2}] },
+  { id:22, text:"I enjoy analyzing data to find the most efficient solution.", dimension:"TF", pole:"T", skillMap:[{skill:"SQL",weight:2},{skill:"Data Analysis",weight:2}] },
+  { id:23, text:"I prefer objective feedback over emotional encouragement.", dimension:"TF", pole:"T", skillMap:[{skill:"Analytical Thinking",weight:2},{skill:"Debugging",weight:1}] },
+  { id:24, text:"When solving a problem, I focus on facts and evidence.", dimension:"TF", pole:"T", skillMap:[{skill:"Problem-solving",weight:3},{skill:"Risk Analysis",weight:1}] },
+  { id:25, text:"I value accuracy and correctness over keeping the peace.", dimension:"TF", pole:"T", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Numbers",weight:2}] },
+  { id:26, text:"I care deeply about how my decisions affect other people.", dimension:"TF", pole:"F", skillMap:[{skill:"Empathy",weight:3},{skill:"Communication",weight:2}] },
+  { id:27, text:"I often put others' needs before my own.", dimension:"TF", pole:"F", skillMap:[{skill:"Patient Care",weight:3},{skill:"Empathy",weight:2}] },
+  { id:28, text:"I'm good at reading people's emotions and responding to them.", dimension:"TF", pole:"F", skillMap:[{skill:"Empathy",weight:3},{skill:"Communication",weight:2}] },
+  { id:29, text:"Helping others and making a real difference motivates me.", dimension:"TF", pole:"F", skillMap:[{skill:"Patient Care",weight:2},{skill:"Empathy",weight:2},{skill:"Communication",weight:1}] },
+  { id:30, text:"I prefer maintaining harmony in a team over pointing out flaws.", dimension:"TF", pole:"F", skillMap:[{skill:"Communication",weight:2},{skill:"Empathy",weight:2}] },
+
+  // ── J/P: JUDGING vs PERCEIVING ──
+  { id:31, text:"I prefer having a clear plan and sticking to it.", dimension:"JP", pole:"J", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Numbers",weight:1}] },
+  { id:32, text:"I feel uncomfortable when things are disorganized or unclear.", dimension:"JP", pole:"J", skillMap:[{skill:"Attention to Detail",weight:3},{skill:"Risk Analysis",weight:1}] },
+  { id:33, text:"I like to complete tasks well before the deadline.", dimension:"JP", pole:"J", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Financial Literacy",weight:1}] },
+  { id:34, text:"I prefer structured environments with clear rules and expectations.", dimension:"JP", pole:"J", skillMap:[{skill:"Numbers",weight:2},{skill:"Analytical Thinking",weight:1}] },
+  { id:35, text:"I make lists and schedules to stay organized.", dimension:"JP", pole:"J", skillMap:[{skill:"Excel",weight:2},{skill:"Attention to Detail",weight:2}] },
+  { id:36, text:"I enjoy going with the flow and adapting to new situations.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:2},{skill:"Storytelling",weight:1}] },
+  { id:37, text:"I like keeping my options open rather than committing too early.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:3},{skill:"Design Thinking",weight:1}] },
+  { id:38, text:"I often do my best work under pressure or close to a deadline.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:2},{skill:"Copywriting",weight:1}] },
+  { id:39, text:"I prefer flexible, open-ended tasks over rigid structured ones.", dimension:"JP", pole:"P", skillMap:[{skill:"Design Thinking",weight:2},{skill:"User Research",weight:2}] },
+  { id:40, text:"I enjoy starting new projects, even if I don't always finish them.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:2},{skill:"Leadership",weight:1}] },
 ];
+
+export const MBTI_PROFILES: Record<string, {
+  nickname: string;
+  workStyle: string;
+  suitableRoles: string[];
+}> = {
+  "INTJ": { nickname: "The Architect", workStyle: "You work best independently with full autonomy. You prefer long-term strategy over day-to-day tasks and thrive in environments where your analytical mind is challenged.", suitableRoles: ["Data Analyst", "Cybersecurity Analyst", "Business Analyst"] },
+  "INTP": { nickname: "The Thinker", workStyle: "You love exploring ideas and solving complex problems. You work best alone, prefer logic over routine, and need intellectual freedom to do your best work.", suitableRoles: ["Software Developer", "Data Analyst", "Cybersecurity Analyst"] },
+  "ENTJ": { nickname: "The Commander", workStyle: "You are a natural leader who thrives on setting goals and driving results. You prefer structured environments where your decisiveness and vision can lead a team forward.", suitableRoles: ["Business Analyst", "Entrepreneur", "Digital Marketer"] },
+  "ENTP": { nickname: "The Debater", workStyle: "You are energized by new ideas and love challenging the status quo. You thrive in fast-paced, creative environments and are great at spotting opportunities others miss.", suitableRoles: ["Entrepreneur", "Software Developer", "Digital Marketer"] },
+  "INFJ": { nickname: "The Advocate", workStyle: "You are driven by a deep sense of purpose and empathy. You work best in meaningful roles where your insights and care for others can make a real difference.", suitableRoles: ["Psychologist", "Content Creator", "Nurse"] },
+  "INFP": { nickname: "The Mediator", workStyle: "You are creative and deeply values-driven. You thrive in roles that allow personal expression and are motivated by helping others and contributing to something meaningful.", suitableRoles: ["Psychologist", "Graphic Designer", "Content Creator"] },
+  "ENFJ": { nickname: "The Protagonist", workStyle: "You are a natural people person who inspires others. You thrive in roles involving communication, mentoring, and building connections.", suitableRoles: ["Psychologist", "Digital Marketer", "Nurse"] },
+  "ENFP": { nickname: "The Campaigner", workStyle: "You are enthusiastic and creative with a talent for connecting with people. You thrive in dynamic roles where you can express ideas and motivate others.", suitableRoles: ["Digital Marketer", "Content Creator", "Entrepreneur"] },
+  "ISTJ": { nickname: "The Inspector", workStyle: "You are dependable, precise and hardworking. You thrive in structured roles with clear responsibilities and take pride in delivering accurate, reliable work.", suitableRoles: ["Accountant", "Medical Lab Technologist", "Cybersecurity Analyst"] },
+  "ISFJ": { nickname: "The Protector", workStyle: "You are caring, detail-oriented and deeply loyal. You work best in stable, supportive environments where your dedication and attention to others can shine.", suitableRoles: ["Nurse", "Accountant", "Medical Lab Technologist"] },
+  "ESTJ": { nickname: "The Director", workStyle: "You are organized, decisive and value clear processes. You excel in structured environments where you can manage systems, lead teams, and deliver consistent results.", suitableRoles: ["Business Analyst", "Accountant", "Digital Marketer"] },
+  "ESFJ": { nickname: "The Caregiver", workStyle: "You are warm, organized and love supporting others. You thrive in team environments where your ability to connect and care for people creates real impact.", suitableRoles: ["Nurse", "Digital Marketer", "Content Creator"] },
+  "ISTP": { nickname: "The Craftsman", workStyle: "You are practical, observant and love understanding how things work. You prefer hands-on problem-solving and technical challenges over social or abstract tasks.", suitableRoles: ["Cybersecurity Analyst", "UI/UX Designer", "Software Developer"] },
+  "ISFP": { nickname: "The Artist", workStyle: "You are gentle, creative and highly observant. You work best in flexible, visual environments where you can express your aesthetic sensibility and work at your own pace.", suitableRoles: ["UI/UX Designer", "Graphic Designer", "Content Creator"] },
+  "ESTP": { nickname: "The Entrepreneur", workStyle: "You are bold, energetic and action-oriented. You thrive in fast-paced environments where you can take risks, think on your feet and make things happen quickly.", suitableRoles: ["Entrepreneur", "Digital Marketer", "Business Analyst"] },
+  "ESFP": { nickname: "The Performer", workStyle: "You are spontaneous, energetic and love being in the moment. You thrive in creative, social roles where your energy, storytelling and charm can engage an audience.", suitableRoles: ["Content Creator", "Digital Marketer", "UI/UX Designer"] },
+};
 
 // ===== STAGE 2: MCQ QUIZ QUESTIONS =====
 
@@ -820,6 +831,10 @@ export function calculateStage1Results(answers: Record<number, number>): {
   domains: DomainScore[];
   topDomain: string;
   topCareers: CareerMatch[];
+  mbtiType: string;
+  mbtiNickname: string;
+  mbtiWorkStyle: string;
+  mbtiSuitableRoles: string[];
 } {
   const skillScores: Record<string, { score: number; maxScore: number }> = {};
   ALL_SKILLS.forEach((s) => (skillScores[s] = { score: 0, maxScore: 0 }));
@@ -831,6 +846,28 @@ export function calculateStage1Results(answers: Record<number, number>): {
       skillScores[skill].maxScore += 4 * weight;
     });
   });
+
+  // Calculate MBTI type from dimension scores
+  const dimScores: Record<string, { left: number; right: number }> = {
+    EI: { left: 0, right: 0 }, // left=E, right=I
+    SN: { left: 0, right: 0 }, // left=S, right=N
+    TF: { left: 0, right: 0 }, // left=T, right=F
+    JP: { left: 0, right: 0 }, // left=J, right=P
+  };
+  const leftPoles = ["E","S","T","J"];
+  QUESTIONS.forEach((q) => {
+    const val = answers[q.id] ?? 0;
+    if (val >= 3) {
+      if (leftPoles.includes(q.pole)) dimScores[q.dimension].left += 1;
+      else dimScores[q.dimension].right += 1;
+    }
+  });
+  const mbtiType =
+    (dimScores.EI.left >= dimScores.EI.right ? "E" : "I") +
+    (dimScores.SN.left >= dimScores.SN.right ? "S" : "N") +
+    (dimScores.TF.left >= dimScores.TF.right ? "T" : "F") +
+    (dimScores.JP.left >= dimScores.JP.right ? "J" : "P");
+  const mbtiProfile = MBTI_PROFILES[mbtiType];
 
   const careerMatches: CareerMatch[] = CAREERS.map((career) => {
     let score = 0;
@@ -873,7 +910,15 @@ export function calculateStage1Results(answers: Record<number, number>): {
   const topPercentage = allCareers[0].percentage;
   const topCareers = allCareers.filter((c) => c.percentage >= topPercentage - 10);
 
-  return { domains, topDomain: domains[0].domain, topCareers };
+  return {
+    domains,
+    topDomain: domains[0].domain,
+    topCareers,
+    mbtiType,
+    mbtiNickname: mbtiProfile?.nickname ?? "",
+    mbtiWorkStyle: mbtiProfile?.workStyle ?? "",
+    mbtiSuitableRoles: mbtiProfile?.suitableRoles ?? [],
+  };
 }
 
 // Stage 2 results
