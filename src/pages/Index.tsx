@@ -21,6 +21,10 @@ const Index = () => {
     domains: DomainScore[];
     topDomain: string;
     topCareers: CareerMatch[];
+    mbtiType: string;
+    mbtiNickname: string;
+    mbtiWorkStyle: string;
+    mbtiSuitableRoles: string[];
   } | null>(null);
 
   // Stage 2
@@ -91,8 +95,8 @@ const Index = () => {
               Discover Your Strengths
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {stage === "stage1" && "Stage 1: Answer 10 preference questions (1–4)"}
-              {stage === "stage1-results" && "Your career preference match & learning resources"}
+              {stage === "stage1" && "Stage 1: Answer 40 personality questions — rate each from 1 (Strongly Disagree) to 4 (Strongly Agree)"}
+              {stage === "stage1-results" && "Your personality type, career match & learning resources"}
               {stage === "stage2" && "Stage 2: Test your knowledge with real problems"}
               {stage === "final" && "Final Results: Combined analysis & skill gaps"}
             </p>
@@ -102,11 +106,11 @@ const Index = () => {
         {/* Stage indicator */}
         <div className="mb-6 flex items-center justify-center gap-2 text-xs font-medium">
           <span className={`rounded-full px-3 py-1 ${stage === "stage1" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-            1. Preferences
+            1. Personality
           </span>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
           <span className={`rounded-full px-3 py-1 ${stage === "stage1-results" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-            Results
+            Your Type
           </span>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
           <span className={`rounded-full px-3 py-1 ${stage === "stage2" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"}`}>
@@ -158,6 +162,47 @@ const Index = () => {
         {/* Stage 1 Results + Resources */}
         {stage === "stage1-results" && stage1Results && (
           <>
+            {stage1Results.mbtiType && (
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold uppercase text-primary tracking-wide">Your Personality Type</span>
+                  <span className="rounded-full bg-primary text-primary-foreground px-3 py-1 text-xs font-bold">💼 SDG 8 Aligned</span>
+                </div>
+                <div className="flex items-baseline gap-3 mb-2">
+                  <h2 className="text-4xl font-bold text-primary">{stage1Results.mbtiType}</h2>
+                  <span className="text-lg font-semibold text-foreground">{stage1Results.mbtiNickname}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">{stage1Results.mbtiWorkStyle}</p>
+
+                {/* Dimension bars */}
+                <div className="space-y-2 mb-4">
+                  {[
+                    { left: "Extravert", right: "Introvert", type: stage1Results.mbtiType[0], pair: "EI" },
+                    { left: "Sensing", right: "Intuitive", type: stage1Results.mbtiType[1], pair: "SN" },
+                    { left: "Thinking", right: "Feeling", type: stage1Results.mbtiType[2], pair: "TF" },
+                    { left: "Judging", right: "Perceiving", type: stage1Results.mbtiType[3], pair: "JP" },
+                  ].map((dim) => (
+                    <div key={dim.pair} className="flex items-center gap-2 text-xs">
+                      <span className={`w-20 text-right font-medium ${["E","S","T","J"].includes(dim.type) ? "text-primary" : "text-muted-foreground"}`}>{dim.left}</span>
+                      <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                        <div className={`h-full rounded-full bg-primary transition-all ${["E","S","T","J"].includes(dim.type) ? "w-2/3" : "w-1/3"}`} />
+                      </div>
+                      <span className={`w-20 font-medium ${!["E","S","T","J"].includes(dim.type) ? "text-primary" : "text-muted-foreground"}`}>{dim.right}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Roles That Suit You</p>
+                  <div className="flex flex-wrap gap-2">
+                    {stage1Results.mbtiSuitableRoles.map((role) => (
+                      <span key={role} className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">{role}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <ResultsDisplay
               domains={stage1Results.domains}
               topDomain={stage1Results.topDomain}
