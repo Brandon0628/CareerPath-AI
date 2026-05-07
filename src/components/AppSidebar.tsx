@@ -1,4 +1,4 @@
-import { Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen } from "lucide-react";
+import { Chrome as Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -33,8 +33,8 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <div className="px-4 py-5 border-b border-sidebar-border">
-            <span className="text-sm font-bold text-white">GuidePost</span>
-            <span className="text-sm font-bold text-primary">Genius</span>
+            <span className="text-sm font-bold text-white">CareerPath</span>
+            <span className="text-sm font-bold text-primary">AI</span>
           </div>
         </SidebarGroup>
         <SidebarGroup>

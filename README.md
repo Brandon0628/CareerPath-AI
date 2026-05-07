@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# CareerPath AI
 
-TODO: Document your project here
+AI-powered career guidance for students

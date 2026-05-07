@@ -27,13 +27,13 @@ const Mission = () => {
       <section className="space-y-4">
         <h2 className="text-2xl font-display font-semibold text-foreground">Why We Built This</h2>
         <p className="text-muted-foreground leading-relaxed">
-          This project started with a personal frustration. At 17, about to graduate, I realized I had no real idea what field to study or commit to — and neither did most of my friends. School teaches us subjects, not careers. GuidePost Genius is our answer to that gap.
+          This project started with a personal frustration. At 17, about to graduate, I realized I had no real idea what field to study or commit to — and neither did most of my friends. School teaches us subjects, not careers. CareerPath AI is our answer to that gap.
         </p>
       </section>
 
       {/* The Solution */}
       <section className="space-y-6">
-        <h2 className="text-2xl font-display font-semibold text-foreground">What GuidePost Genius Does</h2>
+        <h2 className="text-2xl font-display font-semibold text-foreground">What CareerPath AI Does</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {[
             { icon: "🧭", title: "Career Discovery", desc: "An AI-guided assessment that maps your personality and preferences to real career paths — not generic job titles." },

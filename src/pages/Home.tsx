@@ -23,7 +23,7 @@ const Home = () => {
             Find Your Career Path with AI
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-            73 million young people are unemployed globally. GuidePost Genius uses AI to help students like you discover the right career — before committing to the wrong one.
+            73 million young people are unemployed globally. CareerPath AI uses AI to help students like you discover the right career — before committing to the wrong one.
           </p>
         </div>
 
