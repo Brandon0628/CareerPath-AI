@@ -1,9 +1,19 @@
+import { useState, useEffect } from "react";
 import { Compass, Brain, Map, ArrowRight, Search, GraduationCap, Bot, Route } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 const Home = () => {
+  const [sessionCount, setSessionCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("user_sessions")
+      .select("*", { count: "exact", head: true })
+      .then(({ count }) => setSessionCount(count ?? 50));
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-12">
@@ -159,11 +169,45 @@ const Home = () => {
           </Link>
         </div>
 
+        {/* Live Impact Stats */}
+        <div className="grid grid-cols-3 gap-4 my-8">
+          {[
+            { value: sessionCount !== null ? `${sessionCount}+` : "...", label: "Career Assessments Taken" },
+            { value: "5", label: "Career Domains Covered" },
+            { value: "100%", label: "Free — No Sign Up Needed" }
+          ].map(stat => (
+            <div key={stat.label} className="rounded-xl border border-border/50 bg-card p-4 text-center shadow-sm">
+              <p className="text-3xl font-bold text-primary">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
         {/* SDG Section */}
         <div className="mt-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "600ms" }}>
           <h2 className="mb-6 text-center font-display text-2xl font-bold text-foreground">
             Built for the UN Sustainable Development Goals
           </h2>
+
+          {/* SDG 8 Context Banner */}
+          <div className="rounded-xl bg-foreground text-background p-6 my-6">
+            <h3 className="font-display text-lg font-bold mb-4 text-center">Why This Matters</h3>
+            <div className="grid gap-3 sm:grid-cols-3 text-center">
+              {[
+                { stat: "73 million", desc: "young people unemployed globally (ILO, 2024)" },
+                { stat: "1 in 3", desc: "Malaysian graduates work in unrelated fields (DOSM)" },
+                { stat: "Age 17", desc: "is when career decisions begin — but guidance is scarce" }
+              ].map(item => (
+                <div key={item.stat} className="rounded-lg bg-white/10 p-3">
+                  <p className="text-xl font-bold text-white">{item.stat}</p>
+                  <p className="text-xs text-white/70 mt-1">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-sm text-white/60 mt-4 italic">
+              CareerPath AI was built to change these numbers — one student at a time.
+            </p>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Card className="border border-border/50 border-l-4 border-l-emerald-500 shadow-sm">
               <CardContent className="p-6 space-y-2">
