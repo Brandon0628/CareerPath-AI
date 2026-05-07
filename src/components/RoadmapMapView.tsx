@@ -830,8 +830,12 @@ function ConnectionLine({
 /* ================================================================
    MAIN COMPONENT
    ================================================================ */
-export function RoadmapMapView() {
-  const [activeKey, setActiveKey] = useState(CAREER_MAPS[0].key);
+interface RoadmapMapViewProps {
+  highlightKey?: string;
+}
+
+export function RoadmapMapView({ highlightKey }: RoadmapMapViewProps) {
+  const [activeKey, setActiveKey] = useState(highlightKey ?? CAREER_MAPS[0].key);
   const [highlightedPhase, setHighlightedPhase] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -848,6 +852,10 @@ export function RoadmapMapView() {
     setZoom(1);
     setPan({ x: 0, y: 0 });
   }, [activeKey]);
+
+  useEffect(() => {
+    if (highlightKey) setActiveKey(highlightKey);
+  }, [highlightKey]);
 
   const totalConcepts = activeMap.phases.reduce(
     (sum, p) => sum + p.children.reduce((s, c) => s + c.children.length, 0),
