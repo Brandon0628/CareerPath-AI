@@ -1,4 +1,4 @@
-import { CareerQuizResult, DomainScore, CareerMatch, CAREER_RESOURCES, LearningResource } from "@/lib/scoring";
+import { CareerQuizResult, DomainScore, CareerMatch, CAREER_RESOURCES, MALAYSIA_CONTEXT, LearningResource } from "@/lib/scoring";
 import { ResultsDisplay } from "./ResultsDisplay";
 import { TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, ArrowRight, Map, MessageCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -222,6 +222,48 @@ export function FinalResults({ stage1, stage2 }: FinalResultsProps) {
           </Link>
         </div>
       </div>
+
+      {/* Malaysia Context */}
+      {(() => {
+        const ctx = MALAYSIA_CONTEXT[topCareerTitle];
+        if (!ctx) return null;
+        return (
+          <div className="rounded-xl border border-red-200 bg-red-50/50 p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="text-2xl">🇲🇾</span>
+              <h2 className="font-display text-lg font-bold text-foreground">
+                In Malaysia — {topCareerTitle}
+              </h2>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-lg bg-white/70 p-3 border border-red-100">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">💰 Salary Range</p>
+                <p className="font-bold text-foreground">{ctx.salaryRange}</p>
+              </div>
+              <div className="rounded-lg bg-white/70 p-3 border border-red-100">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">📈 Job Outlook</p>
+                <p className="text-sm text-foreground">{ctx.jobOutlook}</p>
+              </div>
+              <div className="rounded-lg bg-white/70 p-3 border border-red-100">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">🎓 Top Universities</p>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {ctx.topUniversities.map(u => (
+                    <span key={u} className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">{u}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-lg bg-white/70 p-3 border border-red-100">
+                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">🔍 Find Jobs On</p>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {ctx.localPlatforms.map(p => (
+                    <span key={p} className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">{p}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

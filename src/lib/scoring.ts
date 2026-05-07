@@ -175,6 +175,92 @@ export const CAREER_RESOURCES: CareerResources[] = [
   },
 ];
 
+export const MALAYSIA_CONTEXT: Record<string, {
+  salaryRange: string;
+  jobOutlook: string;
+  topUniversities: string[];
+  localPlatforms: string[];
+}> = {
+  "Software Developer": {
+    salaryRange: "RM 3,500 – RM 10,000/month",
+    jobOutlook: "High demand across fintech, e-commerce and government digital initiatives in Malaysia.",
+    topUniversities: ["UTM", "UPM", "Asia Pacific University (APU)"],
+    localPlatforms: ["JobStreet", "LinkedIn", "Hiredly"]
+  },
+  "Data Analyst": {
+    salaryRange: "RM 3,000 – RM 8,000/month",
+    jobOutlook: "Rapidly growing demand as Malaysian companies adopt data-driven decisions.",
+    topUniversities: ["UM", "UPM", "Sunway University"],
+    localPlatforms: ["JobStreet", "LinkedIn", "Glints"]
+  },
+  "Cybersecurity Analyst": {
+    salaryRange: "RM 4,000 – RM 12,000/month",
+    jobOutlook: "Critical shortage of cybersecurity talent in Malaysia — very high job security.",
+    topUniversities: ["UTM", "MMU", "UiTM"],
+    localPlatforms: ["JobStreet", "LinkedIn", "CyberSecurity Malaysia Jobs"]
+  },
+  "Accountant": {
+    salaryRange: "RM 2,800 – RM 7,500/month",
+    jobOutlook: "Stable demand across all industries; ACCA and ICAEW qualifications highly valued.",
+    topUniversities: ["UTAR", "UiTM", "Taylor's University"],
+    localPlatforms: ["JobStreet", "MauKerja", "LinkedIn"]
+  },
+  "Nurse": {
+    salaryRange: "RM 2,200 – RM 5,500/month",
+    jobOutlook: "Consistent demand in public hospitals (KKM) and growing private healthcare sector.",
+    topUniversities: ["UKM", "UM", "International Medical University (IMU)"],
+    localPlatforms: ["JobStreet", "KKM Careers Portal", "LinkedIn"]
+  },
+  "Medical Lab Technologist": {
+    salaryRange: "RM 2,500 – RM 6,000/month",
+    jobOutlook: "Steady demand in government labs, private hospitals and diagnostic centres.",
+    topUniversities: ["UPM", "UKM", "MAHSA University"],
+    localPlatforms: ["JobStreet", "KKM Careers Portal", "MauKerja"]
+  },
+  "Psychologist": {
+    salaryRange: "RM 3,000 – RM 9,000/month",
+    jobOutlook: "Growing awareness of mental health in Malaysia is driving demand for psychologists.",
+    topUniversities: ["UM", "UKM", "HELP University"],
+    localPlatforms: ["JobStreet", "LinkedIn", "Glints"]
+  },
+  "UI/UX Designer": {
+    salaryRange: "RM 3,000 – RM 9,000/month",
+    jobOutlook: "Strong demand from Malaysian tech startups and digital agencies.",
+    topUniversities: ["LimKokWing University", "APU", "Sunway University"],
+    localPlatforms: ["Hiredly", "LinkedIn", "Glints"]
+  },
+  "Graphic Designer": {
+    salaryRange: "RM 2,200 – RM 6,000/month",
+    jobOutlook: "Consistent demand in advertising, media and in-house creative teams.",
+    topUniversities: ["LimKokWing University", "The One Academy", "NAFA"],
+    localPlatforms: ["JobStreet", "Hiredly", "Freelancer.com"]
+  },
+  "Content Creator": {
+    salaryRange: "RM 2,000 – RM 8,000/month",
+    jobOutlook: "Booming in Malaysia with growth of social commerce and brand content budgets.",
+    topUniversities: ["UiTM", "HELP University", "Sunway University"],
+    localPlatforms: ["LinkedIn", "Hiredly", "Glints"]
+  },
+  "Digital Marketer": {
+    salaryRange: "RM 2,800 – RM 8,000/month",
+    jobOutlook: "Every Malaysian business going online needs digital marketers — demand is high.",
+    topUniversities: ["Sunway University", "Taylor's University", "UiTM"],
+    localPlatforms: ["JobStreet", "Hiredly", "LinkedIn"]
+  },
+  "Business Analyst": {
+    salaryRange: "RM 4,000 – RM 10,000/month",
+    jobOutlook: "High demand in banking, telco and consulting sectors in Malaysia.",
+    topUniversities: ["UM", "UPM", "Monash University Malaysia"],
+    localPlatforms: ["JobStreet", "LinkedIn", "Glints"]
+  },
+  "Entrepreneur": {
+    salaryRange: "Variable — RM 0 to unlimited",
+    jobOutlook: "Malaysia's startup ecosystem is growing fast with support from Cradle, MaGIC and MDEC.",
+    topUniversities: ["UTM", "UM", "Monash University Malaysia"],
+    localPlatforms: ["MaGIC", "Cradle Fund", "MDEC"]
+  }
+};
+
 // ===== CAREER PROGRESSION PATHS =====
 
 export interface RoadmapNode {
