@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { QUESTIONS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";
+import { QUESTIONS, QUIZ_QUESTIONS, CAREERS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";
 import type { CareerQuizResult, DomainScore } from "@/lib/scoring";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
@@ -10,7 +10,7 @@ import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
 import { Compass, RotateCcw, ArrowRight, ArrowLeft, Map } from "lucide-react";
 
-type Stage = "stage1" | "stage1-results" | "stage2" | "final";
+type Stage = "stage1" | "stage1-results" | "field-select" | "stage2" | "final";
 
 const Index = () => {
   const [stage, setStage] = useState<Stage>("stage1");
@@ -30,6 +30,7 @@ const Index = () => {
   // Stage 2
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [stage2Results, setStage2Results] = useState<CareerQuizResult[] | null>(null);
+  const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
 
   const answered = Object.keys(answers).length;
   const total = QUESTIONS.length;
@@ -47,6 +48,17 @@ const Index = () => {
   };
 
   const handleProceedToStage2 = () => {
+    setStage("field-select");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDomainToggle = (domain: string) => {
+    setSelectedDomains((prev) =>
+      prev.includes(domain) ? prev.filter((d) => d !== domain) : [...prev, domain]
+    );
+  };
+
+  const handleProceedFromFieldSelect = () => {
     setStage("stage2");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -74,7 +86,13 @@ const Index = () => {
   };
 
   const topCareerTitles = stage1Results?.topCareers.map((c) => c.career.title) ?? [];
-  const quizQuestions = getQuizQuestionsForCareers(topCareerTitles);
+  const quizQuestions = selectedDomains.length > 0
+    ? QUIZ_QUESTIONS.filter((q) =>
+        selectedDomains.some((domain) =>
+          CAREERS.find((c) => c.title === q.careerTitle)?.domain === domain
+        )
+      )
+    : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,6 +129,10 @@ const Index = () => {
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
           <span className={`rounded-full px-3 py-1 ${stage === "stage1-results" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
             Your Type
+          </span>
+          <ArrowRight className="h-3 w-3 text-muted-foreground" />
+          <span className={`rounded-full px-3 py-1 ${stage === "field-select" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+            Fields
           </span>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
           <span className={`rounded-full px-3 py-1 ${stage === "stage2" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"}`}>
@@ -237,6 +259,89 @@ const Index = () => {
               </div>
             </div>
           </>
+        )}
+
+        {/* Field Select */}
+        {stage === "field-select" && (
+          <div className="space-y-6">
+            <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-6 text-center">
+              <h3 className="text-xl font-bold text-foreground">Which fields do you know?</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Select only the domains you have some knowledge in. You'll be tested only on what you select — and you must fully complete every field you choose.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {(["Tech", "Accounting", "Healthcare", "Creative", "Business"] as const).map((domain) => {
+                const icons: Record<string, string> = {
+                  Tech: "💻", Accounting: "📊", Healthcare: "🏥", Creative: "🎨", Business: "📈"
+                };
+                const descs: Record<string, string> = {
+                  Tech: "Software, Data, Cybersecurity",
+                  Accounting: "Finance & Accounting",
+                  Healthcare: "Nursing, Lab, Psychology",
+                  Creative: "Design, Content, UX",
+                  Business: "Marketing, Analysis, Entrepreneurship"
+                };
+                const isSelected = selectedDomains.includes(domain);
+                return (
+                  <button
+                    key={domain}
+                    onClick={() => handleDomainToggle(domain)}
+                    className={`rounded-xl border-2 p-4 text-left transition-all ${
+                      isSelected
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-card hover:border-primary/40"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{icons[domain]}</span>
+                        <div>
+                          <p className="font-semibold text-foreground">{domain}</p>
+                          <p className="text-xs text-muted-foreground">{descs[domain]}</p>
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+                          <span className="text-[10px] text-primary-foreground font-bold">✓</span>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {selectedDomains.length === 0 && (
+              <p className="text-center text-sm text-muted-foreground italic">
+                Select at least one domain to continue.
+              </p>
+            )}
+
+            <div className="text-center space-y-3">
+              <Button
+                onClick={handleProceedFromFieldSelect}
+                size="lg"
+                className="px-8 gap-2"
+                disabled={selectedDomains.length === 0}
+              >
+                Start Knowledge Test ({selectedDomains.length} field{selectedDomains.length !== 1 ? "s" : ""} selected)
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <div>
+                <Button
+                  onClick={() => setStage("stage1-results")}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2 text-muted-foreground"
+                >
+                  <ArrowLeft className="h-3 w-3" />
+                  Back to Results
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Stage 2: Skill Assessment */}

@@ -1,6 +1,6 @@
 import { QuizQuestion } from "@/lib/scoring";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, CheckCircle, Code } from "lucide-react";
+import { ClipboardCheck, CircleCheck as CheckCircle, Code } from "lucide-react";
 
 interface SkillAssessmentProps {
   questions: QuizQuestion[];
@@ -11,16 +11,30 @@ interface SkillAssessmentProps {
 }
 
 export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCareers }: SkillAssessmentProps) {
-  const allAnswered = questions.every((q) => answers[q.id] !== undefined);
-  const answered = questions.filter((q) => answers[q.id] !== undefined).length;
-  const total = questions.length;
-
   // Group by career
   const grouped: Record<string, QuizQuestion[]> = {};
   questions.forEach((q) => {
     if (!grouped[q.careerTitle]) grouped[q.careerTitle] = [];
     grouped[q.careerTitle].push(q);
   });
+
+  // Per-career completion check
+  const careerStatus = Object.entries(grouped).map(([career, qs]) => {
+    const answeredCount = qs.filter((q) => answers[q.id] !== undefined).length;
+    return {
+      career,
+      total: qs.length,
+      answered: answeredCount,
+      complete: answeredCount === qs.length,
+      started: answeredCount > 0,
+      partial: answeredCount > 0 && answeredCount < qs.length,
+    };
+  });
+
+  const hasPartial = careerStatus.some((s) => s.partial);
+  const allComplete = careerStatus.every((s) => s.complete);
+  const answered = questions.filter((q) => answers[q.id] !== undefined).length;
+  const total = questions.length;
 
   let globalIndex = 0;
 
@@ -51,6 +65,21 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
 
       {Object.entries(grouped).map(([career, qs]) => (
         <div key={career} className="space-y-4">
+          {(() => {
+            const status = careerStatus.find((s) => s.career === career);
+            return status ? (
+              <div className={`mb-3 flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium ${
+                status.complete ? "bg-green-50 text-green-700 border border-green-200" :
+                status.partial ? "bg-amber-50 text-amber-700 border border-amber-200" :
+                "bg-muted text-muted-foreground"
+              }`}>
+                <span>{career}</span>
+                <span>{status.answered}/{status.total} answered
+                  {status.complete ? " ✓ Complete" : status.partial ? " — finish all questions" : ""}
+                </span>
+              </div>
+            ) : null;
+          })()}
           <h4 className="font-display text-lg font-bold text-foreground">{career}</h4>
           {qs.map((q) => {
             const idx = globalIndex++;
@@ -118,9 +147,24 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
         </div>
       ))}
 
-      <div className="text-center">
-        <Button onClick={onSubmit} size="lg" className="px-8" disabled={!allAnswered}>
-          {allAnswered ? "See Results" : `Answer all ${total} questions to continue`}
+      <div className="space-y-3 text-center">
+        {hasPartial && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            ⚠️ You've partially answered some fields. You must either complete all questions in a field or answer none of them.
+            <ul className="mt-2 text-left list-disc pl-5">
+              {careerStatus.filter((s) => s.partial).map((s) => (
+                <li key={s.career}>{s.career} — {s.answered}/{s.total} answered</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <Button
+          onClick={onSubmit}
+          size="lg"
+          className="px-8"
+          disabled={!allComplete || hasPartial}
+        >
+          {allComplete ? "See Results" : `Complete all fields to continue (${answered}/${total})`}
         </Button>
       </div>
     </div>
