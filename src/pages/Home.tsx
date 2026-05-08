@@ -80,13 +80,13 @@ const Home = () => {
                 Discover Your Strengths
               </h2>
               <p className="mb-6 text-sm text-muted-foreground">
-                Answer 10 MBTI-style preference questions to uncover your ideal career domain.
+                Answer a 40-question personality assessment to uncover your ideal career domain.
                 Get personalized career recommendations and curated learning resources.
               </p>
               <ul className="mb-6 space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
-                  10 preference questions (1–4 scale)
+                  40-question personality assessment (1–4 scale)
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="h-3 w-3 shrink-0 text-primary" />

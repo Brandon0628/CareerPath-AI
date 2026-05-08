@@ -31,6 +31,18 @@ const Index = () => {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [stage2Results, setStage2Results] = useState<CareerQuizResult[] | null>(null);
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
+  const [mbtiSubStage, setMbtiSubStage] = useState<"EI" | "SN" | "TF" | "JP">("EI");
+
+  const dimensionOrder: Array<"EI" | "SN" | "TF" | "JP"> = ["EI", "SN", "TF", "JP"];
+  const dimensionLabels: Record<string, { title: string; description: string; emoji: string }> = {
+    EI: { title: "Extraversion vs Introversion", description: "How do you gain energy and interact with the world?", emoji: "🌐" },
+    SN: { title: "Sensing vs Intuition", description: "How do you take in information and learn?", emoji: "🔍" },
+    TF: { title: "Thinking vs Feeling", description: "How do you make decisions?", emoji: "⚖️" },
+    JP: { title: "Judging vs Perceiving", description: "How do you approach structure and planning?", emoji: "🗂️" },
+  };
+  const currentDimensionQuestions = QUESTIONS.filter((q) => q.dimension === mbtiSubStage);
+  const currentDimIndex = dimensionOrder.indexOf(mbtiSubStage);
+  const currentDimAnswered = currentDimensionQuestions.every((q) => answers[q.id] !== undefined);
 
   const answered = Object.keys(answers).length;
   const total = QUESTIONS.length;
@@ -45,6 +57,20 @@ const Index = () => {
     setStage1Results(results);
     setStage("stage1-results");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleNextDimension = () => {
+    const nextIndex = dimensionOrder.indexOf(mbtiSubStage) + 1;
+    if (nextIndex < dimensionOrder.length) {
+      setMbtiSubStage(dimensionOrder[nextIndex]);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // All 4 dimensions done — calculate results
+      const results = calculateStage1Results(answers);
+      setStage1Results(results);
+      setStage("stage1-results");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleProceedToStage2 = () => {
@@ -81,6 +107,7 @@ const Index = () => {
     setQuizAnswers({});
     setStage1Results(null);
     setStage2Results(null);
+    setMbtiSubStage("EI");
     setStage("stage1");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -113,7 +140,7 @@ const Index = () => {
               Discover Your Strengths
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {stage === "stage1" && "Stage 1: Answer 40 personality questions — rate each from 1 (Strongly Disagree) to 4 (Strongly Agree)"}
+              {stage === "stage1" && "Stage 1: 40 personality questions — 10 per dimension, rated 1 (Strongly Disagree) to 4 (Strongly Agree)"}
               {stage === "stage1-results" && "Your personality type, career match & learning resources"}
               {stage === "stage2" && "Stage 2: Test your knowledge with real problems"}
               {stage === "final" && "Final Results: Combined analysis & skill gaps"}
@@ -124,7 +151,7 @@ const Index = () => {
         {/* Stage indicator */}
         <div className="mb-6 flex items-center justify-center gap-2 text-xs font-medium">
           <span className={`rounded-full px-3 py-1 ${stage === "stage1" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-            1. Personality
+            {stage === "stage1" ? `${currentDimIndex + 1}/4 ${mbtiSubStage}` : "1. Personality"}
           </span>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
           <span className={`rounded-full px-3 py-1 ${stage === "stage1-results" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
@@ -147,35 +174,65 @@ const Index = () => {
         {/* Stage 1: Questions */}
         {stage === "stage1" && (
           <>
-            <div className="mb-6">
-              <div className="mb-1 flex justify-between text-xs font-medium text-muted-foreground">
-                <span>{answered}/{total} answered</span>
-                <span>{Math.round((answered / total) * 100)}%</span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-300"
-                  style={{ width: `${(answered / total) * 100}%` }}
-                />
-              </div>
+            {/* Dimension progress pills */}
+            <div className="flex items-center justify-center gap-2 flex-wrap mb-6">
+              {dimensionOrder.map((dim, i) => {
+                const isActive = dim === mbtiSubStage;
+                const isComplete = i < currentDimIndex;
+                return (
+                  <div key={dim} className="flex items-center gap-1">
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                      isComplete ? "bg-green-100 text-green-700 border border-green-300" :
+                      isActive ? "bg-primary text-primary-foreground" :
+                      "bg-muted text-muted-foreground"
+                    }`}>
+                      {isComplete ? "✓ " : ""}{dim}
+                    </span>
+                    {i < dimensionOrder.length - 1 && (
+                      <span className="text-muted-foreground text-xs">→</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="space-y-4">
-              {QUESTIONS.map((q, i) => (
-                <QuestionCard
-                  key={q.id}
-                  question={q}
-                  value={answers[q.id]}
-                  onChange={(v) => handleAnswer(q.id, v)}
-                  index={i}
-                  total={total}
-                />
-              ))}
+            {/* Current dimension header */}
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 mb-6 text-center">
+              <span className="text-3xl">{dimensionLabels[mbtiSubStage].emoji}</span>
+              <h3 className="font-bold text-lg text-foreground mt-2">
+                Dimension {currentDimIndex + 1} of 4: {dimensionLabels[mbtiSubStage].title}
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">{dimensionLabels[mbtiSubStage].description}</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {currentDimensionQuestions.filter(q => answers[q.id] !== undefined).length} / {currentDimensionQuestions.length} answered
+              </p>
             </div>
 
-            <div className="mt-8 text-center">
-              <Button onClick={handleStage1Submit} size="lg" className="px-8" disabled={!allAnswered}>
-                {allAnswered ? "See My Preference Match" : `Answer all ${total} questions`}
+            {/* Questions for current dimension only */}
+            {currentDimensionQuestions.map((question, idx) => (
+              <QuestionCard
+                key={question.id}
+                question={question}
+                value={answers[question.id]}
+                onChange={(val) => handleAnswer(question.id, val)}
+                index={idx}
+              />
+            ))}
+
+            {/* Next button */}
+            <div className="text-center mt-6">
+              <Button
+                onClick={handleNextDimension}
+                size="lg"
+                className="px-8 gap-2"
+                disabled={!currentDimAnswered}
+              >
+                {!currentDimAnswered
+                  ? `Answer all ${currentDimensionQuestions.length} questions to continue`
+                  : currentDimIndex < 3
+                  ? `Next: ${dimensionLabels[dimensionOrder[currentDimIndex + 1]].title} →`
+                  : "See My Personality Results 🎉"
+                }
               </Button>
             </div>
           </>
