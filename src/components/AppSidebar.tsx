@@ -1,4 +1,4 @@
-import { Chrome as Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen } from "lucide-react";
+import { Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
