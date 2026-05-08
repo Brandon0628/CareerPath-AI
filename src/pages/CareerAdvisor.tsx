@@ -13,7 +13,7 @@ interface ChatMessage {
 const OPENING_MESSAGE: ChatMessage = {
   role: "ai",
   content:
-    "Hi! I'm your AI career advisor \u{1F44B} Tell me \u2014 what subjects or activities do you genuinely enjoy? Don't think about jobs yet, just what feels natural to you.",
+    "Hi! I'm your AI career advisor 👋 Tell me — what subjects or activities do you genuinely enjoy? Don't think about jobs yet, just what feels natural to you.",
 };
 
 function TypingIndicator() {
@@ -62,23 +62,29 @@ const CareerAdvisor = () => {
         content: m.content,
       }));
 
+      // FIX 1: Added explicit Authorization header using anon key
       const { data, error } = await supabase.functions.invoke("career-advisor", {
         body: { message: trimmed, history },
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
       });
 
       if (error) throw error;
 
+      // FIX 2: Now correctly reads `reply` field from the new edge function
       const aiContent =
-        data?.advice
+        data?.reply ??
+        (data?.advice
           ? typeof data.advice === "string"
             ? data.advice
             : formatAdvice(data.advice)
-          : data?.message ?? "I couldn't generate a response. Please try again.";
+          : "I couldn't generate a response. Please try again.");
 
       setMessages((prev) => [...prev, { role: "ai", content: aiContent }]);
     } catch {
       toast({
-        title: "Connection issue \u2014 please try again",
+        title: "Connection issue — please try again",
         variant: "destructive",
       });
     } finally {
