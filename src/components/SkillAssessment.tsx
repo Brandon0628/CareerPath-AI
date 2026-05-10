@@ -32,9 +32,12 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
   });
 
   const hasPartial = careerStatus.some((s) => s.partial);
-  const allComplete = careerStatus.every((s) => s.complete);
+  const atLeastOneComplete = careerStatus.some((s) => s.complete);
+  const canSubmit = atLeastOneComplete && !hasPartial;
   const answered = questions.filter((q) => answers[q.id] !== undefined).length;
   const total = questions.length;
+  const completedCareers = careerStatus.filter((s) => s.complete).length;
+  const totalCareers = careerStatus.length;
 
   let globalIndex = 0;
 
@@ -47,13 +50,16 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
           Test your knowledge for:{" "}
           <strong>{topCareers.join(", ")}</strong>
         </p>
+        <p className="mt-2 text-xs text-muted-foreground italic">
+          Complete all questions in a field to count it — or skip a field entirely. You cannot partially answer a field.
+        </p>
       </div>
 
       {/* Progress bar */}
       <div>
         <div className="mb-1 flex justify-between text-xs font-medium text-muted-foreground">
           <span>{answered}/{total} answered</span>
-          <span>{total > 0 ? Math.round((answered / total) * 100) : 0}%</span>
+          <span>{completedCareers}/{totalCareers} fields complete</span>
         </div>
         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
           <div
@@ -74,8 +80,9 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
                 "bg-muted text-muted-foreground"
               }`}>
                 <span>{career}</span>
-                <span>{status.answered}/{status.total} answered
-                  {status.complete ? " ✓ Complete" : status.partial ? " — finish all questions" : ""}
+                <span>
+                  {status.answered}/{status.total} answered
+                  {status.complete ? " ✓ Complete" : status.partial ? " — finish all or skip entirely" : " — skippable"}
                 </span>
               </div>
             ) : null;
@@ -107,7 +114,6 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
                   {q.text}
                 </p>
 
-                {/* Code snippet for fill-in-the-blank */}
                 {isFillBlank && q.codeSnippet && (
                   <div className="mb-4 overflow-x-auto rounded-lg bg-foreground/5 border border-border p-4">
                     <pre className="text-sm font-mono text-foreground">
@@ -150,7 +156,7 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
       <div className="space-y-3 text-center">
         {hasPartial && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            ⚠️ You've partially answered some fields. You must either complete all questions in a field or answer none of them.
+            ⚠️ You've partially answered some fields. Complete all questions in that field or leave it entirely unanswered.
             <ul className="mt-2 text-left list-disc pl-5">
               {careerStatus.filter((s) => s.partial).map((s) => (
                 <li key={s.career}>{s.career} — {s.answered}/{s.total} answered</li>
@@ -158,13 +164,24 @@ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar
             </ul>
           </div>
         )}
+
+        {!atLeastOneComplete && !hasPartial && (
+          <p className="text-sm text-muted-foreground italic">
+            Complete all questions in at least one field to see your results.
+          </p>
+        )}
+
         <Button
           onClick={onSubmit}
           size="lg"
           className="px-8"
-          disabled={!allComplete || hasPartial}
+          disabled={!canSubmit}
         >
-          {allComplete ? "See Results" : `Complete all fields to continue (${answered}/${total})`}
+          {canSubmit
+            ? `See Results (${completedCareers} field${completedCareers !== 1 ? "s" : ""} completed)`
+            : hasPartial
+            ? "Finish or skip partial fields to continue"
+            : "Complete at least one field to continue"}
         </Button>
       </div>
     </div>
