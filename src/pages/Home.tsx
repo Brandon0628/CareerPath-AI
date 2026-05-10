@@ -9,11 +9,12 @@ const Home = () => {
   const [sessionCount, setSessionCount] = useState<number | null>(null);
 
   useEffect(() => {
-    supabase
+    (supabase as any)
       .from("user_sessions")
       .select("*", { count: "exact", head: true })
-      .then(({ count }) => setSessionCount(count ?? 50));
+      .then(({ count }: { count: number | null }) => setSessionCount(count ?? 0));
   }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-12">
@@ -120,11 +121,11 @@ const Home = () => {
               <ul className="mb-6 space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <ArrowRight className="h-3 w-3 shrink-0 text-secondary" />
-                  Choose Tech or Accounting domain
+                  Choose from 5 career domains
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="h-3 w-3 shrink-0 text-secondary" />
-                  MCQ + fill-in-the-blank coding problems
+                  AI-generated questions unique to every session
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="h-3 w-3 shrink-0 text-secondary" />
@@ -208,6 +209,7 @@ const Home = () => {
               CareerPath AI was built to change these numbers — one student at a time.
             </p>
           </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Card className="border border-border/50 border-l-4 border-l-emerald-500 shadow-sm">
               <CardContent className="p-6 space-y-2">
