@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { QUESTIONS, QUIZ_QUESTIONS, CAREERS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";
-import type { CareerQuizResult, DomainScore } from "@/lib/scoring";
+import type { CareerQuizResult, DomainScore, QuizQuestion } from "@/lib/scoring";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { LearningResources } from "@/components/LearningResources";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
-import { Compass, RotateCcw, ArrowRight, ArrowLeft, Map } from "lucide-react";
+import { Compass, RotateCcw, ArrowRight, ArrowLeft, Map, RefreshCw } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { generateMockQuestions } from "@/lib/questionGenerator";
 
 type Stage = "stage1" | "stage1-results" | "field-select" | "stage2" | "final";
 
@@ -32,6 +34,8 @@ const Index = () => {
   const [stage2Results, setStage2Results] = useState<CareerQuizResult[] | null>(null);
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
   const [mbtiSubStage, setMbtiSubStage] = useState<"EI" | "SN" | "TF" | "JP">("EI");
+  const [aiStage2Questions, setAiStage2Questions] = useState<QuizQuestion[]>([]);
+  const [isGeneratingStage2, setIsGeneratingStage2] = useState(false);
 
   const dimensionOrder: Array<"EI" | "SN" | "TF" | "JP"> = ["EI", "SN", "TF", "JP"];
   const dimensionLabels: Record<string, { title: string; description: string; emoji: string }> = {
@@ -46,7 +50,6 @@ const Index = () => {
 
   const answered = Object.keys(answers).length;
   const total = QUESTIONS.length;
-  const allAnswered = answered === total;
 
   const handleAnswer = (qId: number, value: number) => {
     setAnswers((prev) => ({ ...prev, [qId]: value }));
@@ -65,7 +68,6 @@ const Index = () => {
       setMbtiSubStage(dimensionOrder[nextIndex]);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      // All 4 dimensions done — calculate results
       const results = calculateStage1Results(answers);
       setStage1Results(results);
       setStage("stage1-results");
@@ -84,9 +86,42 @@ const Index = () => {
     );
   };
 
-  const handleProceedFromFieldSelect = () => {
+  // Generate AI questions for all selected domains
+  const generateStage2Questions = useCallback(async (domains: string[]) => {
+    setIsGeneratingStage2(true);
+    setAiStage2Questions([]);
+
+    const allQuestions: QuizQuestion[] = [];
+
+    for (const domain of domains) {
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-questions", {
+          body: { domain, count: 20, pastQuestions: [] },
+        });
+
+        if (error) throw error;
+
+        const aiQs = (data as { questions?: QuizQuestion[] })?.questions;
+        if (Array.isArray(aiQs) && aiQs.length > 0) {
+          allQuestions.push(...aiQs);
+        } else {
+          throw new Error("No questions returned");
+        }
+      } catch {
+        // Fallback to local questions for this domain
+        const fallback = generateMockQuestions(domain as any, 20, new Set());
+        allQuestions.push(...fallback);
+      }
+    }
+
+    setAiStage2Questions(allQuestions);
+    setIsGeneratingStage2(false);
+  }, []);
+
+  const handleProceedFromFieldSelect = async () => {
     setStage("stage2");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    await generateStage2Questions(selectedDomains);
   };
 
   const handleQuizAnswer = (id: string, value: string) => {
@@ -108,18 +143,24 @@ const Index = () => {
     setStage1Results(null);
     setStage2Results(null);
     setMbtiSubStage("EI");
+    setAiStage2Questions([]);
+    setSelectedDomains([]);
     setStage("stage1");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const topCareerTitles = stage1Results?.topCareers.map((c) => c.career.title) ?? [];
-  const quizQuestions = selectedDomains.length > 0
-    ? QUIZ_QUESTIONS.filter((q) =>
-        selectedDomains.some((domain) =>
-          CAREERS.find((c) => c.title === q.careerTitle)?.domain === domain
+
+  // Use AI questions if available, fallback to static filtered questions
+  const quizQuestions = aiStage2Questions.length > 0
+    ? aiStage2Questions
+    : selectedDomains.length > 0
+      ? QUIZ_QUESTIONS.filter((q) =>
+          selectedDomains.some((domain) =>
+            CAREERS.find((c) => c.title === q.careerTitle)?.domain === domain
+          )
         )
-      )
-    : [];
+      : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,7 +183,8 @@ const Index = () => {
             <p className="mt-1 text-sm text-muted-foreground">
               {stage === "stage1" && "Stage 1: 40 personality questions — 10 per dimension, rated 1 (Strongly Disagree) to 4 (Strongly Agree)"}
               {stage === "stage1-results" && "Your personality type, career match & learning resources"}
-              {stage === "stage2" && "Stage 2: Test your knowledge with real problems"}
+              {stage === "field-select" && "Select the fields you have knowledge in"}
+              {stage === "stage2" && "Stage 2: Test your knowledge with AI-generated questions"}
               {stage === "final" && "Final Results: Combined analysis & skill gaps"}
             </p>
           </div>
@@ -216,6 +258,7 @@ const Index = () => {
                 value={answers[question.id]}
                 onChange={(val) => handleAnswer(question.id, val)}
                 index={idx}
+                total={currentDimensionQuestions.length}
               />
             ))}
 
@@ -324,7 +367,7 @@ const Index = () => {
             <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-6 text-center">
               <h3 className="text-xl font-bold text-foreground">Which fields do you know?</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Select only the domains you have some knowledge in. You'll be tested only on what you select — and you must fully complete every field you choose.
+                Select only the domains you have some knowledge in. AI will generate fresh questions for each field you choose.
               </p>
             </div>
 
@@ -403,13 +446,30 @@ const Index = () => {
 
         {/* Stage 2: Skill Assessment */}
         {stage === "stage2" && (
-          <SkillAssessment
-            questions={quizQuestions}
-            answers={quizAnswers}
-            onAnswer={handleQuizAnswer}
-            onSubmit={handleStage2Submit}
-            topCareers={topCareerTitles}
-          />
+          <>
+            {isGeneratingStage2 ? (
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-border/50 bg-card p-16 text-center shadow-sm">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                  <RefreshCw className="h-7 w-7 animate-spin text-primary" />
+                </div>
+                <p className="text-base font-bold text-card-foreground">
+                  Generating your questions...
+                </p>
+                <p className="mt-2 max-w-xs text-sm text-muted-foreground">
+                  Our AI is crafting personalised questions for{" "}
+                  {selectedDomains.join(", ")} — this takes a few seconds.
+                </p>
+              </div>
+            ) : (
+              <SkillAssessment
+                questions={quizQuestions}
+                answers={quizAnswers}
+                onAnswer={handleQuizAnswer}
+                onSubmit={handleStage2Submit}
+                topCareers={topCareerTitles}
+              />
+            )}
+          </>
         )}
 
         {/* Final Results */}
