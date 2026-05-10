@@ -31,11 +31,14 @@ const Home = () => {
         {/* Welcome Back Banner */}
         {lastResult && (
           <div className="mb-4 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm">
-              <span className="text-muted-foreground">Welcome back! Your last result:</span>
-              <span className="font-bold text-primary">{lastResult.topCareer}</span>
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">{lastResult.overallScore}%</span>
-            </div>
+            <Link to="/test-skills">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm hover:bg-primary/10 transition-colors cursor-pointer">
+                <span className="text-muted-foreground">Welcome back! Last result:</span>
+                <span className="font-bold text-primary">{lastResult.topCareer}</span>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">{lastResult.overallScore}%</span>
+                <span className="text-xs text-muted-foreground">→ Retake</span>
+              </div>
+            </Link>
           </div>
         )}
 
