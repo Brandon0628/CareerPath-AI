@@ -1,0 +1,1624 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex 668ee12..7ceb59f 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -23,6 +23,3 @@[m [mdist-ssr[m
+ *.sln[m
+ *.sw?[m
+ .env[m
+[31m-[m
+[31m-# Local Netlify folder[m
+[31m-.netlify[m
+[1mdiff --git a/README.md b/README.md[m
+[1mindex 35e08c2..a125fd6 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -1,3 +1,3 @@[m
+[31m-# CareerPath AI[m
+[32m+[m[32m# Welcome to your Lovable project[m
+ [m
+[31m-AI-powered career guidance for students[m
+[32m+[m[32mTODO: Document your project here[m
+[1mdiff --git a/index.html b/index.html[m
+[1mindex cb1299e..38a5fa7 100644[m
+[1m--- a/index.html[m
+[1m+++ b/index.html[m
+[36m@@ -3,17 +3,24 @@[m
+   <head>[m
+     <meta charset="UTF-8" />[m
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />[m
+[31m-    <title>CareerPath AI</title>[m
+[31m-    <meta name="description" content="AI-powered career guidance for students" />[m
+[31m-    <meta name="author" content="CareerPath AI" />[m
+[31m-    <link rel="icon" type="image/png" href="/favicon.png" />[m
+[31m-    <meta property="og:title" content="CareerPath AI" />[m
+[31m-    <meta property="og:description" content="AI-powered career guidance for students — aligned with UN SDG 8" />[m
+[32m+[m[32m    <!-- TODO: Set the document title to the name of your application -->[m
+[32m+[m[32m    <title>Lovable App</title>[m
+[32m+[m[32m    <meta name="description" content="Lovable Generated Project" />[m
+[32m+[m[32m    <meta name="author" content="Lovable" />[m
+[32m+[m
+[32m+[m[32m    <!-- TODO: Update og:title to match your application name -->[m
+[32m+[m[32m    <meta property="og:title" content="Lovable App" />[m
+[32m+[m[32m    <meta property="og:description" content="Lovable Generated Project" />[m
+     <meta property="og:type" content="website" />[m
+[32m+[m[32m    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />[m
+[32m+[m
+     <meta name="twitter:card" content="summary_large_image" />[m
+[32m+[m[32m    <meta name="twitter:site" content="@Lovable" />[m
+[32m+[m[32m    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />[m
+   </head>[m
+[32m+[m
+   <body>[m
+     <div id="root"></div>[m
+     <script type="module" src="/src/main.tsx"></script>[m
+   </body>[m
+[31m-</html>[m
+\ No newline at end of file[m
+[32m+[m[32m</html>[m
+[1mdiff --git a/public/_redirect b/public/_redirect[m
+[1mdeleted file mode 100644[m
+[1mindex f824337..0000000[m
+[1m--- a/public/_redirect[m
+[1m+++ /dev/null[m
+[36m@@ -1 +0,0 @@[m
+[31m-/* /index.html 200[m
+\ No newline at end of file[m
+[1mdiff --git a/public/favicon.ico b/public/favicon.ico[m
+[1mnew file mode 100644[m
+[1mindex 0000000..3c01d69[m
+Binary files /dev/null and b/public/favicon.ico differ
+[1mdiff --git a/public/favicon.png b/public/favicon.png[m
+[1mdeleted file mode 100644[m
+[1mindex c694dae..0000000[m
+Binary files a/public/favicon.png and /dev/null differ
+[1mdiff --git a/src/components/AppSidebar.tsx b/src/components/AppSidebar.tsx[m
+[1mindex cc2efd9..4848f44 100644[m
+[1m--- a/src/components/AppSidebar.tsx[m
+[1m+++ b/src/components/AppSidebar.tsx[m
+[36m@@ -33,8 +33,8 @@[m [mexport function AppSidebar() {[m
+       <SidebarContent>[m
+         <SidebarGroup>[m
+           <div className="px-4 py-5 border-b border-sidebar-border">[m
+[31m-            <span className="text-sm font-bold text-white">CareerPath</span>[m
+[31m-            <span className="text-sm font-bold text-primary">AI</span>[m
+[32m+[m[32m            <span className="text-sm font-bold text-white">GuidePost</span>[m
+[32m+[m[32m            <span className="text-sm font-bold text-primary">Genius</span>[m
+           </div>[m
+         </SidebarGroup>[m
+         <SidebarGroup>[m
+[1mdiff --git a/src/components/FinalResults.tsx b/src/components/FinalResults.tsx[m
+[1mindex e02a64e..e73be4f 100644[m
+[1m--- a/src/components/FinalResults.tsx[m
+[1m+++ b/src/components/FinalResults.tsx[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-import { CareerQuizResult, DomainScore, CareerMatch, CAREER_RESOURCES, MALAYSIA_CONTEXT, LearningResource } from "@/lib/scoring";[m
+[32m+[m[32mimport { CareerQuizResult, DomainScore, CareerMatch, CAREER_RESOURCES, LearningResource } from "@/lib/scoring";[m
+ import { ResultsDisplay } from "./ResultsDisplay";[m
+ import { TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, ArrowRight, Map, MessageCircle, ExternalLink } from "lucide-react";[m
+ import { Link } from "react-router-dom";[m
+[36m@@ -222,48 +222,6 @@[m [mexport function FinalResults({ stage1, stage2 }: FinalResultsProps) {[m
+           </Link>[m
+         </div>[m
+       </div>[m
+[31m-[m
+[31m-      {/* Malaysia Context */}[m
+[31m-      {(() => {[m
+[31m-        const ctx = MALAYSIA_CONTEXT[topCareerTitle];[m
+[31m-        if (!ctx) return null;[m
+[31m-        return ([m
+[31m-          <div className="rounded-xl border border-red-200 bg-red-50/50 p-6 shadow-sm">[m
+[31m-            <div className="mb-4 flex items-center gap-2">[m
+[31m-              <span className="text-2xl">🇲🇾</span>[m
+[31m-              <h2 className="font-display text-lg font-bold text-foreground">[m
+[31m-                In Malaysia — {topCareerTitle}[m
+[31m-              </h2>[m
+[31m-            </div>[m
+[31m-            <div className="grid gap-4 sm:grid-cols-2">[m
+[31m-              <div className="rounded-lg bg-white/70 p-3 border border-red-100">[m
+[31m-                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">💰 Salary Range</p>[m
+[31m-                <p className="font-bold text-foreground">{ctx.salaryRange}</p>[m
+[31m-              </div>[m
+[31m-              <div className="rounded-lg bg-white/70 p-3 border border-red-100">[m
+[31m-                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">📈 Job Outlook</p>[m
+[31m-                <p className="text-sm text-foreground">{ctx.jobOutlook}</p>[m
+[31m-              </div>[m
+[31m-              <div className="rounded-lg bg-white/70 p-3 border border-red-100">[m
+[31m-                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">🎓 Top Universities</p>[m
+[31m-                <div className="flex flex-wrap gap-1 mt-1">[m
+[31m-                  {ctx.topUniversities.map(u => ([m
+[31m-                    <span key={u} className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">{u}</span>[m
+[31m-                  ))}[m
+[31m-                </div>[m
+[31m-              </div>[m
+[31m-              <div className="rounded-lg bg-white/70 p-3 border border-red-100">[m
+[31m-                <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">🔍 Find Jobs On</p>[m
+[31m-                <div className="flex flex-wrap gap-1 mt-1">[m
+[31m-                  {ctx.localPlatforms.map(p => ([m
+[31m-                    <span key={p} className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">{p}</span>[m
+[31m-                  ))}[m
+[31m-                </div>[m
+[31m-              </div>[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-        );[m
+[31m-      })()}[m
+     </div>[m
+   );[m
+ }[m
+[1mdiff --git a/src/components/RoadmapMapView.tsx b/src/components/RoadmapMapView.tsx[m
+[1mindex 6929a20..cb02e98 100644[m
+[1m--- a/src/components/RoadmapMapView.tsx[m
+[1m+++ b/src/components/RoadmapMapView.tsx[m
+[36m@@ -830,12 +830,8 @@[m [mfunction ConnectionLine({[m
+ /* ================================================================[m
+    MAIN COMPONENT[m
+    ================================================================ */[m
+[31m-interface RoadmapMapViewProps {[m
+[31m-  highlightKey?: string;[m
+[31m-}[m
+[31m-[m
+[31m-export function RoadmapMapView({ highlightKey }: RoadmapMapViewProps) {[m
+[31m-  const [activeKey, setActiveKey] = useState(highlightKey ?? CAREER_MAPS[0].key);[m
+[32m+[m[32mexport function RoadmapMapView() {[m
+[32m+[m[32m  const [activeKey, setActiveKey] = useState(CAREER_MAPS[0].key);[m
+   const [highlightedPhase, setHighlightedPhase] = useState<number | null>(null);[m
+   const [zoom, setZoom] = useState(1);[m
+   const [pan, setPan] = useState({ x: 0, y: 0 });[m
+[36m@@ -853,10 +849,6 @@[m [mexport function RoadmapMapView({ highlightKey }: RoadmapMapViewProps) {[m
+     setPan({ x: 0, y: 0 });[m
+   }, [activeKey]);[m
+ [m
+[31m-  useEffect(() => {[m
+[31m-    if (highlightKey) setActiveKey(highlightKey);[m
+[31m-  }, [highlightKey]);[m
+[31m-[m
+   const totalConcepts = activeMap.phases.reduce([m
+     (sum, p) => sum + p.children.reduce((s, c) => s + c.children.length, 0),[m
+     0,[m
+[1mdiff --git a/src/components/SkillAssessment.tsx b/src/components/SkillAssessment.tsx[m
+[1mindex cb7ee7d..229f807 100644[m
+[1m--- a/src/components/SkillAssessment.tsx[m
+[1m+++ b/src/components/SkillAssessment.tsx[m
+[36m@@ -1,6 +1,6 @@[m
+ import { QuizQuestion } from "@/lib/scoring";[m
+ import { Button } from "@/components/ui/button";[m
+[31m-import { ClipboardCheck, CircleCheck as CheckCircle, Code } from "lucide-react";[m
+[32m+[m[32mimport { ClipboardCheck, CheckCircle, Code } from "lucide-react";[m
+ [m
+ interface SkillAssessmentProps {[m
+   questions: QuizQuestion[];[m
+[36m@@ -11,6 +11,10 @@[m [minterface SkillAssessmentProps {[m
+ }[m
+ [m
+ export function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCareers }: SkillAssessmentProps) {[m
+[32m+[m[32m  const allAnswered = questions.every((q) => answers[q.id] !== undefined);[m
+[32m+[m[32m  const answered = questions.filter((q) => answers[q.id] !== undefined).length;[m
+[32m+[m[32m  const total = questions.length;[m
+[32m+[m
+   // Group by career[m
+   const grouped: Record<string, QuizQuestion[]> = {};[m
+   questions.forEach((q) => {[m
+[36m@@ -18,24 +22,6 @@[m [mexport function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar[m
+     grouped[q.careerTitle].push(q);[m
+   });[m
+ [m
+[31m-  // Per-career completion check[m
+[31m-  const careerStatus = Object.entries(grouped).map(([career, qs]) => {[m
+[31m-    const answeredCount = qs.filter((q) => answers[q.id] !== undefined).length;[m
+[31m-    return {[m
+[31m-      career,[m
+[31m-      total: qs.length,[m
+[31m-      answered: answeredCount,[m
+[31m-      complete: answeredCount === qs.length,[m
+[31m-      started: answeredCount > 0,[m
+[31m-      partial: answeredCount > 0 && answeredCount < qs.length,[m
+[31m-    };[m
+[31m-  });[m
+[31m-[m
+[31m-  const hasPartial = careerStatus.some((s) => s.partial);[m
+[31m-  const allComplete = careerStatus.every((s) => s.complete);[m
+[31m-  const answered = questions.filter((q) => answers[q.id] !== undefined).length;[m
+[31m-  const total = questions.length;[m
+[31m-[m
+   let globalIndex = 0;[m
+ [m
+   return ([m
+[36m@@ -65,21 +51,6 @@[m [mexport function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar[m
+ [m
+       {Object.entries(grouped).map(([career, qs]) => ([m
+         <div key={career} className="space-y-4">[m
+[31m-          {(() => {[m
+[31m-            const status = careerStatus.find((s) => s.career === career);[m
+[31m-            return status ? ([m
+[31m-              <div className={`mb-3 flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium ${[m
+[31m-                status.complete ? "bg-green-50 text-green-700 border border-green-200" :[m
+[31m-                status.partial ? "bg-amber-50 text-amber-700 border border-amber-200" :[m
+[31m-                "bg-muted text-muted-foreground"[m
+[31m-              }`}>[m
+[31m-                <span>{career}</span>[m
+[31m-                <span>{status.answered}/{status.total} answered[m
+[31m-                  {status.complete ? " ✓ Complete" : status.partial ? " — finish all questions" : ""}[m
+[31m-                </span>[m
+[31m-              </div>[m
+[31m-            ) : null;[m
+[31m-          })()}[m
+           <h4 className="font-display text-lg font-bold text-foreground">{career}</h4>[m
+           {qs.map((q) => {[m
+             const idx = globalIndex++;[m
+[36m@@ -147,24 +118,9 @@[m [mexport function SkillAssessment({ questions, answers, onAnswer, onSubmit, topCar[m
+         </div>[m
+       ))}[m
+ [m
+[31m-      <div className="space-y-3 text-center">[m
+[31m-        {hasPartial && ([m
+[31m-          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">[m
+[31m-            ⚠️ You've partially answered some fields. You must either complete all questions in a field or answer none of them.[m
+[31m-            <ul className="mt-2 text-left list-disc pl-5">[m
+[31m-              {careerStatus.filter((s) => s.partial).map((s) => ([m
+[31m-                <li key={s.career}>{s.career} — {s.answered}/{s.total} answered</li>[m
+[31m-              ))}[m
+[31m-            </ul>[m
+[31m-          </div>[m
+[31m-        )}[m
+[31m-        <Button[m
+[31m-          onClick={onSubmit}[m
+[31m-          size="lg"[m
+[31m-          className="px-8"[m
+[31m-          disabled={!allComplete || hasPartial}[m
+[31m-        >[m
+[31m-          {allComplete ? "See Results" : `Complete all fields to continue (${answered}/${total})`}[m
+[32m+[m[32m      <div className="text-center">[m
+[32m+[m[32m        <Button onClick={onSubmit} size="lg" className="px-8" disabled={!allAnswered}>[m
+[32m+[m[32m          {allAnswered ? "See Results" : `Answer all ${total} questions to continue`}[m
+         </Button>[m
+       </div>[m
+     </div>[m
+[1mdiff --git a/src/lib/scoring.ts b/src/lib/scoring.ts[m
+[1mindex df8ef90..6b0474d 100644[m
+[1m--- a/src/lib/scoring.ts[m
+[1m+++ b/src/lib/scoring.ts[m
+[36m@@ -175,92 +175,6 @@[m [mexport const CAREER_RESOURCES: CareerResources[] = [[m
+   },[m
+ ];[m
+ [m
+[31m-export const MALAYSIA_CONTEXT: Record<string, {[m
+[31m-  salaryRange: string;[m
+[31m-  jobOutlook: string;[m
+[31m-  topUniversities: string[];[m
+[31m-  localPlatforms: string[];[m
+[31m-}> = {[m
+[31m-  "Software Developer": {[m
+[31m-    salaryRange: "RM 3,500 – RM 10,000/month",[m
+[31m-    jobOutlook: "High demand across fintech, e-commerce and government digital initiatives in Malaysia.",[m
+[31m-    topUniversities: ["UTM", "UPM", "Asia Pacific University (APU)"],[m
+[31m-    localPlatforms: ["JobStreet", "LinkedIn", "Hiredly"][m
+[31m-  },[m
+[31m-  "Data Analyst": {[m
+[31m-    salaryRange: "RM 3,000 – RM 8,000/month",[m
+[31m-    jobOutlook: "Rapidly growing demand as Malaysian companies adopt data-driven decisions.",[m
+[31m-    topUniversities: ["UM", "UPM", "Sunway University"],[m
+[31m-    localPlatforms: ["JobStreet", "LinkedIn", "Glints"][m
+[31m-  },[m
+[31m-  "Cybersecurity Analyst": {[m
+[31m-    salaryRange: "RM 4,000 – RM 12,000/month",[m
+[31m-    jobOutlook: "Critical shortage of cybersecurity talent in Malaysia — very high job security.",[m
+[31m-    topUniversities: ["UTM", "MMU", "UiTM"],[m
+[31m-    localPlatforms: ["JobStreet", "LinkedIn", "CyberSecurity Malaysia Jobs"][m
+[31m-  },[m
+[31m-  "Accountant": {[m
+[31m-    salaryRange: "RM 2,800 – RM 7,500/month",[m
+[31m-    jobOutlook: "Stable demand across all industries; ACCA and ICAEW qualifications highly valued.",[m
+[31m-    topUniversities: ["UTAR", "UiTM", "Taylor's University"],[m
+[31m-    localPlatforms: ["JobStreet", "MauKerja", "LinkedIn"][m
+[31m-  },[m
+[31m-  "Nurse": {[m
+[31m-    salaryRange: "RM 2,200 – RM 5,500/month",[m
+[31m-    jobOutlook: "Consistent demand in public hospitals (KKM) and growing private healthcare sector.",[m
+[31m-    topUniversities: ["UKM", "UM", "International Medical University (IMU)"],[m
+[31m-    localPlatforms: ["JobStreet", "KKM Careers Portal", "LinkedIn"][m
+[31m-  },[m
+[31m-  "Medical Lab Technologist": {[m
+[31m-    salaryRange: "RM 2,500 – RM 6,000/month",[m
+[31m-    jobOutlook: "Steady demand in government labs, private hospitals and diagnostic centres.",[m
+[31m-    topUniversities: ["UPM", "UKM", "MAHSA University"],[m
+[31m-    localPlatforms: ["JobStreet", "KKM Careers Portal", "MauKerja"][m
+[31m-  },[m
+[31m-  "Psychologist": {[m
+[31m-    salaryRange: "RM 3,000 – RM 9,000/month",[m
+[31m-    jobOutlook: "Growing awareness of mental health in Malaysia is driving demand for psychologists.",[m
+[31m-    topUniversities: ["UM", "UKM", "HELP University"],[m
+[31m-    localPlatforms: ["JobStreet", "LinkedIn", "Glints"][m
+[31m-  },[m
+[31m-  "UI/UX Designer": {[m
+[31m-    salaryRange: "RM 3,000 – RM 9,000/month",[m
+[31m-    jobOutlook: "Strong demand from Malaysian tech startups and digital agencies.",[m
+[31m-    topUniversities: ["LimKokWing University", "APU", "Sunway University"],[m
+[31m-    localPlatforms: ["Hiredly", "LinkedIn", "Glints"][m
+[31m-  },[m
+[31m-  "Graphic Designer": {[m
+[31m-    salaryRange: "RM 2,200 – RM 6,000/month",[m
+[31m-    jobOutlook: "Consistent demand in advertising, media and in-house creative teams.",[m
+[31m-    topUniversities: ["LimKokWing University", "The One Academy", "NAFA"],[m
+[31m-    localPlatforms: ["JobStreet", "Hiredly", "Freelancer.com"][m
+[31m-  },[m
+[31m-  "Content Creator": {[m
+[31m-    salaryRange: "RM 2,000 – RM 8,000/month",[m
+[31m-    jobOutlook: "Booming in Malaysia with growth of social commerce and brand content budgets.",[m
+[31m-    topUniversities: ["UiTM", "HELP University", "Sunway University"],[m
+[31m-    localPlatforms: ["LinkedIn", "Hiredly", "Glints"][m
+[31m-  },[m
+[31m-  "Digital Marketer": {[m
+[31m-    salaryRange: "RM 2,800 – RM 8,000/month",[m
+[31m-    jobOutlook: "Every Malaysian business going online needs digital marketers — demand is high.",[m
+[31m-    topUniversities: ["Sunway University", "Taylor's University", "UiTM"],[m
+[31m-    localPlatforms: ["JobStreet", "Hiredly", "LinkedIn"][m
+[31m-  },[m
+[31m-  "Business Analyst": {[m
+[31m-    salaryRange: "RM 4,000 – RM 10,000/month",[m
+[31m-    jobOutlook: "High demand in banking, telco and consulting sectors in Malaysia.",[m
+[31m-    topUniversities: ["UM", "UPM", "Monash University Malaysia"],[m
+[31m-    localPlatforms: ["JobStreet", "LinkedIn", "Glints"][m
+[31m-  },[m
+[31m-  "Entrepreneur": {[m
+[31m-    salaryRange: "Variable — RM 0 to unlimited",[m
+[31m-    jobOutlook: "Malaysia's startup ecosystem is growing fast with support from Cradle, MaGIC and MDEC.",[m
+[31m-    topUniversities: ["UTM", "UM", "Monash University Malaysia"],[m
+[31m-    localPlatforms: ["MaGIC", "Cradle Fund", "MDEC"][m
+[31m-  }[m
+[31m-};[m
+[31m-[m
+ // ===== CAREER PROGRESSION PATHS =====[m
+ [m
+ export interface RoadmapNode {[m
+[36m@@ -418,84 +332,73 @@[m [mexport const CAREER_ROADMAPS: CareerRoadmap[] = [[m
+ export interface Question {[m
+   id: number;[m
+   text: string;[m
+[31m-  dimension: "EI" | "SN" | "TF" | "JP";[m
+[31m-  pole: "E" | "I" | "S" | "N" | "T" | "F" | "J" | "P";[m
+   skillMap: { skill: SkillName; weight: number }[];[m
+[32m+[m[32m  scoringNote: string;[m
+ }[m
+ [m
+ export const QUESTIONS: Question[] = [[m
+[31m-  // ── E/I: EXTRAVERSION vs INTROVERSION ──[m
+[31m-  { id:1, text:"I feel energized after spending time with a large group of people.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:2},{skill:"Leadership",weight:1}] },[m
+[31m-  { id:2, text:"I enjoy presenting my ideas to an audience.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:2},{skill:"Leadership",weight:2}] },[m
+[31m-  { id:3, text:"I prefer group projects over working alone.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:2},{skill:"Leadership",weight:1}] },[m
+[31m-  { id:4, text:"I find it easy to start conversations with people I don't know.", dimension:"EI", pole:"E", skillMap:[{skill:"Communication",weight:3}] },[m
+[31m-  { id:5, text:"I like taking the lead in group discussions or activities.", dimension:"EI", pole:"E", skillMap:[{skill:"Leadership",weight:3},{skill:"Communication",weight:1}] },[m
+[31m-  { id:6, text:"I prefer working alone where I can fully concentrate.", dimension:"EI", pole:"I", skillMap:[{skill:"Coding",weight:2},{skill:"Research",weight:2}] },[m
+[31m-  { id:7, text:"I need quiet, uninterrupted time to do my best thinking.", dimension:"EI", pole:"I", skillMap:[{skill:"Analytical Thinking",weight:2},{skill:"Research",weight:1}] },[m
+[31m-  { id:8, text:"I feel drained after long periods of socializing.", dimension:"EI", pole:"I", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Research",weight:1}] },[m
+[31m-  { id:9, text:"I prefer to think things through carefully before speaking.", dimension:"EI", pole:"I", skillMap:[{skill:"Analytical Thinking",weight:2},{skill:"Risk Analysis",weight:1}] },[m
+[31m-  { id:10, text:"I prefer one-on-one conversations over large group discussions.", dimension:"EI", pole:"I", skillMap:[{skill:"Empathy",weight:2},{skill:"Communication",weight:1}] },[m
+[31m-[m
+[31m-  // ── S/N: SENSING vs INTUITION ──[m
+[31m-  { id:11, text:"I prefer dealing with concrete facts and real-world details.", dimension:"SN", pole:"S", skillMap:[{skill:"Attention to Detail",weight:3},{skill:"Excel",weight:1}] },[m
+[31m-  { id:12, text:"I like following established methods and proven procedures.", dimension:"SN", pole:"S", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Lab Techniques",weight:2}] },[m
+[31m-  { id:13, text:"I enjoy hands-on, practical tasks more than abstract theories.", dimension:"SN", pole:"S", skillMap:[{skill:"Patient Care",weight:2},{skill:"Lab Techniques",weight:2}] },[m
+[31m-  { id:14, text:"I trust direct experience and observation over gut instinct.", dimension:"SN", pole:"S", skillMap:[{skill:"Excel",weight:2},{skill:"Numbers",weight:1}] },[m
+[31m-  { id:15, text:"I prefer step-by-step instructions when learning something new.", dimension:"SN", pole:"S", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Debugging",weight:2}] },[m
+[31m-  { id:16, text:"I enjoy thinking about future possibilities and what could be.", dimension:"SN", pole:"N", skillMap:[{skill:"Design Thinking",weight:2},{skill:"Risk-taking",weight:1}] },[m
+[31m-  { id:17, text:"I love brainstorming creative or unconventional solutions.", dimension:"SN", pole:"N", skillMap:[{skill:"Design Thinking",weight:3},{skill:"SEO",weight:1}] },[m
+[31m-  { id:18, text:"I naturally think about the big picture rather than the fine details.", dimension:"SN", pole:"N", skillMap:[{skill:"Leadership",weight:2},{skill:"Financial Literacy",weight:1}] },[m
+[31m-  { id:19, text:"I enjoy exploring abstract ideas, patterns, and theories.", dimension:"SN", pole:"N", skillMap:[{skill:"Research",weight:2},{skill:"Analytical Thinking",weight:2}] },[m
+[31m-  { id:20, text:"I get bored quickly with repetitive, routine tasks.", dimension:"SN", pole:"N", skillMap:[{skill:"Storytelling",weight:2},{skill:"User Research",weight:1}] },[m
+[31m-[m
+[31m-  // ── T/F: THINKING vs FEELING ──[m
+[31m-  { id:21, text:"I make decisions based on logic rather than emotions.", dimension:"TF", pole:"T", skillMap:[{skill:"Analytical Thinking",weight:3},{skill:"Problem-solving",weight:2}] },[m
+[31m-  { id:22, text:"I enjoy analyzing data to find the most efficient solution.", dimension:"TF", pole:"T", skillMap:[{skill:"SQL",weight:2},{skill:"Data Analysis",weight:2}] },[m
+[31m-  { id:23, text:"I prefer objective feedback over emotional encouragement.", dimension:"TF", pole:"T", skillMap:[{skill:"Analytical Thinking",weight:2},{skill:"Debugging",weight:1}] },[m
+[31m-  { id:24, text:"When solving a problem, I focus on facts and evidence.", dimension:"TF", pole:"T", skillMap:[{skill:"Problem-solving",weight:3},{skill:"Risk Analysis",weight:1}] },[m
+[31m-  { id:25, text:"I value accuracy and correctness over keeping the peace.", dimension:"TF", pole:"T", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Numbers",weight:2}] },[m
+[31m-  { id:26, text:"I care deeply about how my decisions affect other people.", dimension:"TF", pole:"F", skillMap:[{skill:"Empathy",weight:3},{skill:"Communication",weight:2}] },[m
+[31m-  { id:27, text:"I often put others' needs before my own.", dimension:"TF", pole:"F", skillMap:[{skill:"Patient Care",weight:3},{skill:"Empathy",weight:2}] },[m
+[31m-  { id:28, text:"I'm good at reading people's emotions and responding to them.", dimension:"TF", pole:"F", skillMap:[{skill:"Empathy",weight:3},{skill:"Communication",weight:2}] },[m
+[31m-  { id:29, text:"Helping others and making a real difference motivates me.", dimension:"TF", pole:"F", skillMap:[{skill:"Patient Care",weight:2},{skill:"Empathy",weight:2},{skill:"Communication",weight:1}] },[m
+[31m-  { id:30, text:"I prefer maintaining harmony in a team over pointing out flaws.", dimension:"TF", pole:"F", skillMap:[{skill:"Communication",weight:2},{skill:"Empathy",weight:2}] },[m
+[31m-[m
+[31m-  // ── J/P: JUDGING vs PERCEIVING ──[m
+[31m-  { id:31, text:"I prefer having a clear plan and sticking to it.", dimension:"JP", pole:"J", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Numbers",weight:1}] },[m
+[31m-  { id:32, text:"I feel uncomfortable when things are disorganized or unclear.", dimension:"JP", pole:"J", skillMap:[{skill:"Attention to Detail",weight:3},{skill:"Risk Analysis",weight:1}] },[m
+[31m-  { id:33, text:"I like to complete tasks well before the deadline.", dimension:"JP", pole:"J", skillMap:[{skill:"Attention to Detail",weight:2},{skill:"Financial Literacy",weight:1}] },[m
+[31m-  { id:34, text:"I prefer structured environments with clear rules and expectations.", dimension:"JP", pole:"J", skillMap:[{skill:"Numbers",weight:2},{skill:"Analytical Thinking",weight:1}] },[m
+[31m-  { id:35, text:"I make lists and schedules to stay organized.", dimension:"JP", pole:"J", skillMap:[{skill:"Excel",weight:2},{skill:"Attention to Detail",weight:2}] },[m
+[31m-  { id:36, text:"I enjoy going with the flow and adapting to new situations.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:2},{skill:"Storytelling",weight:1}] },[m
+[31m-  { id:37, text:"I like keeping my options open rather than committing too early.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:3},{skill:"Design Thinking",weight:1}] },[m
+[31m-  { id:38, text:"I often do my best work under pressure or close to a deadline.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:2},{skill:"Copywriting",weight:1}] },[m
+[31m-  { id:39, text:"I prefer flexible, open-ended tasks over rigid structured ones.", dimension:"JP", pole:"P", skillMap:[{skill:"Design Thinking",weight:2},{skill:"User Research",weight:2}] },[m
+[31m-  { id:40, text:"I enjoy starting new projects, even if I don't always finish them.", dimension:"JP", pole:"P", skillMap:[{skill:"Risk-taking",weight:2},{skill:"Leadership",weight:1}] },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 1,[m
+[32m+[m[32m    text: "I enjoy writing code or building things with programming languages.",[m
+[32m+[m[32m    skillMap: [{ skill: "Coding", weight: 3 }, { skill: "Debugging", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Coding (+3×) & Debugging (+1×) → Software Dev",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 2,[m
+[32m+[m[32m    text: "When something breaks, I like figuring out exactly what went wrong.",[m
+[32m+[m[32m    skillMap: [{ skill: "Debugging", weight: 3 }, { skill: "Problem-solving", weight: 2 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Debugging (+3×) & Problem-solving (+2×) → Software Dev, all Tech",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 3,[m
+[32m+[m[32m    text: "I'm comfortable using spreadsheets to organize and analyze data.",[m
+[32m+[m[32m    skillMap: [{ skill: "Excel", weight: 3 }, { skill: "Numbers", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Excel (+3×) → Data Analyst, Numbers (+1×) → Accountant",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 4,[m
+[32m+[m[32m    text: "I like writing queries or commands to pull information from databases.",[m
+[32m+[m[32m    skillMap: [{ skill: "SQL", weight: 3 }, { skill: "Problem-solving", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts SQL (+3×) → Data Analyst",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 5,[m
+[32m+[m[32m    text: "I'm interested in how computer networks and the internet work.",[m
+[32m+[m[32m    skillMap: [{ skill: "Networking", weight: 3 }, { skill: "Risk Analysis", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Networking (+3×) & Risk Analysis (+1×) → Cybersecurity",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 6,[m
+[32m+[m[32m    text: "I think about what could go wrong in a system and how to prevent it.",[m
+[32m+[m[32m    skillMap: [{ skill: "Risk Analysis", weight: 3 }, { skill: "Problem-solving", weight: 1 }, { skill: "Attention to Detail", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Risk Analysis (+3×) → Cybersecurity, also Attention to Detail → Accountant",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 7,[m
+[32m+[m[32m    text: "I enjoy working with numbers, calculations, and financial figures.",[m
+[32m+[m[32m    skillMap: [{ skill: "Numbers", weight: 3 }, { skill: "Analytical Thinking", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Numbers (+3×) & Analytical Thinking (+1×) → Accountant",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 8,[m
+[32m+[m[32m    text: "I'm very careful and precise — I double-check my work for errors.",[m
+[32m+[m[32m    skillMap: [{ skill: "Attention to Detail", weight: 3 }, { skill: "Debugging", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Attention to Detail (+3×) → Accountant, Debugging (+1×) → Software Dev",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 9,[m
+[32m+[m[32m    text: "I enjoy breaking down complex problems into smaller, logical steps.",[m
+[32m+[m[32m    skillMap: [{ skill: "Problem-solving", weight: 3 }, { skill: "Analytical Thinking", weight: 2 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Problem-solving (+3×) → all Tech careers, Analytical Thinking (+2×) → Accountant",[m
+[32m+[m[32m  },[m
+[32m+[m[32m  {[m
+[32m+[m[32m    id: 10,[m
+[32m+[m[32m    text: "I like analyzing information to find trends, patterns, or insights.",[m
+[32m+[m[32m    skillMap: [{ skill: "Analytical Thinking", weight: 3 }, { skill: "Excel", weight: 1 }, { skill: "Risk Analysis", weight: 1 }],[m
+[32m+[m[32m    scoringNote: "High → boosts Analytical Thinking (+3×) → Accountant, Excel → Data Analyst, Risk Analysis → Cybersecurity",[m
+[32m+[m[32m  },[m
+ ];[m
+ [m
+[31m-export const MBTI_PROFILES: Record<string, {[m
+[31m-  nickname: string;[m
+[31m-  workStyle: string;[m
+[31m-  suitableRoles: string[];[m
+[31m-}> = {[m
+[31m-  "INTJ": { nickname: "The Architect", workStyle: "You work best independently with full autonomy. You prefer long-term strategy over day-to-day tasks and thrive in environments where your analytical mind is challenged.", suitableRoles: ["Data Analyst", "Cybersecurity Analyst", "Business Analyst"] },[m
+[31m-  "INTP": { nickname: "The Thinker", workStyle: "You love exploring ideas and solving complex problems. You work best alone, prefer logic over routine, and need intellectual freedom to do your best work.", suitableRoles: ["Software Developer", "Data Analyst", "Cybersecurity Analyst"] },[m
+[31m-  "ENTJ": { nickname: "The Commander", workStyle: "You are a natural leader who thrives on setting goals and driving results. You prefer structured environments where your decisiveness and vision can lead a team forward.", suitableRoles: ["Business Analyst", "Entrepreneur", "Digital Marketer"] },[m
+[31m-  "ENTP": { nickname: "The Debater", workStyle: "You are energized by new ideas and love challenging the status quo. You thrive in fast-paced, creative environments and are great at spotting opportunities others miss.", suitableRoles: ["Entrepreneur", "Software Developer", "Digital Marketer"] },[m
+[31m-  "INFJ": { nickname: "The Advocate", workStyle: "You are driven by a deep sense of purpose and empathy. You work best in meaningful roles where your insights and care for others can make a real difference.", suitableRoles: ["Psychologist", "Content Creator", "Nurse"] },[m
+[31m-  "INFP": { nickname: "The Mediator", workStyle: "You are creative and deeply values-driven. You thrive in roles that allow personal expression and are motivated by helping others and contributing to something meaningful.", suitableRoles: ["Psychologist", "Graphic Designer", "Content Creator"] },[m
+[31m-  "ENFJ": { nickname: "The Protagonist", workStyle: "You are a natural people person who inspires others. You thrive in roles involving communication, mentoring, and building connections.", suitableRoles: ["Psychologist", "Digital Marketer", "Nurse"] },[m
+[31m-  "ENFP": { nickname: "The Campaigner", workStyle: "You are enthusiastic and creative with a talent for connecting with people. You thrive in dynamic roles where you can express ideas and motivate others.", suitableRoles: ["Digital Marketer", "Content Creator", "Entrepreneur"] },[m
+[31m-  "ISTJ": { nickname: "The Inspector", workStyle: "You are dependable, precise and hardworking. You thrive in structured roles with clear responsibilities and take pride in delivering accurate, reliable work.", suitableRoles: ["Accountant", "Medical Lab Technologist", "Cybersecurity Analyst"] },[m
+[31m-  "ISFJ": { nickname: "The Protector", workStyle: "You are caring, detail-oriented and deeply loyal. You work best in stable, supportive environments where your dedication and attention to others can shine.", suitableRoles: ["Nurse", "Accountant", "Medical Lab Technologist"] },[m
+[31m-  "ESTJ": { nickname: "The Director", workStyle: "You are organized, decisive and value clear processes. You excel in structured environments where you can manage systems, lead teams, and deliver consistent results.", suitableRoles: ["Business Analyst", "Accountant", "Digital Marketer"] },[m
+[31m-  "ESFJ": { nickname: "The Caregiver", workStyle: "You are warm, organized and love supporting others. You thrive in team environments where your ability to connect and care for people creates real impact.", suitableRoles: ["Nurse", "Digital Marketer", "Content Creator"] },[m
+[31m-  "ISTP": { nickname: "The Craftsman", workStyle: "You are practical, observant and love understanding how things work. You prefer hands-on problem-solving and technical challenges over social or abstract tasks.", suitableRoles: ["Cybersecurity Analyst", "UI/UX Designer", "Software Developer"] },[m
+[31m-  "ISFP": { nickname: "The Artist", workStyle: "You are gentle, creative and highly observant. You work best in flexible, visual environments where you can express your aesthetic sensibility and work at your own pace.", suitableRoles: ["UI/UX Designer", "Graphic Designer", "Content Creator"] },[m
+[31m-  "ESTP": { nickname: "The Entrepreneur", workStyle: "You are bold, energetic and action-oriented. You thrive in fast-paced environments where you can take risks, think on your feet and make things happen quickly.", suitableRoles: ["Entrepreneur", "Digital Marketer", "Business Analyst"] },[m
+[31m-  "ESFP": { nickname: "The Performer", workStyle: "You are spontaneous, energetic and love being in the moment. You thrive in creative, social roles where your energy, storytelling and charm can engage an audience.", suitableRoles: ["Content Creator", "Digital Marketer", "UI/UX Designer"] },[m
+[31m-};[m
+[31m-[m
+ // ===== STAGE 2: MCQ QUIZ QUESTIONS =====[m
+ [m
+ export interface QuizOption {[m
+[36m@@ -831,10 +734,6 @@[m [mexport function calculateStage1Results(answers: Record<number, number>): {[m
+   domains: DomainScore[];[m
+   topDomain: string;[m
+   topCareers: CareerMatch[];[m
+[31m-  mbtiType: string;[m
+[31m-  mbtiNickname: string;[m
+[31m-  mbtiWorkStyle: string;[m
+[31m-  mbtiSuitableRoles: string[];[m
+ } {[m
+   const skillScores: Record<string, { score: number; maxScore: number }> = {};[m
+   ALL_SKILLS.forEach((s) => (skillScores[s] = { score: 0, maxScore: 0 }));[m
+[36m@@ -847,28 +746,6 @@[m [mexport function calculateStage1Results(answers: Record<number, number>): {[m
+     });[m
+   });[m
+ [m
+[31m-  // Calculate MBTI type from dimension scores[m
+[31m-  const dimScores: Record<string, { left: number; right: number }> = {[m
+[31m-    EI: { left: 0, right: 0 }, // left=E, right=I[m
+[31m-    SN: { left: 0, right: 0 }, // left=S, right=N[m
+[31m-    TF: { left: 0, right: 0 }, // left=T, right=F[m
+[31m-    JP: { left: 0, right: 0 }, // left=J, right=P[m
+[31m-  };[m
+[31m-  const leftPoles = ["E","S","T","J"];[m
+[31m-  QUESTIONS.forEach((q) => {[m
+[31m-    const val = answers[q.id] ?? 0;[m
+[31m-    if (val >= 3) {[m
+[31m-      if (leftPoles.includes(q.pole)) dimScores[q.dimension].left += 1;[m
+[31m-      else dimScores[q.dimension].right += 1;[m
+[31m-    }[m
+[31m-  });[m
+[31m-  const mbtiType =[m
+[31m-    (dimScores.EI.left >= dimScores.EI.right ? "E" : "I") +[m
+[31m-    (dimScores.SN.left >= dimScores.SN.right ? "S" : "N") +[m
+[31m-    (dimScores.TF.left >= dimScores.TF.right ? "T" : "F") +[m
+[31m-    (dimScores.JP.left >= dimScores.JP.right ? "J" : "P");[m
+[31m-  const mbtiProfile = MBTI_PROFILES[mbtiType];[m
+[31m-[m
+   const careerMatches: CareerMatch[] = CAREERS.map((career) => {[m
+     let score = 0;[m
+     let maxScore = 0;[m
+[36m@@ -910,15 +787,7 @@[m [mexport function calculateStage1Results(answers: Record<number, number>): {[m
+   const topPercentage = allCareers[0].percentage;[m
+   const topCareers = allCareers.filter((c) => c.percentage >= topPercentage - 10);[m
+ [m
+[31m-  return {[m
+[31m-    domains,[m
+[31m-    topDomain: domains[0].domain,[m
+[31m-    topCareers,[m
+[31m-    mbtiType,[m
+[31m-    mbtiNickname: mbtiProfile?.nickname ?? "",[m
+[31m-    mbtiWorkStyle: mbtiProfile?.workStyle ?? "",[m
+[31m-    mbtiSuitableRoles: mbtiProfile?.suitableRoles ?? [],[m
+[31m-  };[m
+[32m+[m[32m  return { domains, topDomain: domains[0].domain, topCareers };[m
+ }[m
+ [m
+ // Stage 2 results[m
+[1mdiff --git a/src/pages/CareerAdvisor.tsx b/src/pages/CareerAdvisor.tsx[m
+[1mindex 1919122..3f06db3 100644[m
+[1m--- a/src/pages/CareerAdvisor.tsx[m
+[1m+++ b/src/pages/CareerAdvisor.tsx[m
+[36m@@ -13,7 +13,7 @@[m [minterface ChatMessage {[m
+ const OPENING_MESSAGE: ChatMessage = {[m
+   role: "ai",[m
+   content:[m
+[31m-    "Hi! I'm your AI career advisor 👋 Tell me — what subjects or activities do you genuinely enjoy? Don't think about jobs yet, just what feels natural to you.",[m
+[32m+[m[32m    "Hi! I'm your AI career advisor \u{1F44B} Tell me \u2014 what subjects or activities do you genuinely enjoy? Don't think about jobs yet, just what feels natural to you.",[m
+ };[m
+ [m
+ function TypingIndicator() {[m
+[36m@@ -62,29 +62,23 @@[m [mconst CareerAdvisor = () => {[m
+         content: m.content,[m
+       }));[m
+ [m
+[31m-      // FIX 1: Added explicit Authorization header using anon key[m
+       const { data, error } = await supabase.functions.invoke("career-advisor", {[m
+         body: { message: trimmed, history },[m
+[31m-        headers: {[m
+[31m-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,[m
+[31m-        },[m
+       });[m
+ [m
+       if (error) throw error;[m
+ [m
+[31m-      // FIX 2: Now correctly reads `reply` field from the new edge function[m
+       const aiContent =[m
+[31m-        data?.reply ??[m
+[31m-        (data?.advice[m
+[32m+[m[32m        data?.advice[m
+           ? typeof data.advice === "string"[m
+             ? data.advice[m
+             : formatAdvice(data.advice)[m
+[31m-          : "I couldn't generate a response. Please try again.");[m
+[32m+[m[32m          : data?.message ?? "I couldn't generate a response. Please try again.";[m
+ [m
+       setMessages((prev) => [...prev, { role: "ai", content: aiContent }]);[m
+     } catch {[m
+       toast({[m
+[31m-        title: "Connection issue — please try again",[m
+[32m+[m[32m        title: "Connection issue \u2014 please try again",[m
+         variant: "destructive",[m
+       });[m
+     } finally {[m
+[1mdiff --git a/src/pages/Home.tsx b/src/pages/Home.tsx[m
+[1mindex 5a251e6..58534e4 100644[m
+[1m--- a/src/pages/Home.tsx[m
+[1m+++ b/src/pages/Home.tsx[m
+[36m@@ -1,19 +1,9 @@[m
+[31m-import { useState, useEffect } from "react";[m
+ import { Compass, Brain, Map, ArrowRight, Search, GraduationCap, Bot, Route } from "lucide-react";[m
+ import { Link } from "react-router-dom";[m
+ import { Button } from "@/components/ui/button";[m
+ import { Card, CardContent } from "@/components/ui/card";[m
+[31m-import { supabase } from "@/integrations/supabase/client";[m
+ [m
+ const Home = () => {[m
+[31m-  const [sessionCount, setSessionCount] = useState<number | null>(null);[m
+[31m-[m
+[31m-  useEffect(() => {[m
+[31m-    supabase[m
+[31m-      .from("user_sessions")[m
+[31m-      .select("*", { count: "exact", head: true })[m
+[31m-      .then(({ count }) => setSessionCount(count ?? 50));[m
+[31m-  }, []);[m
+   return ([m
+     <div className="min-h-screen bg-background">[m
+       <div className="mx-auto max-w-4xl px-4 py-12">[m
+[36m@@ -33,7 +23,7 @@[m [mconst Home = () => {[m
+             Find Your Career Path with AI[m
+           </h1>[m
+           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">[m
+[31m-            73 million young people are unemployed globally. CareerPath AI uses AI to help students like you discover the right career — before committing to the wrong one.[m
+[32m+[m[32m            73 million young people are unemployed globally. GuidePost Genius uses AI to help students like you discover the right career — before committing to the wrong one.[m
+           </p>[m
+         </div>[m
+ [m
+[36m@@ -80,13 +70,13 @@[m [mconst Home = () => {[m
+                 Discover Your Strengths[m
+               </h2>[m
+               <p className="mb-6 text-sm text-muted-foreground">[m
+[31m-                Answer a 40-question personality assessment to uncover your ideal career domain.[m
+[32m+[m[32m                Answer 10 MBTI-style preference questions to uncover your ideal career domain.[m
+                 Get personalized career recommendations and curated learning resources.[m
+               </p>[m
+               <ul className="mb-6 space-y-2 text-sm text-muted-foreground">[m
+                 <li className="flex items-center gap-2">[m
+                   <ArrowRight className="h-3 w-3 shrink-0 text-primary" />[m
+[31m-                  40-question personality assessment (1–4 scale)[m
+[32m+[m[32m                  10 preference questions (1–4 scale)[m
+                 </li>[m
+                 <li className="flex items-center gap-2">[m
+                   <ArrowRight className="h-3 w-3 shrink-0 text-primary" />[m
+[36m@@ -169,45 +159,11 @@[m [mconst Home = () => {[m
+           </Link>[m
+         </div>[m
+ [m
+[31m-        {/* Live Impact Stats */}[m
+[31m-        <div className="grid grid-cols-3 gap-4 my-8">[m
+[31m-          {[[m
+[31m-            { value: sessionCount !== null ? `${sessionCount}+` : "...", label: "Career Assessments Taken" },[m
+[31m-            { value: "5", label: "Career Domains Covered" },[m
+[31m-            { value: "100%", label: "Free — No Sign Up Needed" }[m
+[31m-          ].map(stat => ([m
+[31m-            <div key={stat.label} className="rounded-xl border border-border/50 bg-card p-4 text-center shadow-sm">[m
+[31m-              <p className="text-3xl font-bold text-primary">{stat.value}</p>[m
+[31m-              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>[m
+[31m-            </div>[m
+[31m-          ))}[m
+[31m-        </div>[m
+[31m-[m
+         {/* SDG Section */}[m
+         <div className="mt-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "600ms" }}>[m
+           <h2 className="mb-6 text-center font-display text-2xl font-bold text-foreground">[m
+             Built for the UN Sustainable Development Goals[m
+           </h2>[m
+[31m-[m
+[31m-          {/* SDG 8 Context Banner */}[m
+[31m-          <div className="rounded-xl bg-foreground text-background p-6 my-6">[m
+[31m-            <h3 className="font-display text-lg font-bold mb-4 text-center">Why This Matters</h3>[m
+[31m-            <div className="grid gap-3 sm:grid-cols-3 text-center">[m
+[31m-              {[[m
+[31m-                { stat: "73 million", desc: "young people unemployed globally (ILO, 2024)" },[m
+[31m-                { stat: "1 in 3", desc: "Malaysian graduates work in unrelated fields (DOSM)" },[m
+[31m-                { stat: "Age 17", desc: "is when career decisions begin — but guidance is scarce" }[m
+[31m-              ].map(item => ([m
+[31m-                <div key={item.stat} className="rounded-lg bg-white/10 p-3">[m
+[31m-                  <p className="text-xl font-bold text-white">{item.stat}</p>[m
+[31m-                  <p className="text-xs text-white/70 mt-1">{item.desc}</p>[m
+[31m-                </div>[m
+[31m-              ))}[m
+[31m-            </div>[m
+[31m-            <p className="text-center text-sm text-white/60 mt-4 italic">[m
+[31m-              CareerPath AI was built to change these numbers — one student at a time.[m
+[31m-            </p>[m
+[31m-          </div>[m
+           <div className="grid gap-4 sm:grid-cols-2">[m
+             <Card className="border border-border/50 border-l-4 border-l-emerald-500 shadow-sm">[m
+               <CardContent className="p-6 space-y-2">[m
+[1mdiff --git a/src/pages/Index.tsx b/src/pages/Index.tsx[m
+[1mindex 17d06d1..1a3b8c3 100644[m
+[1m--- a/src/pages/Index.tsx[m
+[1m+++ b/src/pages/Index.tsx[m
+[36m@@ -1,6 +1,6 @@[m
+ import { useState } from "react";[m
+ import { Link } from "react-router-dom";[m
+[31m-import { QUESTIONS, QUIZ_QUESTIONS, CAREERS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";[m
+[32m+[m[32mimport { QUESTIONS, calculateStage1Results, calculateStage2Results, getQuizQuestionsForCareers, CareerMatch } from "@/lib/scoring";[m
+ import type { CareerQuizResult, DomainScore } from "@/lib/scoring";[m
+ import { QuestionCard } from "@/components/QuestionCard";[m
+ import { ResultsDisplay } from "@/components/ResultsDisplay";[m
+[36m@@ -10,7 +10,7 @@[m [mimport { FinalResults } from "@/components/FinalResults";[m
+ import { Button } from "@/components/ui/button";[m
+ import { Compass, RotateCcw, ArrowRight, ArrowLeft, Map } from "lucide-react";[m
+ [m
+[31m-type Stage = "stage1" | "stage1-results" | "field-select" | "stage2" | "final";[m
+[32m+[m[32mtype Stage = "stage1" | "stage1-results" | "stage2" | "final";[m
+ [m
+ const Index = () => {[m
+   const [stage, setStage] = useState<Stage>("stage1");[m
+[36m@@ -21,28 +21,11 @@[m [mconst Index = () => {[m
+     domains: DomainScore[];[m
+     topDomain: string;[m
+     topCareers: CareerMatch[];[m
+[31m-    mbtiType: string;[m
+[31m-    mbtiNickname: string;[m
+[31m-    mbtiWorkStyle: string;[m
+[31m-    mbtiSuitableRoles: string[];[m
+   } | null>(null);[m
+ [m
+   // Stage 2[m
+   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});[m
+   const [stage2Results, setStage2Results] = useState<CareerQuizResult[] | null>(null);[m
+[31m-  const [selectedDomains, setSelectedDomains] = useState<string[]>([]);[m
+[31m-  const [mbtiSubStage, setMbtiSubStage] = useState<"EI" | "SN" | "TF" | "JP">("EI");[m
+[31m-[m
+[31m-  const dimensionOrder: Array<"EI" | "SN" | "TF" | "JP"> = ["EI", "SN", "TF", "JP"];[m
+[31m-  const dimensionLabels: Record<string, { title: string; description: string; emoji: string }> = {[m
+[31m-    EI: { title: "Extraversion vs Introversion", description: "How do you gain energy and interact with the world?", emoji: "🌐" },[m
+[31m-    SN: { title: "Sensing vs Intuition", description: "How do you take in information and learn?", emoji: "🔍" },[m
+[31m-    TF: { title: "Thinking vs Feeling", description: "How do you make decisions?", emoji: "⚖️" },[m
+[31m-    JP: { title: "Judging vs Perceiving", description: "How do you approach structure and planning?", emoji: "🗂️" },[m
+[31m-  };[m
+[31m-  const currentDimensionQuestions = QUESTIONS.filter((q) => q.dimension === mbtiSubStage);[m
+[31m-  const currentDimIndex = dimensionOrder.indexOf(mbtiSubStage);[m
+[31m-  const currentDimAnswered = currentDimensionQuestions.every((q) => answers[q.id] !== undefined);[m
+ [m
+   const answered = Object.keys(answers).length;[m
+   const total = QUESTIONS.length;[m
+[36m@@ -59,32 +42,7 @@[m [mconst Index = () => {[m
+     window.scrollTo({ top: 0, behavior: "smooth" });[m
+   };[m
+ [m
+[31m-  const handleNextDimension = () => {[m
+[31m-    const nextIndex = dimensionOrder.indexOf(mbtiSubStage) + 1;[m
+[31m-    if (nextIndex < dimensionOrder.length) {[m
+[31m-      setMbtiSubStage(dimensionOrder[nextIndex]);[m
+[31m-      window.scrollTo({ top: 0, behavior: "smooth" });[m
+[31m-    } else {[m
+[31m-      // All 4 dimensions done — calculate results[m
+[31m-      const results = calculateStage1Results(answers);[m
+[31m-      setStage1Results(results);[m
+[31m-      setStage("stage1-results");[m
+[31m-      window.scrollTo({ top: 0, behavior: "smooth" });[m
+[31m-    }[m
+[31m-  };[m
+[31m-[m
+   const handleProceedToStage2 = () => {[m
+[31m-    setStage("field-select");[m
+[31m-    window.scrollTo({ top: 0, behavior: "smooth" });[m
+[31m-  };[m
+[31m-[m
+[31m-  const handleDomainToggle = (domain: string) => {[m
+[31m-    setSelectedDomains((prev) =>[m
+[31m-      prev.includes(domain) ? prev.filter((d) => d !== domain) : [...prev, domain][m
+[31m-    );[m
+[31m-  };[m
+[31m-[m
+[31m-  const handleProceedFromFieldSelect = () => {[m
+     setStage("stage2");[m
+     window.scrollTo({ top: 0, behavior: "smooth" });[m
+   };[m
+[36m@@ -107,19 +65,12 @@[m [mconst Index = () => {[m
+     setQuizAnswers({});[m
+     setStage1Results(null);[m
+     setStage2Results(null);[m
+[31m-    setMbtiSubStage("EI");[m
+     setStage("stage1");[m
+     window.scrollTo({ top: 0, behavior: "smooth" });[m
+   };[m
+ [m
+   const topCareerTitles = stage1Results?.topCareers.map((c) => c.career.title) ?? [];[m
+[31m-  const quizQuestions = selectedDomains.length > 0[m
+[31m-    ? QUIZ_QUESTIONS.filter((q) =>[m
+[31m-        selectedDomains.some((domain) =>[m
+[31m-          CAREERS.find((c) => c.title === q.careerTitle)?.domain === domain[m
+[31m-        )[m
+[31m-      )[m
+[31m-    : [];[m
+[32m+[m[32m  const quizQuestions = getQuizQuestionsForCareers(topCareerTitles);[m
+ [m
+   return ([m
+     <div className="min-h-screen bg-background">[m
+[36m@@ -140,8 +91,8 @@[m [mconst Index = () => {[m
+               Discover Your Strengths[m
+             </h1>[m
+             <p className="mt-1 text-sm text-muted-foreground">[m
+[31m-              {stage === "stage1" && "Stage 1: 40 personality questions — 10 per dimension, rated 1 (Strongly Disagree) to 4 (Strongly Agree)"}[m
+[31m-              {stage === "stage1-results" && "Your personality type, career match & learning resources"}[m
+[32m+[m[32m              {stage === "stage1" && "Stage 1: Answer 10 preference questions (1–4)"}[m
+[32m+[m[32m              {stage === "stage1-results" && "Your career preference match & learning resources"}[m
+               {stage === "stage2" && "Stage 2: Test your knowledge with real problems"}[m
+               {stage === "final" && "Final Results: Combined analysis & skill gaps"}[m
+             </p>[m
+[36m@@ -151,15 +102,11 @@[m [mconst Index = () => {[m
+         {/* Stage indicator */}[m
+         <div className="mb-6 flex items-center justify-center gap-2 text-xs font-medium">[m
+           <span className={`rounded-full px-3 py-1 ${stage === "stage1" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>[m
+[31m-            {stage === "stage1" ? `${currentDimIndex + 1}/4 ${mbtiSubStage}` : "1. Personality"}[m
+[32m+[m[32m            1. Preferences[m
+           </span>[m
+           <ArrowRight className="h-3 w-3 text-muted-foreground" />[m
+           <span className={`rounded-full px-3 py-1 ${stage === "stage1-results" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>[m
+[31m-            Your Type[m
+[31m-          </span>[m
+[31m-          <ArrowRight className="h-3 w-3 text-muted-foreground" />[m
+[31m-          <span className={`rounded-full px-3 py-1 ${stage === "field-select" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>[m
+[31m-            Fields[m
+[32m+[m[32m            Results[m
+           </span>[m
+           <ArrowRight className="h-3 w-3 text-muted-foreground" />[m
+           <span className={`rounded-full px-3 py-1 ${stage === "stage2" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"}`}>[m
+[36m@@ -174,65 +121,35 @@[m [mconst Index = () => {[m
+         {/* Stage 1: Questions */}[m
+         {stage === "stage1" && ([m
+           <>[m
+[31m-            {/* Dimension progress pills */}[m
+[31m-            <div className="flex items-center justify-center gap-2 flex-wrap mb-6">[m
+[31m-              {dimensionOrder.map((dim, i) => {[m
+[31m-                const isActive = dim === mbtiSubStage;[m
+[31m-                const isComplete = i < currentDimIndex;[m
+[31m-                return ([m
+[31m-                  <div key={dim} className="flex items-center gap-1">[m
+[31m-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${[m
+[31m-                      isComplete ? "bg-green-100 text-green-700 border border-green-300" :[m
+[31m-                      isActive ? "bg-primary text-primary-foreground" :[m
+[31m-                      "bg-muted text-muted-foreground"[m
+[31m-                    }`}>[m
+[31m-                      {isComplete ? "✓ " : ""}{dim}[m
+[31m-                    </span>[m
+[31m-                    {i < dimensionOrder.length - 1 && ([m
+[31m-                      <span className="text-muted-foreground text-xs">→</span>[m
+[31m-                    )}[m
+[31m-                  </div>[m
+[31m-                );[m
+[31m-              })}[m
+[32m+[m[32m            <div className="mb-6">[m
+[32m+[m[32m              <div className="mb-1 flex justify-between text-xs font-medium text-muted-foreground">[m
+[32m+[m[32m                <span>{answered}/{total} answered</span>[m
+[32m+[m[32m                <span>{Math.round((answered / total) * 100)}%</span>[m
+[32m+[m[32m              </div>[m
+[32m+[m[32m              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">[m
+[32m+[m[32m                <div[m
+[32m+[m[32m                  className="h-full rounded-full bg-primary transition-all duration-300"[m
+[32m+[m[32m                  style={{ width: `${(answered / total) * 100}%` }}[m
+[32m+[m[32m                />[m
+[32m+[m[32m              </div>[m
+             </div>[m
+ [m
+[31m-            {/* Current dimension header */}[m
+[31m-            <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 mb-6 text-center">[m
+[31m-              <span className="text-3xl">{dimensionLabels[mbtiSubStage].emoji}</span>[m
+[31m-              <h3 className="font-bold text-lg text-foreground mt-2">[m
+[31m-                Dimension {currentDimIndex + 1} of 4: {dimensionLabels[mbtiSubStage].title}[m
+[31m-              </h3>[m
+[31m-              <p className="text-sm text-muted-foreground mt-1">{dimensionLabels[mbtiSubStage].description}</p>[m
+[31m-              <p className="text-xs text-muted-foreground mt-2">[m
+[31m-                {currentDimensionQuestions.filter(q => answers[q.id] !== undefined).length} / {currentDimensionQuestions.length} answered[m
+[31m-              </p>[m
+[32m+[m[32m            <div className="space-y-4">[m
+[32m+[m[32m              {QUESTIONS.map((q, i) => ([m
+[32m+[m[32m                <QuestionCard[m
+[32m+[m[32m                  key={q.id}[m
+[32m+[m[32m                  question={q}[m
+[32m+[m[32m                  value={answers[q.id]}[m
+[32m+[m[32m                  onChange={(v) => handleAnswer(q.id, v)}[m
+[32m+[m[32m                  index={i}[m
+[32m+[m[32m                  total={total}[m
+[32m+[m[32m                />[m
+[32m+[m[32m              ))}[m
+             </div>[m
+ [m
+[31m-            {/* Questions for current dimension only */}[m
+[31m-            {currentDimensionQuestions.map((question, idx) => ([m
+[31m-              <QuestionCard[m
+[31m-                key={question.id}[m
+[31m-                question={question}[m
+[31m-                value={answers[question.id]}[m
+[31m-                onChange={(val) => handleAnswer(question.id, val)}[m
+[31m-                index={idx}[m
+[31m-              />[m
+[31m-            ))}[m
+[31m-[m
+[31m-            {/* Next button */}[m
+[31m-            <div className="text-center mt-6">[m
+[31m-              <Button[m
+[31m-                onClick={handleNextDimension}[m
+[31m-                size="lg"[m
+[31m-                className="px-8 gap-2"[m
+[31m-                disabled={!currentDimAnswered}[m
+[31m-              >[m
+[31m-                {!currentDimAnswered[m
+[31m-                  ? `Answer all ${currentDimensionQuestions.length} questions to continue`[m
+[31m-                  : currentDimIndex < 3[m
+[31m-                  ? `Next: ${dimensionLabels[dimensionOrder[currentDimIndex + 1]].title} →`[m
+[31m-                  : "See My Personality Results 🎉"[m
+[31m-                }[m
+[32m+[m[32m            <div className="mt-8 text-center">[m
+[32m+[m[32m              <Button onClick={handleStage1Submit} size="lg" className="px-8" disabled={!allAnswered}>[m
+[32m+[m[32m                {allAnswered ? "See My Preference Match" : `Answer all ${total} questions`}[m
+               </Button>[m
+             </div>[m
+           </>[m
+[36m@@ -241,47 +158,6 @@[m [mconst Index = () => {[m
+         {/* Stage 1 Results + Resources */}[m
+         {stage === "stage1-results" && stage1Results && ([m
+           <>[m
+[31m-            {stage1Results.mbtiType && ([m
+[31m-              <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 mb-6">[m
+[31m-                <div className="flex items-center justify-between mb-3">[m
+[31m-                  <span className="text-xs font-semibold uppercase text-primary tracking-wide">Your Personality Type</span>[m
+[31m-                  <span className="rounded-full bg-primary text-primary-foreground px-3 py-1 text-xs font-bold">💼 SDG 8 Aligned</span>[m
+[31m-                </div>[m
+[31m-                <div className="flex items-baseline gap-3 mb-2">[m
+[31m-                  <h2 className="text-4xl font-bold text-primary">{stage1Results.mbtiType}</h2>[m
+[31m-                  <span className="text-lg font-semibold text-foreground">{stage1Results.mbtiNickname}</span>[m
+[31m-                </div>[m
+[31m-                <p className="text-sm text-muted-foreground mb-4">{stage1Results.mbtiWorkStyle}</p>[m
+[31m-[m
+[31m-                {/* Dimension bars */}[m
+[31m-                <div className="space-y-2 mb-4">[m
+[31m-                  {[[m
+[31m-                    { left: "Extravert", right: "Introvert", type: stage1Results.mbtiType[0], pair: "EI" },[m
+[31m-                    { left: "Sensing", right: "Intuitive", type: stage1Results.mbtiType[1], pair: "SN" },[m
+[31m-                    { left: "Thinking", right: "Feeling", type: stage1Results.mbtiType[2], pair: "TF" },[m
+[31m-                    { left: "Judging", right: "Perceiving", type: stage1Results.mbtiType[3], pair: "JP" },[m
+[31m-                  ].map((dim) => ([m
+[31m-                    <div key={dim.pair} className="flex items-center gap-2 text-xs">[m
+[31m-                      <span className={`w-20 text-right font-medium ${["E","S","T","J"].includes(dim.type) ? "text-primary" : "text-muted-foreground"}`}>{dim.left}</span>[m
+[31m-                      <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">[m
+[31m-                        <div className={`h-full rounded-full bg-primary transition-all ${["E","S","T","J"].includes(dim.type) ? "w-2/3" : "w-1/3"}`} />[m
+[31m-                      </div>[m
+[31m-                      <span className={`w-20 font-medium ${!["E","S","T","J"].includes(dim.type) ? "text-primary" : "text-muted-foreground"}`}>{dim.right}</span>[m
+[31m-                    </div>[m
+[31m-                  ))}[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <div>[m
+[31m-                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Roles That Suit You</p>[m
+[31m-                  <div className="flex flex-wrap gap-2">[m
+[31m-                    {stage1Results.mbtiSuitableRoles.map((role) => ([m
+[31m-                      <span key={role} className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">{role}</span>[m
+[31m-                    ))}[m
+[31m-                  </div>[m
+[31m-                </div>[m
+[31m-              </div>[m
+[31m-            )}[m
+[31m-[m
+             <ResultsDisplay[m
+               domains={stage1Results.domains}[m
+               topDomain={stage1Results.topDomain}[m
+[36m@@ -318,89 +194,6 @@[m [mconst Index = () => {[m
+           </>[m
+         )}[m
+ [m
+[31m-        {/* Field Select */}[m
+[31m-        {stage === "field-select" && ([m
+[31m-          <div className="space-y-6">[m
+[31m-            <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-6 text-center">[m
+[31m-              <h3 className="text-xl font-bold text-foreground">Which fields do you know?</h3>[m
+[31m-              <p className="mt-1 text-sm text-muted-foreground">[m
+[31m-                Select only the domains you have some knowledge in. You'll be tested only on what you select — and you must fully complete every field you choose.[m
+[31m-              </p>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">[m
+[31m-              {(["Tech", "Accounting", "Healthcare", "Creative", "Business"] as const).map((domain) => {[m
+[31m-                const icons: Record<string, string> = {[m
+[31m-                  Tech: "💻", Accounting: "📊", Healthcare: "🏥", Creative: "🎨", Business: "📈"[m
+[31m-                };[m
+[31m-                const descs: Record<string, string> = {[m
+[31m-                  Tech: "Software, Data, Cybersecurity",[m
+[31m-                  Accounting: "Finance & Accounting",[m
+[31m-                  Healthcare: "Nursing, Lab, Psychology",[m
+[31m-                  Creative: "Design, Content, UX",[m
+[31m-                  Business: "Marketing, Analysis, Entrepreneurship"[m
+[31m-                };[m
+[31m-                const isSelected = selectedDomains.includes(domain);[m
+[31m-                return ([m
+[31m-                  <button[m
+[31m-                    key={domain}[m
+[31m-                    onClick={() => handleDomainToggle(domain)}[m
+[31m-                    className={`rounded-xl border-2 p-4 text-left transition-all ${[m
+[31m-                      isSelected[m
+[31m-                        ? "border-primary bg-primary/10"[m
+[31m-                        : "border-border bg-card hover:border-primary/40"[m
+[31m-                    }`}[m
+[31m-                  >[m
+[31m-                    <div className="flex items-center justify-between">[m
+[31m-                      <div className="flex items-center gap-3">[m
+[31m-                        <span className="text-2xl">{icons[domain]}</span>[m
+[31m-                        <div>[m
+[31m-                          <p className="font-semibold text-foreground">{domain}</p>[m
+[31m-                          <p className="text-xs text-muted-foreground">{descs[domain]}</p>[m
+[31m-                        </div>[m
+[31m-                      </div>[m
+[31m-                      {isSelected && ([m
+[31m-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">[m
+[31m-                          <span className="text-[10px] text-primary-foreground font-bold">✓</span>[m
+[31m-                        </div>[m
+[31m-                      )}[m
+[31m-                    </div>[m
+[31m-                  </button>[m
+[31m-                );[m
+[31m-              })}[m
+[31m-            </div>[m
+[31m-[m
+[31m-            {selectedDomains.length === 0 && ([m
+[31m-              <p className="text-center text-sm text-muted-foreground italic">[m
+[31m-                Select at least one domain to continue.[m
+[31m-              </p>[m
+[31m-            )}[m
+[31m-[m
+[31m-            <div className="text-center space-y-3">[m
+[31m-              <Button[m
+[31m-                onClick={handleProceedFromFieldSelect}[m
+[31m-                size="lg"[m
+[31m-                className="px-8 gap-2"[m
+[31m-                disabled={selectedDomains.length === 0}[m
+[31m-              >[m
+[31m-                Start Knowledge Test ({selectedDomains.length} field{selectedDomains.length !== 1 ? "s" : ""} selected)[m
+[31m-                <ArrowRight className="h-4 w-4" />[m
+[31m-              </Button>[m
+[31m-              <div>[m
+[31m-                <Button[m
+[31m-                  onClick={() => setStage("stage1-results")}[m
+[31m-                  variant="ghost"[m
+[31m-                  size="sm"[m
+[31m-                  className="gap-2 text-muted-foreground"[m
+[31m-                >[m
+[31m-                  <ArrowLeft className="h-3 w-3" />[m
+[31m-                  Back to Results[m
+[31m-                </Button>[m
+[31m-              </div>[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-        )}[m
+[31m-[m
+         {/* Stage 2: Skill Assessment */}[m
+         {stage === "stage2" && ([m
+           <SkillAssessment[m
+[1mdiff --git a/src/pages/Mission.tsx b/src/pages/Mission.tsx[m
+[1mindex 37987cf..4847f02 100644[m
+[1m--- a/src/pages/Mission.tsx[m
+[1m+++ b/src/pages/Mission.tsx[m
+[36m@@ -27,13 +27,13 @@[m [mconst Mission = () => {[m
+       <section className="space-y-4">[m
+         <h2 className="text-2xl font-display font-semibold text-foreground">Why We Built This</h2>[m
+         <p className="text-muted-foreground leading-relaxed">[m
+[31m-          This project started with a personal frustration. At 17, about to graduate, I realized I had no real idea what field to study or commit to — and neither did most of my friends. School teaches us subjects, not careers. CareerPath AI is our answer to that gap.[m
+[32m+[m[32m          This project started with a personal frustration. At 17, about to graduate, I realized I had no real idea what field to study or commit to — and neither did most of my friends. School teaches us subjects, not careers. GuidePost Genius is our answer to that gap.[m
+         </p>[m
+       </section>[m
+ [m
+       {/* The Solution */}[m
+       <section className="space-y-6">[m
+[31m-        <h2 className="text-2xl font-display font-semibold text-foreground">What CareerPath AI Does</h2>[m
+[32m+[m[32m        <h2 className="text-2xl font-display font-semibold text-foreground">What GuidePost Genius Does</h2>[m
+         <div className="grid md:grid-cols-3 gap-4">[m
+           {[[m
+             { icon: "🧭", title: "Career Discovery", desc: "An AI-guided assessment that maps your personality and preferences to real career paths — not generic job titles." },[m
+[1mdiff --git a/src/pages/Roadmap.tsx b/src/pages/Roadmap.tsx[m
+[1mindex c4b13c7..d461d38 100644[m
+[1m--- a/src/pages/Roadmap.tsx[m
+[1m+++ b/src/pages/Roadmap.tsx[m
+[36m@@ -1,267 +1,35 @@[m
+[31m-import { useState, useEffect, useCallback } from "react";[m
+[31m-import { CAREER_ROADMAPS, CAREER_RESOURCES, CAREERS, type LearningResource } from "@/lib/scoring";[m
+[32m+[m[32mimport { useState, useEffect } from "react";[m
+[32m+[m[32mimport { CAREER_ROADMAPS } from "@/lib/scoring";[m
+ import { Button } from "@/components/ui/button";[m
+[31m-import { Checkbox } from "@/components/ui/checkbox";[m
+[31m-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";[m
+[31m-import { Skeleton } from "@/components/ui/skeleton";[m
+[31m-import { ArrowRight, GraduationCap, List, Map as MapIcon, ExternalLink, BookOpen, Wrench, Lightbulb, MapPin } from "lucide-react";[m
+[32m+[m[32mimport { ArrowRight, GraduationCap, List, Map as MapIcon } from "lucide-react";[m
+ import { RoadmapMapView } from "@/components/RoadmapMapView";[m
+[32m+[m[32mimport { Skeleton } from "@/components/ui/skeleton";[m
+ [m
+[31m-const DOMAIN_COLORS: Record<string, string> = {[m
+[31m-  Tech: "bg-primary/10 text-primary",[m
+[31m-  Accounting: "bg-secondary/10 text-secondary",[m
+[31m-  Healthcare: "bg-red-500/10 text-red-600",[m
+[31m-  Creative: "bg-pink-500/10 text-pink-600",[m
+[31m-  Business: "bg-amber-500/10 text-amber-600",[m
+[31m-};[m
+[31m-[m
+[31m-const DOMAIN_BAR_COLORS: Record<string, string> = {[m
+[31m-  Tech: "bg-primary",[m
+[31m-  Accounting: "bg-secondary",[m
+[31m-  Healthcare: "bg-red-500",[m
+[31m-  Creative: "bg-pink-500",[m
+[31m-  Business: "bg-amber-500",[m
+[31m-};[m
+[31m-[m
+[31m-const TYPE_ICON: Record<string, React.ElementType> = {[m
+[31m-  course: BookOpen,[m
+[31m-  tutorial: Lightbulb,[m
+[31m-  tool: Wrench,[m
+[31m-  roadmap: MapPin,[m
+[31m-};[m
+[31m-[m
+[31m-const TYPE_BADGE: Record<string, string> = {[m
+[31m-  course: "bg-blue-500/10 text-blue-600",[m
+[31m-  tutorial: "bg-amber-500/10 text-amber-600",[m
+[31m-  tool: "bg-emerald-500/10 text-emerald-600",[m
+[31m-  roadmap: "bg-primary/10 text-primary",[m
+[32m+[m[32mconst LEVEL_STYLES: Record<string, { bg: string; border: string; dot: string }> = {[m
+[32m+[m[32m  entry: { bg: "bg-primary/5", border: "border-primary/30", dot: "bg-primary" },[m
+[32m+[m[32m  mid: { bg: "bg-secondary/5", border: "border-secondary/30", dot: "bg-secondary" },[m
+[32m+[m[32m  senior: { bg: "bg-accent/5", border: "border-accent/30", dot: "bg-accent" },[m
+[32m+[m[32m  lead: { bg: "bg-destructive/5", border: "border-destructive/30", dot: "bg-destructive" },[m
+ };[m
+ [m
+[31m-const SKILL_DESCRIPTIONS: Record<string, string> = {[m
+[31m-  "HTML/CSS": "Foundation of every web page you'll build",[m
+[31m-  "JavaScript Basics": "The language that powers interactivity on the web",[m
+[31m-  Git: "Track changes and collaborate on code safely",[m
+[31m-  "React/Vue/Angular": "Build complex UIs with component frameworks",[m
+[31m-  "REST APIs": "Connect frontends to backends and external services",[m
+[31m-  Testing: "Ensure your code works correctly before shipping",[m
+[31m-  SQL: "Query databases to read and write data",[m
+[31m-  "System Design": "Plan scalable, maintainable architectures",[m
+[31m-  "CI/CD": "Automate testing and deployment pipelines",[m
+[31m-  "Cloud (AWS/GCP)": "Deploy and manage applications at scale",[m
+[31m-  "Performance Optimization": "Make apps fast and efficient for users",[m
+[31m-  "Architecture Patterns": "Proven solutions to recurring design problems",[m
+[31m-  "Team Leadership": "Guide and grow a technical team",[m
+[31m-  "Stakeholder Communication": "Translate technical concepts for business audiences",[m
+[31m-  DevOps: "Bridge development and operations for faster delivery",[m
+[31m-  Excel: "Analyze and organize data in spreadsheets",[m
+[31m-  "SQL Basics": "Retrieve and filter data from relational databases",[m
+[31m-  "Data Cleaning": "Prepare raw data for accurate analysis",[m
+[31m-  "Tableau/Power BI": "Build interactive dashboards for stakeholders",[m
+[31m-  "Advanced SQL": "Write complex queries for deep analysis",[m
+[31m-  Statistics: "Apply statistical methods to draw valid conclusions",[m
+[31m-  "Python/R": "Programmatic data analysis and visualization",[m
+[31m-  "A/B Testing": "Run experiments to make data-driven decisions",[m
+[31m-  "Predictive Modeling": "Forecast outcomes using statistical models",[m
+[31m-  "Stakeholder Management": "Keep teams aligned on data priorities",[m
+[31m-  "Machine Learning": "Build models that learn patterns from data",[m
+[31m-  "Data Strategy": "Define how an organization collects and uses data",[m
+[31m-  "Big Data Tools": "Process datasets too large for traditional tools",[m
+[31m-  "SIEM Tools": "Aggregate and analyze security log data",[m
+[31m-  "Log Analysis": "Identify threats by examining system logs",[m
+[31m-  "Network Basics": "Understand how data flows across networks",[m
+[31m-  "Pen Testing Basics": "Find vulnerabilities by simulating attacks",[m
+[31m-  "Threat Intelligence": "Stay ahead of emerging threats and attack patterns",[m
+[31m-  "Firewall Management": "Control network traffic with security rules",[m
+[31m-  "Cloud Security": "Protect cloud infrastructure and services",[m
+[31m-  "Incident Response": "Detect, contain, and recover from security breaches",[m
+[31m-  "Security Automation": "Automate repetitive security tasks at scale",[m
+[31m-  Compliance: "Meet regulatory and industry security standards",[m
+[31m-  "Risk Management": "Identify and prioritize organizational risks",[m
+[31m-  "Policy & Governance": "Define and enforce security policies org-wide",[m
+[31m-  "Executive Communication": "Present security posture to leadership clearly",[m
+[31m-  Bookkeeping: "Record financial transactions accurately",[m
+[31m-  "Accounting Software": "Use tools like QuickBooks and Xero efficiently",[m
+[31m-  "Financial Reporting": "Prepare statements that show financial health",[m
+[31m-  "Tax Preparation": "Calculate and file taxes correctly and on time",[m
+[31m-  "GAAP/IFRS Basics": "Apply standard accounting frameworks properly",[m
+[31m-  "Advanced Tax": "Handle complex tax scenarios and planning",[m
+[31m-  "Audit Management": "Lead audits to verify financial accuracy",[m
+[31m-  "Financial Analysis": "Interpret financial data for business decisions",[m
+[31m-  "CPA Certification": "Earn the gold-standard accounting credential",[m
+[31m-  "Strategic Planning": "Set long-term financial goals and roadmaps",[m
+[31m-  "Regulatory Compliance": "Ensure the organization meets all legal requirements",[m
+[31m-  "Financial Strategy": "Align financial decisions with business objectives",[m
+[31m-  "Basic Patient Care": "Provide safe, compassionate daily care",[m
+[31m-  Anatomy: "Understand the human body's structure and function",[m
+[31m-  "Clinical Skills": "Perform essential medical procedures competently",[m
+[31m-  "Patient Assessment": "Evaluate patient condition accurately and thoroughly",[m
+[31m-  "Medication Administration": "Give medications safely and correctly",[m
+[31m-  "Care Planning": "Design individualized patient care plans",[m
+[31m-  "Advanced Clinical Skills": "Handle complex medical situations confidently",[m
+[31m-  "Team Coordination": "Orchestrate care across a multidisciplinary team",[m
+[31m-  Specialization: "Develop deep expertise in a clinical area",[m
+[31m-  "Advanced Practice": "Diagnose and prescribe at an advanced level",[m
+[31m-  Leadership: "Guide teams and shape department strategy",[m
+[31m-  "Policy & Research": "Influence healthcare policy through evidence",[m
+[31m-  "Sample Handling": "Process specimens correctly for accurate results",[m
+[31m-  "Lab Safety": "Maintain a safe working environment in the lab",[m
+[31m-  "Basic Biology": "Understand the biological basis of lab tests",[m
+[31m-  "Diagnostic Testing": "Run and interpret medical diagnostic tests",[m
+[31m-  "QC Procedures": "Ensure test results are reliable and reproducible",[m
+[31m-  "Hematology/Chemistry": "Analyze blood and chemical samples accurately",[m
+[31m-  "Method Validation": "Verify that new test methods produce valid results",[m
+[31m-  Mentoring: "Train and develop junior lab staff",[m
+[31m-  "Lab Management": "Oversee operations, budgets, and accreditation",[m
+[31m-  "Research Methods": "Design and conduct rigorous scientific studies",[m
+[31m-  "Counseling Basics": "Apply foundational therapeutic techniques",[m
+[31m-  Ethics: "Navigate confidentiality, consent, and professional boundaries",[m
+[31m-  "Therapeutic Techniques": "Use evidence-based therapy approaches effectively",[m
+[31m-  "Psychological Testing": "Administer and interpret psychological assessments",[m
+[31m-  "Case Management": "Coordinate care and resources for clients",[m
+[31m-  "Research Publication": "Contribute findings to the scientific community",[m
+[31m-  Supervision: "Oversee trainees and ensure quality of care",[m
+[31m-  "Practice Management": "Run a private practice efficiently and ethically",[m
+[31m-  "Program Development": "Design and implement mental health programs",[m
+[31m-  "Figma Basics": "Create designs and prototypes in Figma",[m
+[31m-  Wireframing: "Sketch layouts before building high-fidelity designs",[m
+[31m-  "User Flows": "Map the steps users take through a product",[m
+[31m-  Prototyping: "Build interactive mockups to test ideas quickly",[m
+[31m-  "Usability Testing": "Validate designs with real users before launch",[m
+[31m-  "Design Systems": "Maintain consistent UI patterns across products",[m
+[31m-  "Design Strategy": "Align design decisions with business and user goals",[m
+[31m-  "User Research": "Understand user needs through interviews and testing",[m
+[31m-  Accessibility: "Make products usable for people of all abilities",[m
+[31m-  "Design Leadership": "Build and lead a high-performing design team",[m
+[31m-  "Cross-functional Collaboration": "Work effectively with engineering and product",[m
+[31m-  "Design Ops": "Scale design processes and tooling across teams",[m
+[31m-  "Adobe Illustrator": "Create vector graphics and illustrations",[m
+[31m-  "Layout Design": "Arrange elements for clear visual communication",[m
+[31m-  "Color Theory": "Choose color palettes that evoke the right emotions",[m
+[31m-  "Brand Identity": "Build cohesive visual systems for brands",[m
+[31m-  "Print & Digital Design": "Design for both physical and screen media",[m
+[31m-  Typography: "Select and pair typefaces for readability and impact",[m
+[31m-  "Art Direction": "Guide the visual style of campaigns and projects",[m
+[31m-  "Brand Strategy": "Define how a brand looks, feels, and communicates",[m
+[31m-  "Motion Graphics": "Add animation to bring designs to life",[m
+[31m-  "Creative Leadership": "Inspire and direct creative teams",[m
+[31m-  "Campaign Strategy": "Plan multi-channel campaigns that drive results",[m
+[31m-  "Team Management": "Hire, develop, and retain creative talent",[m
+[31m-  Copywriting: "Write clear, persuasive text for marketing",[m
+[31m-  "Social Media Basics": "Manage accounts and grow audiences online",[m
+[31m-  "Content Planning": "Organize topics, formats, and publishing schedules",[m
+[31m-  "Video Production": "Film and edit engaging video content",[m
+[31m-  "Audience Growth": "Attract and retain followers across platforms",[m
+[31m-  "Brand Partnerships": "Collaborate with brands for sponsored content",[m
+[31m-  "Content Strategy": "Plan content that supports business goals",[m
+[31m-  Analytics: "Measure performance and optimize content",[m
+[31m-  "SEO Optimization": "Improve content visibility in search engines",[m
+[31m-  "Media Strategy": "Define how content reaches the right audiences",[m
+[31m-  "Revenue Models": "Monetize content through ads, subscriptions, and more",[m
+[31m-  "Social Media Management": "Schedule, post, and engage across platforms",[m
+[31m-  "Basic SEO": "Understand how search engines rank content",[m
+[31m-  "Email Marketing": "Build email campaigns that convert",[m
+[31m-  "Google Ads": "Create and manage paid search campaigns",[m
+[31m-  "A/B Testing": "Test variations to find what performs best",[m
+[31m-  "Marketing Strategy": "Plan campaigns that align with business objectives",[m
+[31m-  CRO: "Optimize pages to increase conversion rates",[m
+[31m-  "Attribution Modeling": "Understand which channels drive conversions",[m
+[31m-  "Brand Strategy": "Define brand positioning and messaging",[m
+[31m-  "Budget Management": "Allocate and track marketing spend effectively",[m
+[31m-  "Requirements Gathering": "Elicit and document what stakeholders need",[m
+[31m-  "Process Mapping": "Visualize workflows to find improvements",[m
+[31m-  "Data Analysis": "Interpret data to support business decisions",[m
+[31m-  "Strategic Analysis": "Evaluate options and recommend the best path",[m
+[31m-  "KPI Frameworks": "Define metrics that measure what matters",[m
+[31m-  "Change Management": "Guide organizations through transitions smoothly",[m
+[31m-  "Enterprise Strategy": "Shape long-term organizational direction",[m
+[31m-  "Digital Transformation": "Modernize processes with technology",[m
+[31m-  "Lean Startup": "Validate business ideas quickly and cheaply",[m
+[31m-  "Market Research": "Understand your target market and competitors",[m
+[31m-  "Basic Finance": "Manage cash flow, budgets, and financial basics",[m
+[31m-  Sales: "Close deals and generate revenue consistently",[m
+[31m-  "Product Management": "Build the right product for the right audience",[m
+[31m-  Fundraising: "Raise capital from investors to fuel growth",[m
+[31m-  "Team Building": "Hire and develop a high-performing team",[m
+[31m-  "Growth Strategy": "Scale the business to new markets and channels",[m
+[31m-  "Financial Management": "Manage budgets, forecasts, and financial health",[m
+[31m-  "Vision & Strategy": "Set a compelling direction for the company",[m
+[31m-  "Board Management": "Work effectively with a board of directors",[m
+[31m-  "M&A": "Navigate mergers, acquisitions, and exits",[m
+[32m+[m[32mconst LEVEL_LABELS: Record<string, string> = {[m
+[32m+[m[32m  entry: "Entry Level",[m
+[32m+[m[32m  mid: "Mid Level",[m
+[32m+[m[32m  senior: "Senior Level",[m
+[32m+[m[32m  lead: "Leadership",[m
+ };[m
+ [m
+[31m-function getSkillDescription(skill: string): string {[m
+[31m-  return SKILL_DESCRIPTIONS[skill] ?? "Essential skill for this career path";[m
+[31m-}[m
+[31m-[m
+[31m-function getCareerResources(careerTitle: string): LearningResource[] {[m
+[31m-  const entry = CAREER_RESOURCES.find([m
+[31m-    (r) => r.careerTitle.toLowerCase() === careerTitle.toLowerCase()[m
+[31m-  );[m
+[31m-  return entry?.resources ?? [];[m
+[31m-}[m
+[31m-[m
+[31m-function getCareerSkills(careerTitle: string): string[] {[m
+[31m-  const career = CAREERS.find((c) => c.title === careerTitle);[m
+[31m-  return career?.skills ?? [];[m
+[31m-}[m
+[31m-[m
+[31m-function getMapKey(careerTitle: string): string {[m
+[31m-  const mapKeys: Record<string, string> = {[m
+[31m-    "Software Developer": "software-developer",[m
+[31m-    "Data Analyst": "data-analyst",[m
+[31m-    "Cybersecurity Analyst": "cybersecurity",[m
+[31m-    Accountant: "accountant",[m
+[31m-  };[m
+[31m-  return mapKeys[careerTitle] ?? "";[m
+[31m-}[m
+[31m-[m
+ type ViewMode = "list" | "map";[m
+ [m
+[31m-const STORAGE_KEY = "careerpath-roadmap-progress";[m
+[31m-[m
+[31m-function loadProgress(): Record<string, boolean> {[m
+[31m-  try {[m
+[31m-    const raw = localStorage.getItem(STORAGE_KEY);[m
+[31m-    return raw ? JSON.parse(raw) : {};[m
+[31m-  } catch {[m
+[31m-    return {};[m
+[31m-  }[m
+[31m-}[m
+[31m-[m
+[31m-function saveProgress(data: Record<string, boolean>) {[m
+[31m-  try {[m
+[31m-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));[m
+[31m-  } catch {[m
+[31m-    // ignore write failures[m
+[31m-  }[m
+[31m-}[m
+[31m-[m
+ const Roadmap = () => {[m
+   const [view, setView] = useState<ViewMode>("list");[m
+   const [showSkeleton, setShowSkeleton] = useState(true);[m
+[31m-  const [checked, setChecked] = useState<Record<string, boolean>>(loadProgress);[m
+[31m-  const [highlightKey, setHighlightKey] = useState<string | undefined>(undefined);[m
+ [m
+   useEffect(() => {[m
+     const timer = setTimeout(() => setShowSkeleton(false), 800);[m
+     return () => clearTimeout(timer);[m
+   }, [view]);[m
+ [m
+[31m-  const toggleCheck = useCallback((topicKey: string) => {[m
+[31m-    setChecked((prev) => {[m
+[31m-      const next = { ...prev, [topicKey]: !prev[topicKey] };[m
+[31m-      saveProgress(next);[m
+[31m-      return next;[m
+[31m-    });[m
+[31m-  }, []);[m
+[31m-[m
+[31m-  const handleViewOnMap = useCallback((careerTitle: string) => {[m
+[31m-    const key = getMapKey(careerTitle);[m
+[31m-    setHighlightKey(key);[m
+[31m-    setView("map");[m
+[31m-    window.scrollTo({ top: 0, behavior: "smooth" });[m
+[31m-  }, []);[m
+[31m-[m
+   if (showSkeleton) {[m
+     return ([m
+       <div className="min-h-screen bg-background">[m
+[36m@@ -330,200 +98,59 @@[m [mconst Roadmap = () => {[m
+         </div>[m
+ [m
+         {/* Map View */}[m
+[31m-        {view === "map" && <RoadmapMapView highlightKey={highlightKey} />}[m
+[32m+[m[32m        {view === "map" && <RoadmapMapView />}[m
+ [m
+         {/* List View */}[m
+         {view === "list" && ([m
+           <div className="space-y-8">[m
+             {CAREER_ROADMAPS.map((roadmap) => {[m
+[31m-              const domainColor = DOMAIN_COLORS[roadmap.domain] ?? "bg-muted text-muted-foreground";[m
+[31m-              const barColor = DOMAIN_BAR_COLORS[roadmap.domain] ?? "bg-muted";[m
+[31m-              const mapKey = getMapKey(roadmap.careerTitle);[m
+[31m-              const hasMapView = mapKey !== "";[m
+[31m-[m
+[31m-              // Collect all L2 topics across all nodes for this career[m
+[31m-              const allTopics: { nodeId: string; nodeTitle: string; skill: string }[] = [];[m
+[31m-              roadmap.nodes.forEach((node) => {[m
+[31m-                node.skills.forEach((skill) => {[m
+[31m-                  allTopics.push({ nodeId: node.id, nodeTitle: node.title, skill });[m
+[31m-                });[m
+[31m-              });[m
+[31m-[m
+[31m-              const totalTopics = allTopics.length;[m
+[31m-              const completedTopics = allTopics.filter([m
+[31m-                (t) => checked[`${roadmap.careerTitle}::${t.skill}`][m
+[31m-              ).length;[m
+[31m-              const progressPct = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;[m
+[31m-[m
+[31m-              const careerSkills = getCareerSkills(roadmap.careerTitle);[m
+[31m-              const careerResources = getCareerResources(roadmap.careerTitle);[m
+[31m-[m
+[32m+[m[32m              const isTech = roadmap.domain === "Tech";[m
+               return ([m
+[31m-                <div key={roadmap.careerTitle} className="rounded-2xl border border-border bg-card p-6 shadow-sm">[m
+[31m-                  {/* Card header */}[m
+[31m-                  <div className="mb-4 flex items-center justify-between">[m
+[31m-                    <div className="flex items-center gap-2">[m
+[31m-                      <span className={`rounded-full px-3 py-1 text-xs font-bold ${domainColor}`}>[m
+[31m-                        {roadmap.domain}[m
+[31m-                      </span>[m
+[31m-                      <h2 className="font-display text-lg font-bold text-card-foreground">[m
+[31m-                        {roadmap.careerTitle}[m
+[31m-                      </h2>[m
+[31m-                    </div>[m
+[31m-                    {hasMapView && ([m
+[31m-                      <Button[m
+[31m-                        variant="outline"[m
+[31m-                        size="sm"[m
+[31m-                        className="gap-1.5 text-xs"[m
+[31m-                        onClick={() => handleViewOnMap(roadmap.careerTitle)}[m
+[31m-                      >[m
+[31m-                        <MapIcon className="h-3 w-3" />[m
+[31m-                        View on Map[m
+[31m-                      </Button>[m
+[31m-                    )}[m
+[31m-                  </div>[m
+[31m-[m
+[31m-                  {/* Progress bar */}[m
+[31m-                  <div className="mb-5">[m
+[31m-                    <div className="mb-1.5 flex items-center justify-between text-xs">[m
+[31m-                      <span className="font-medium text-muted-foreground">[m
+[31m-                        {completedTopics} of {totalTopics} topics completed[m
+[31m-                      </span>[m
+[31m-                      <span className="font-bold text-foreground">{progressPct}%</span>[m
+[31m-                    </div>[m
+[31m-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">[m
+[31m-                      <div[m
+[31m-                        className={`h-full rounded-full transition-all duration-500 ${barColor}`}[m
+[31m-                        style={{ width: `${progressPct}%` }}[m
+[31m-                      />[m
+[31m-                    </div>[m
+[32m+[m[32m                <div key={roadmap.careerTitle} className="rounded-2xl border border-border bg-card p-6">[m
+[32m+[m[32m                  <div className="mb-4 flex items-center gap-2">[m
+[32m+[m[32m                    <span className={`rounded-full px-3 py-1 text-xs font-bold ${isTech ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"}`}>[m
+[32m+[m[32m                      {roadmap.domain}[m
+[32m+[m[32m                    </span>[m
+[32m+[m[32m                    <h2 className="font-display text-lg font-bold text-card-foreground">[m
+[32m+[m[32m                      {roadmap.careerTitle}[m
+[32m+[m[32m                    </h2>[m
+                   </div>[m
+ [m
+[31m-                  {/* Accordion sections */}[m
+[31m-                  <Accordion type="multiple" className="w-full">[m
+[31m-                    {/* Learning Path */}[m
+[31m-                    <AccordionItem value="learning-path" className="border-border/50">[m
+[31m-                      <AccordionTrigger className="text-sm font-bold text-foreground hover:no-underline">[m
+[31m-                        <div className="flex items-center gap-2">[m
+[31m-                          <GraduationCap className="h-4 w-4 text-primary" />[m
+[31m-                          Learning Path[m
+[31m-                        </div>[m
+[31m-                      </AccordionTrigger>[m
+[31m-                      <AccordionContent>[m
+[31m-                        <div className="space-y-4">[m
+[31m-                          {roadmap.nodes.map((node, ni) => ([m
+[31m-                            <div key={node.id}>[m
+[31m-                              <div className="mb-2 flex items-center gap-2">[m
+[31m-                                <span className="font-display text-sm font-bold text-foreground">[m
+[31m-                                  {node.title}[m
+[31m-                                </span>[m
+[32m+[m[32m                  <div className="relative ml-4">[m
+[32m+[m[32m                    <div className="absolute left-0 top-0 h-full w-0.5 bg-border" />[m
+[32m+[m[32m                    <div className="space-y-4">[m
+[32m+[m[32m                      {roadmap.nodes.map((node, i) => {[m
+[32m+[m[32m                        const styles = LEVEL_STYLES[node.level];[m
+[32m+[m[32m                        const isLast = i === roadmap.nodes.length - 1;[m
+[32m+[m[32m                        return ([m
+[32m+[m[32m                          <div key={node.id} className="relative pl-8">[m
+[32m+[m[32m                            <div className={`absolute left-0 top-3 -translate-x-1/2 h-3 w-3 rounded-full border-2 border-card ${styles.dot}`} />[m
+[32m+[m[32m                            {!isLast && ([m
+[32m+[m[32m                              <div className="absolute left-0 top-8 -translate-x-1/2">[m
+[32m+[m[32m                                <ArrowRight className="h-3 w-3 rotate-90 text-muted-foreground" />[m
+[32m+[m[32m                              </div>[m
+[32m+[m[32m                            )}[m
+[32m+[m[32m                            <div className={`rounded-xl border ${styles.border} ${styles.bg} p-4`}>[m
+[32m+[m[32m                              <div className="mb-1 flex items-center justify-between">[m
+[32m+[m[32m                                <span className="font-display text-sm font-bold text-foreground">{node.title}</span>[m
+                                 <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">[m
+[31m-                                  {node.level === "entry" ? "Entry" : node.level === "mid" ? "Mid" : node.level === "senior" ? "Senior" : "Lead"}[m
+[32m+[m[32m                                  {LEVEL_LABELS[node.level]}[m
+                                 </span>[m
+                               </div>[m
+                               <p className="mb-2 text-xs text-muted-foreground">{node.description}</p>[m
+[31m-                              <div className="space-y-1.5 pl-1">[m
+[31m-                                {node.skills.map((skill) => {[m
+[31m-                                  const topicKey = `${roadmap.careerTitle}::${skill}`;[m
+[31m-                                  const isChecked = checked[topicKey] ?? false;[m
+[31m-                                  return ([m
+[31m-                                    <label[m
+[31m-                                      key={skill}[m
+[31m-                                      className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-foreground transition-colors hover:bg-muted/50"[m
+[31m-                                    >[m
+[31m-                                      <Checkbox[m
+[31m-                                        checked={isChecked}[m
+[31m-                                        onCheckedChange={() => toggleCheck(topicKey)}[m
+[31m-                                        className="shrink-0"[m
+[31m-                                      />[m
+[31m-                                      <span className={isChecked ? "line-through text-muted-foreground" : ""}>[m
+[31m-                                        {skill}[m
+[31m-                                      </span>[m
+[31m-                                    </label>[m
+[31m-                                  );[m
+[31m-                                })}[m
+[32m+[m[32m                              <div className="flex flex-wrap gap-1">[m
+[32m+[m[32m                                {node.skills.map((skill) => ([m
+[32m+[m[32m                                  <span key={skill} className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">[m
+[32m+[m[32m                                    {skill}[m
+[32m+[m[32m                                  </span>[m
+[32m+[m[32m                                ))}[m
+                               </div>[m
+[31m-                              {ni < roadmap.nodes.length - 1 && ([m
+[31m-                                <div className="my-3 ml-4 flex items-center gap-2 text-muted-foreground">[m
+[31m-                                  <div className="h-px flex-1 bg-border" />[m
+[31m-                                  <ArrowRight className="h-3 w-3 rotate-90" />[m
+[31m-                                  <div className="h-px flex-1 bg-border" />[m
+[31m-                                </div>[m
+[31m-                              )}[m
+                             </div>[m
+[31m-                          ))}[m
+[31m-                        </div>[m
+[31m-                      </AccordionContent>[m
+[31m-                    </AccordionItem>[m
+[31m-[m
+[31m-                    {/* Key Skills */}[m
+[31m-                    <AccordionItem value="key-skills" className="border-border/50">[m
+[31m-                      <AccordionTrigger className="text-sm font-bold text-foreground hover:no-underline">[m
+[31m-                        <div className="flex items-center gap-2">[m
+[31m-                          <Lightbulb className="h-4 w-4 text-amber-500" />[m
+[31m-                          Key Skills[m
+[31m-                        </div>[m
+[31m-                      </AccordionTrigger>[m
+[31m-                      <AccordionContent>[m
+[31m-                        <div className="flex flex-wrap gap-2">[m
+[31m-                          {careerSkills.map((skill) => ([m
+[31m-                            <div[m
+[31m-                              key={skill}[m
+[31m-                              className="group relative rounded-lg border border-border/50 bg-muted/30 px-3 py-2 text-sm transition-colors hover:bg-muted/60"[m
+[31m-                            >[m
+[31m-                              <span className="font-medium text-foreground">{skill}</span>[m
+[31m-                              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">[m
+[31m-                                {getSkillDescription(skill)}[m
+[31m-                              </p>[m
+[31m-                            </div>[m
+[31m-                          ))}[m
+[31m-                        </div>[m
+[31m-                      </AccordionContent>[m
+[31m-                    </AccordionItem>[m
+[31m-[m
+[31m-                    {/* Free Resources */}[m
+[31m-                    <AccordionItem value="free-resources" className="border-border/50">[m
+[31m-                      <AccordionTrigger className="text-sm font-bold text-foreground hover:no-underline">[m
+[31m-                        <div className="flex items-center gap-2">[m
+[31m-                          <BookOpen className="h-4 w-4 text-secondary" />[m
+[31m-                          Free Resources[m
+[31m-                        </div>[m
+[31m-                      </AccordionTrigger>[m
+[31m-                      <AccordionContent>[m
+[31m-                        {careerResources.length > 0 ? ([m
+[31m-                          <div className="grid gap-2 sm:grid-cols-2">[m
+[31m-                            {careerResources.map((res) => {[m
+[31m-                              const Icon = TYPE_ICON[res.type] ?? BookOpen;[m
+[31m-                              const badgeClass = TYPE_BADGE[res.type] ?? "bg-muted text-muted-foreground";[m
+[31m-                              return ([m
+[31m-                                <a[m
+[31m-                                  key={res.title}[m
+[31m-                                  href={res.url}[m
+[31m-                                  target="_blank"[m
+[31m-                                  rel="noopener noreferrer"[m
+[31m-                                  className="flex items-start gap-3 rounded-xl border border-border/50 bg-background p-3 transition-colors hover:bg-muted/40"[m
+[31m-                                >[m
+[31m-                                  <div className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${badgeClass}`}>[m
+[31m-                                    <Icon className="h-3.5 w-3.5" />[m
+[31m-                                  </div>[m
+[31m-                                  <div className="min-w-0 flex-1">[m
+[31m-                                    <p className="text-sm font-semibold text-foreground leading-snug">{res.title}</p>[m
+[31m-                                    <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">{res.description}</p>[m
+[31m-                                    <span className={`mt-1 inline-block rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${badgeClass}`}>[m
+[31m-                                      {res.type}[m
+[31m-                                    </span>[m
+[31m-                                  </div>[m
+[31m-                                  <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />[m
+[31m-                                </a>[m
+[31m-                              );[m
+[31m-                            })}[m
+                           </div>[m
+[31m-                        ) : ([m
+[31m-                          <p className="text-sm text-muted-foreground">No resources available for this career yet.</p>[m
+[31m-                        )}[m
+[31m-                      </AccordionContent>[m
+[31m-                    </AccordionItem>[m
+[31m-                  </Accordion>[m
+[32m+[m[32m                        );[m
+[32m+[m[32m                      })}[m
+[32m+[m[32m                    </div>[m
+[32m+[m[32m                  </div>[m
+                 </div>[m
+               );[m
+             })}[m

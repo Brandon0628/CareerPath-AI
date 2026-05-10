@@ -19,7 +19,8 @@ export async function saveResultsToSupabase(
 ): Promise<void> {
   try {
     const sessionId = getOrCreateSessionId();
-    await supabase.from("user_sessions").insert({
+    // @ts-ignore - user_sessions table created manually, types not regenerated
+await (supabase as any).from("user_sessions").insert({
       session_id: sessionId,
       career_domain: domain,
       top_career: topCareer,

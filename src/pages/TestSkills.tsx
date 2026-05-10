@@ -8,7 +8,7 @@ import {
 import { generateMockQuestions } from "@/lib/questionGenerator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { saveResultsToSupabase } from "@/lib/session";
+import { saveResultsToSupabase, getOrCreateSessionId } from "@/lib/session";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
@@ -141,14 +141,18 @@ const TestSkills = () => {
 
     // Save top result to Supabase
     const topResult = res.reduce((best, r) => (r.overallScore > best.overallScore ? r : best), res[0]);
-    saveResultsToSupabase(
-      selectedDomain,
-      topResult.careerTitle,
-      topResult.overallScore,
-      topResult.skillResults,
-    ).then(() => {
-      toast({ title: "Results saved ✓", description: "Your career assessment has been recorded." });
-    });
+    const sessionId = getOrCreateSessionId();
+saveResultsToSupabase(
+  selectedDomain,
+  topResult.careerTitle,
+  topResult.overallScore,
+  topResult.skillResults,
+).then(() => {
+  toast({
+    title: "Results saved to database ✓",
+    description: `Session ID: ${sessionId.slice(0, 8)}... — stored in Supabase.`,
+  });
+});
 
     setStage("results");
     window.scrollTo({ top: 0, behavior: "smooth" });
