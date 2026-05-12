@@ -1,4 +1,4 @@
-import { Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen } from "lucide-react";
+import { Home, ClipboardCheck, Map, Brain, Search, Heart, MessageCircle, BookOpen, Star, } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
+  { title: "Reviews", url: "/reviews", icon: Star },
   { title: "Home", url: "/", icon: Home },
   { title: "AI Advisor", url: "/advisor", icon: MessageCircle },
   { title: "Discover Strengths", url: "/discover", icon: Brain },

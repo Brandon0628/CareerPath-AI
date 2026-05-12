@@ -12,6 +12,7 @@ import Roadmap from "./pages/Roadmap.tsx";
 import FindCareers from "./pages/FindCareers.tsx";
 import Mission from "./pages/Mission.tsx";
 import CareerInsights from "./pages/CareerInsights.tsx";
+import Reviews from "./pages/Reviews.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -30,10 +31,11 @@ const App = () => (
             <Route path="/test-skills" element={<TestSkills />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/find-careers" element={<FindCareers />} />
-            <Route path="/insights" element={<CareerInsights />} />
             <Route path="/mission" element={<Mission />} />
+            <Route path="/insights" element={<CareerInsights />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

@@ -6,49 +6,53 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 25% 14%;
+    /* Refined warm-neutral background — feels like Apple */
+    --background: 220 18% 96%;
+    --foreground: 222 30% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 14%;
+    --card-foreground: 222 30% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 14%;
+    --popover-foreground: 222 30% 12%;
 
-    --primary: 220 70% 50%;
+    /* Deeper, richer blue — more premium */
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 160 50% 45%;
+    /* Teal-green secondary */
+    --secondary: 162 55% 42%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 92%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 220 14% 91%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 35 90% 55%;
+    --accent: 38 92% 56%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 220 70% 50%;
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    --tech: 220 70% 50%;
-    --tech-light: 220 70% 95%;
-    --accounting: 160 50% 45%;
-    --accounting-light: 160 50% 93%;
+    --tech: 221 83% 53%;
+    --tech-light: 221 83% 96%;
+    --accounting: 162 55% 42%;
+    --accounting-light: 162 55% 94%;
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 220 70% 50%;
+    /* Deep navy sidebar */
+    --sidebar-background: 223 44% 9%;
+    --sidebar-foreground: 220 20% 92%;
+    --sidebar-primary: 221 83% 63%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 70% 50%;
+    --sidebar-accent: 221 83% 53%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 30% 20%;
-    --sidebar-ring: 220 70% 50%;
+    --sidebar-border: 223 30% 16%;
+    --sidebar-ring: 221 83% 53%;
   }
 }
 
@@ -58,14 +62,140 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  .bg-card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  .font-display {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+  /* Smoother scrolling */
+  html {
+    scroll-behavior: smooth;
   }
+
+  /* Premium card style */
+  .card-premium {
+    @apply rounded-2xl border border-border/60 bg-card shadow-sm;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card-premium:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+
+  /* Glass card effect */
+  .card-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
+  }
+}
+
+@layer utilities {
+  /* Fade-in animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease forwards;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s ease forwards;
+  }
+
+  /* Gradient text utility */
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(221, 83%, 53%), hsl(162, 55%, 42%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-warm {
+    background: linear-gradient(135deg, hsl(221, 83%, 53%), hsl(260, 60%, 60%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Subtle noise texture for hero backgrounds */
+  .bg-hero {
+    background-color: hsl(220, 18%, 96%);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(221, 83%, 96%) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, hsl(162, 55%, 94%) 0%, transparent 50%);
+  }
+
+  /* Glow effect for primary elements */
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(221, 83%, 53%, 0.25), 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  /* Better focus rings */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(220, 14%, 91%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(220, 10%, 70%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(220, 10%, 55%);
+}
+
+/* Selection color */
+::selection {
+  background: hsl(221, 83%, 53%, 0.2);
+  color: hsl(222, 30%, 12%);
 }
