@@ -6,45 +6,26 @@
 
 @layer base {
   :root {
-    /* Refined warm-neutral background — feels like Apple */
     --background: 220 18% 96%;
     --foreground: 222 30% 12%;
-
     --card: 0 0% 100%;
     --card-foreground: 222 30% 12%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222 30% 12%;
-
-    /* Deeper, richer blue — more premium */
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-
-    /* Teal-green secondary */
     --secondary: 162 55% 42%;
     --secondary-foreground: 0 0% 100%;
-
     --muted: 220 14% 91%;
     --muted-foreground: 220 10% 46%;
-
     --accent: 38 92% 56%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 220 13% 87%;
     --input: 220 13% 87%;
     --ring: 221 83% 53%;
-
     --radius: 0.875rem;
-
-    --tech: 221 83% 53%;
-    --tech-light: 221 83% 96%;
-    --accounting: 162 55% 42%;
-    --accounting-light: 162 55% 94%;
-
-    /* Deep navy sidebar */
     --sidebar-background: 223 44% 9%;
     --sidebar-foreground: 220 20% 92%;
     --sidebar-primary: 221 83% 63%;
@@ -57,94 +38,84 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
 
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  /* Gradient orbs fixed behind everything — this is what makes glass look good */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 45% at 10% 5%,  hsl(221, 83%, 93%) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 40% at 90% 90%, hsl(162, 55%, 91%) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 35% at 75% 15%, hsl(260, 60%, 94%) 0%, transparent 55%),
+      radial-gradient(ellipse 35% 30% at 25% 75%, hsl(38,  92%, 94%) 0%, transparent 50%),
+      hsl(220, 18%, 96%);
   }
 
   .font-display {
     font-family: 'Space Grotesk', system-ui, sans-serif;
   }
+}
 
-  /* Smoother scrolling */
-  html {
-    scroll-behavior: smooth;
+@layer components {
+  /* Glass card — apply to any card for glassmorphism */
+  .card-glass {
+    background: rgba(255, 255, 255, 0.60);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 1.125rem;
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      0 1px 4px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .card-glass:hover {
+    box-shadow:
+      0 8px 36px rgba(0, 0, 0, 0.10),
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
   }
 
-  /* Premium card style */
+  /* Frosted glass header */
+  .header-glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 1px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Standard card with lift */
   .card-premium {
-    @apply rounded-2xl border border-border/60 bg-card shadow-sm;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    @apply rounded-2xl bg-card border border-border/60;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
   .card-premium:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05);
     transform: translateY(-1px);
-  }
-
-  /* Glass card effect */
-  .card-glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 1rem;
   }
 }
 
 @layer utilities {
-  /* Fade-in animations */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  .bg-hero { background: transparent; }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease forwards;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.4s ease forwards;
-  }
-
-  .animate-slide-in-right {
-    animation: slideInRight 0.4s ease forwards;
-  }
-
-  /* Gradient text utility */
   .text-gradient {
     background: linear-gradient(135deg, hsl(221, 83%, 53%), hsl(162, 55%, 42%));
     -webkit-background-clip: text;
@@ -159,43 +130,48 @@
     background-clip: text;
   }
 
-  /* Subtle noise texture for hero backgrounds */
-  .bg-hero {
-    background-color: hsl(220, 18%, 96%);
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(221, 83%, 96%) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 100%, hsl(162, 55%, 94%) 0%, transparent 50%);
-  }
-
-  /* Glow effect for primary elements */
   .glow-primary {
-    box-shadow: 0 0 20px hsl(221, 83%, 53%, 0.25), 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: 0 0 28px hsl(221, 83%, 53%, 0.28), 0 4px 16px rgba(0,0,0,0.08);
   }
 
-  /* Better focus rings */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-6px); }
+  }
+
+  .animate-fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+  .animate-fade-in    { animation: fadeIn 0.4s ease forwards; }
+  .animate-float      { animation: float 3s ease-in-out infinite; }
+
+  /* Marquee — pause on hover */
+  .animate-marquee {
+    animation: marquee 32s linear infinite;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
   }
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: hsl(220, 14%, 91%);
-}
-::-webkit-scrollbar-thumb {
-  background: hsl(220, 10%, 70%);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(220, 10%, 55%);
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(220, 10%, 78%); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(220, 10%, 62%); }
 
-/* Selection color */
 ::selection {
-  background: hsl(221, 83%, 53%, 0.2);
+  background: hsl(221, 83%, 53%, 0.18);
   color: hsl(222, 30%, 12%);
 }
