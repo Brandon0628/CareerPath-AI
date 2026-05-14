@@ -46,11 +46,10 @@
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    position: relative;
     min-height: 100vh;
   }
 
-  /* Gradient orbs fixed behind everything — this is what makes glass look good */
+  /* ── GRADIENT ORBS ── fixed behind everything sitewide */
   body::before {
     content: '';
     position: fixed;
@@ -68,42 +67,78 @@
   .font-display {
     font-family: 'Space Grotesk', system-ui, sans-serif;
   }
+
+  /* ── SITEWIDE GLASSMORPHISM ──
+     Overrides bg-card on every component across the entire app.
+     No need to change individual pages — this applies everywhere. */
+  .bg-card {
+    background-color: rgba(255, 255, 255, 0.62) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Soften borders sitewide to match glass aesthetic */
+  .border-border,
+  .border-border\/50,
+  .border-border\/60 {
+    border-color: rgba(210, 215, 225, 0.55) !important;
+  }
+
+  /* ── RESPONSIVE FIX ──
+     Prevents content overflow in half-screen / narrow viewports */
+  .flex-1 {
+    min-width: 0;
+  }
+  main {
+    overflow-x: hidden;
+  }
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Prevent any element from being wider than viewport */
+  img, video, iframe, table {
+    max-width: 100%;
+  }
 }
 
 @layer components {
-  /* Glass card — apply to any card for glassmorphism */
+  /* Explicit glass card class (for when you need it directly) */
   .card-glass {
-    background: rgba(255, 255, 255, 0.60);
+    background: rgba(255, 255, 255, 0.60) !important;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.72);
     border-radius: 1.125rem;
     box-shadow:
       0 4px 24px rgba(0, 0, 0, 0.06),
-      0 1px 4px rgba(0, 0, 0, 0.04),
+      0 1px 4px  rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
     transition: box-shadow 0.25s ease, transform 0.25s ease;
   }
   .card-glass:hover {
     box-shadow:
       0 8px 36px rgba(0, 0, 0, 0.10),
-      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 2px 8px  rgba(0, 0, 0, 0.06),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
     transform: translateY(-2px);
   }
 
-  /* Frosted glass header */
+  /* Glass header */
   .header-glass {
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.72) !important;
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.55);
     box-shadow: 0 1px 16px rgba(0, 0, 0, 0.05);
   }
 
-  /* Standard card with lift */
+  /* Standard card lift */
   .card-premium {
-    @apply rounded-2xl bg-card border border-border/60;
+    @apply rounded-2xl border border-border/60;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
@@ -155,13 +190,17 @@
   .animate-fade-in-up { animation: fadeInUp 0.5s ease forwards; }
   .animate-fade-in    { animation: fadeIn 0.4s ease forwards; }
   .animate-float      { animation: float 3s ease-in-out infinite; }
-
-  /* Marquee — pause on hover */
   .animate-marquee {
     animation: marquee 32s linear infinite;
   }
   .animate-marquee:hover {
     animation-play-state: paused;
+  }
+
+  /* Responsive grid helpers */
+  @media (max-width: 640px) {
+    .sm\:grid-cols-2 { grid-template-columns: 1fr !important; }
+    .sm\:grid-cols-3 { grid-template-columns: 1fr !important; }
   }
 }
 

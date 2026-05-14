@@ -8,21 +8,76 @@ import {
 import { generateMockQuestions } from "@/lib/questionGenerator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { saveResultsToSupabase, getOrCreateSessionId } from "@/lib/session";
+import { saveResultsToSupabase } from "@/lib/session";
 import { SkillAssessment } from "@/components/SkillAssessment";
 import { FinalResults } from "@/components/FinalResults";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Code, Calculator, Heart, Palette, TrendingUp, RotateCcw, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw, RefreshCw } from "lucide-react";
+import {
+  TechIcon,
+  AccountingIcon,
+  HealthcareIcon,
+  CreativeIcon,
+  BusinessIcon,
+} from "@/components/DomainIcons";
 
 type Domain = "Tech" | "Accounting" | "Healthcare" | "Creative" | "Business";
 type Stage = "select" | "quiz" | "results";
 
-const DOMAIN_CARDS: { domain: Domain; icon: React.ElementType; label: string; desc: string; colorClass: string }[] = [
-  { domain: "Tech", icon: Code, label: "Tech", desc: "Software Development, Data Analysis, Cybersecurity", colorClass: "border-primary/20 hover:border-primary/50 text-primary" },
-  { domain: "Accounting", icon: Calculator, label: "Accounting", desc: "Bookkeeping, Financial Statements, Tax, Accounting Software", colorClass: "border-secondary/20 hover:border-secondary/50 text-secondary" },
-  { domain: "Healthcare", icon: Heart, label: "Healthcare", desc: "Nursing, Medical Lab Technology, Psychology", colorClass: "border-red-400/20 hover:border-red-400/50 text-red-500" },
-  { domain: "Creative", icon: Palette, label: "Creative", desc: "UI/UX Design, Graphic Design, Content Creation", colorClass: "border-purple-400/20 hover:border-purple-400/50 text-purple-500" },
-  { domain: "Business", icon: TrendingUp, label: "Business", desc: "Digital Marketing, Business Analysis, Entrepreneurship", colorClass: "border-amber-400/20 hover:border-amber-400/50 text-amber-500" },
+const DOMAIN_CARDS: {
+  domain: Domain;
+  Icon: React.FC<{ className?: string }>;
+  label: string;
+  desc: string;
+  borderClass: string;
+  tagColor: string;
+  tag: string;
+}[] = [
+  {
+    domain: "Tech",
+    Icon: TechIcon,
+    label: "Tech",
+    desc: "Software Development, Data Analysis, Cybersecurity",
+    borderClass: "hover:border-blue-400/60 hover:shadow-blue-100/60",
+    tagColor: "bg-blue-50 text-blue-600 border border-blue-200",
+    tag: "3 careers",
+  },
+  {
+    domain: "Accounting",
+    Icon: AccountingIcon,
+    label: "Accounting",
+    desc: "Bookkeeping, Financial Statements, Tax, Accounting Software",
+    borderClass: "hover:border-emerald-400/60 hover:shadow-emerald-100/60",
+    tagColor: "bg-emerald-50 text-emerald-600 border border-emerald-200",
+    tag: "1 career",
+  },
+  {
+    domain: "Healthcare",
+    Icon: HealthcareIcon,
+    label: "Healthcare",
+    desc: "Nursing, Medical Lab Technology, Psychology",
+    borderClass: "hover:border-red-400/60 hover:shadow-red-100/60",
+    tagColor: "bg-red-50 text-red-600 border border-red-200",
+    tag: "3 careers",
+  },
+  {
+    domain: "Creative",
+    Icon: CreativeIcon,
+    label: "Creative",
+    desc: "UI/UX Design, Graphic Design, Content Creation",
+    borderClass: "hover:border-purple-400/60 hover:shadow-purple-100/60",
+    tagColor: "bg-purple-50 text-purple-600 border border-purple-200",
+    tag: "3 careers",
+  },
+  {
+    domain: "Business",
+    Icon: BusinessIcon,
+    label: "Business",
+    desc: "Digital Marketing, Business Analysis, Entrepreneurship",
+    borderClass: "hover:border-amber-400/60 hover:shadow-amber-100/60",
+    tagColor: "bg-amber-50 text-amber-600 border border-amber-200",
+    tag: "3 careers",
+  },
 ];
 
 const TestSkills = () => {
@@ -36,10 +91,7 @@ const TestSkills = () => {
 
   const fallbackQuestions = selectedDomain ? getQuizQuestionsForDomain(selectedDomain) : [];
   const questions = generatedQuestions.length > 0 ? generatedQuestions : fallbackQuestions;
-
-  const topCareers = selectedDomain
-    ? [...new Set(questions.map((q) => q.careerTitle))]
-    : [];
+  const topCareers = selectedDomain ? [...new Set(questions.map((q) => q.careerTitle))] : [];
 
   const generateQuestions = useCallback(
     async (domain: Domain) => {
@@ -49,22 +101,13 @@ const TestSkills = () => {
 
       try {
         const { data, error } = await supabase.functions.invoke("generate-questions", {
-          body: {
-            domain,
-            count: 20,
-            pastQuestions: Array.from(pastQuestionTexts),
-          },
+          body: { domain, count: 20, pastQuestions: Array.from(pastQuestionTexts) },
         });
-
         if (error) throw error;
-
         const aiQs = (data as { questions?: QuizQuestion[] })?.questions;
-        if (!Array.isArray(aiQs) || aiQs.length === 0) {
-          throw new Error("AI returned no questions");
-        }
+        if (!Array.isArray(aiQs) || aiQs.length === 0) throw new Error("No questions");
         newQuestions = aiQs;
-      } catch (err) {
-        console.error("AI generation failed, falling back to local generator", err);
+      } catch {
         usedFallback = true;
         newQuestions = generateMockQuestions(domain, 20, pastQuestionTexts);
       }
@@ -104,20 +147,16 @@ const TestSkills = () => {
 
   const handleSubmit = () => {
     if (!selectedDomain) return;
-
-    // Calculate results from whichever question set is active
     const careerTitles = [...new Set(questions.map((q) => q.careerTitle))];
     const skillMap: Record<string, Record<string, { correct: number; total: number }>> = {};
 
     careerTitles.forEach((title) => {
       skillMap[title] = {};
-      const careerQs = questions.filter((q) => q.careerTitle === title);
-      careerQs.forEach((q) => {
+      questions.filter((q) => q.careerTitle === title).forEach((q) => {
         if (!skillMap[title][q.skill]) skillMap[title][q.skill] = { correct: 0, total: 0 };
         skillMap[title][q.skill].total++;
-        const selected = answers[q.id];
         const correctOption = q.options.find((o) => o.isCorrect);
-        if (selected && correctOption && selected === correctOption.label) {
+        if (answers[q.id] && correctOption && answers[q.id] === correctOption.label) {
           skillMap[title][q.skill].correct++;
         }
       });
@@ -133,26 +172,13 @@ const TestSkills = () => {
       const totalCorrect = skillResults.reduce((s, r) => s + r.correct, 0);
       const totalQ = skillResults.reduce((s, r) => s + r.total, 0);
       const overallScore = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0;
-      const weakSkills = skillResults.filter((r) => r.percentage < 100);
-      return { careerTitle: title, skillResults, overallScore, weakSkills };
+      return { careerTitle: title, skillResults, overallScore, weakSkills: skillResults.filter((r) => r.percentage < 100) };
     });
 
     setResults(res);
-
-    // Save top result to Supabase
     const topResult = res.reduce((best, r) => (r.overallScore > best.overallScore ? r : best), res[0]);
-    const sessionId = getOrCreateSessionId();
-saveResultsToSupabase(
-  selectedDomain,
-  topResult.careerTitle,
-  topResult.overallScore,
-  topResult.skillResults,
-).then(() => {
-  toast({
-    title: "Results saved to database ✓",
-    description: `Session ID: ${sessionId.slice(0, 8)}... — stored in Supabase.`,
-  });
-});
+    saveResultsToSupabase(selectedDomain, topResult.careerTitle, topResult.overallScore, topResult.skillResults)
+      .then(() => toast({ title: "Results saved ✓", description: "Your career assessment has been recorded." }));
 
     setStage("results");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -173,7 +199,7 @@ saveResultsToSupabase(
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-2xl px-4 py-10">
         {/* Header */}
         <div className="mb-6">
@@ -193,67 +219,61 @@ saveResultsToSupabase(
           </p>
         </div>
 
-        {/* Domain Selection */}
+        {/* Domain Selection — aesthetic cards with gradient icons */}
         {stage === "select" && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {DOMAIN_CARDS.map((card) => {
-              const Icon = card.icon;
-              return (
-                <button
-                  key={card.domain}
-                  onClick={() => handleSelectDomain(card.domain)}
-                  className={`group rounded-2xl border-2 bg-card p-6 text-left shadow-sm transition-all hover:shadow-lg active:scale-[0.98] ${card.colorClass}`}
-                >
-                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">{card.label} Domain</h3>
-                  <p className="mb-4 text-sm text-muted-foreground">{card.desc}</p>
-                  <span className="inline-flex items-center gap-1 text-sm font-medium">
-                    Start Quiz <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+            {DOMAIN_CARDS.map((card) => (
+              <button
+                key={card.domain}
+                onClick={() => handleSelectDomain(card.domain)}
+                className={`group rounded-2xl border-2 border-border/50 p-6 text-left shadow-sm transition-all hover:shadow-xl active:scale-[0.98] ${card.borderClass}`}
+                style={{ background: "rgba(255,255,255,0.62)", backdropFilter: "blur(16px)" }}
+              >
+                {/* Gradient icon */}
+                <div className="mb-4">
+                  <card.Icon className="h-12 w-12 transition-transform group-hover:scale-110 group-hover:-rotate-3" />
+                </div>
+
+                <div className="mb-1 flex items-center justify-between">
+                  <h3 className="font-display text-lg font-bold text-foreground">{card.label}</h3>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${card.tagColor}`}>
+                    {card.tag}
                   </span>
-                </button>
-              );
-            })}
+                </div>
+
+                <p className="mb-4 text-sm text-muted-foreground leading-relaxed">{card.desc}</p>
+
+                <span className="inline-flex items-center gap-1 text-sm font-semibold text-foreground">
+                  Start Quiz
+                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                </span>
+              </button>
+            ))}
           </div>
         )}
 
         {/* Quiz */}
         {stage === "quiz" && (
           <div className="space-y-4">
-            {/* Regenerate + Back buttons */}
             <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-2 text-muted-foreground"
-                onClick={handleReset}
-              >
+              <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" onClick={handleReset}>
                 <ArrowLeft className="h-3 w-3" />
                 Change Domain
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={handleRegenerate}
-                disabled={isGenerating}
-              >
+              <Button variant="outline" size="sm" className="gap-2" onClick={handleRegenerate} disabled={isGenerating}>
                 <RefreshCw className={`h-3 w-3 ${isGenerating ? "animate-spin" : ""}`} />
                 {isGenerating ? "Generating…" : "Regenerate Questions"}
               </Button>
             </div>
 
             {isGenerating && questions.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-border/50 bg-card p-16 text-center shadow-sm animate-pulse">
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-border/50 p-16 text-center" style={{ background: "rgba(255,255,255,0.62)", backdropFilter: "blur(16px)" }}>
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
                   <RefreshCw className="h-7 w-7 animate-spin text-primary" />
                 </div>
-                <p className="text-base font-bold text-card-foreground">
-                  Generating your questions...
-                </p>
+                <p className="text-base font-bold text-foreground">Generating your questions...</p>
                 <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-                  Our AI is crafting personalised questions for you — this takes a few seconds.
+                  Our AI is crafting personalised questions — this takes a few seconds.
                 </p>
               </div>
             ) : (
